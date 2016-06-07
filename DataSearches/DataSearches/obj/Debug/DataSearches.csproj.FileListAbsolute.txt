@@ -1,0 +1,9 @@
+H:\Dev\LERCAutomation\DataSearches--ArcObjects\DataSearches\DataSearches\bin\Debug\DataSearches.dll.config
+H:\Dev\LERCAutomation\DataSearches--ArcObjects\DataSearches\DataSearches\bin\Debug\DataSearches.dll
+H:\Dev\LERCAutomation\DataSearches--ArcObjects\DataSearches\DataSearches\bin\Debug\DataSearches.pdb
+H:\Dev\LERCAutomation\DataSearches--ArcObjects\DataSearches\DataSearches\obj\Debug\DataSearches.frmDataSearches.resources
+H:\Dev\LERCAutomation\DataSearches--ArcObjects\DataSearches\DataSearches\obj\Debug\DataSearches.csproj.GenerateResource.Cache
+H:\Dev\LERCAutomation\DataSearches--ArcObjects\DataSearches\DataSearches\obj\Debug\DataSearches.dll
+H:\Dev\LERCAutomation\DataSearches--ArcObjects\DataSearches\DataSearches\obj\Debug\DataSearches.pdb
+H:\Dev\LERCAutomation\DataSearches--ArcObjects\DataSearches\DataSearches\obj\Debug\DataSearches.csprojResolveAssemblyReference.cache
+H:\Dev\LERCAutomation\DataSearches--ArcObjects\DataSearches\DataSearches\bin\Debug\DataSearches.esriAddIn
