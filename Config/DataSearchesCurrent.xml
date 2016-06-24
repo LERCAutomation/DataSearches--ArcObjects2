@@ -25,7 +25,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 
 	<!-- The database where all the data search details are stored. -->
 	<Database>
-		<value>H:\Dev\LERCAutomation\DataSearches--ArcObjects2\Access\SxBRC Data Searches v3.52.mdb</value>
+		<value>H:\Dev\LERCAutomation\DataSearches--ArcObjects\Access\SxBRC Data Searches v3.52.mdb</value>
 	</Database>
 
 	<!-- The field name of the search reference unique value. -->
@@ -38,19 +38,19 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		<value>SiteName</value>
 	</SiteColumn>
 
-	<!-- The character(s) used to replace any special characters in folder names. Space is allowed -->
+	<!-- The character(s) used to replace any special characters in folder names. -->
 	<RepChar>
 		<value> </value>
 	</RepChar>
 
 	<!-- The folder where the layer files are stored. -->
 	<LayerFolder>
-		<value>H:\Dev\LERCAutomation\DataSearches--ArcObjects2\LayerFiles</value>
+		<value>H:\Dev\LERCAutomation\DataSearches--ArcObjects\LayerFiles</value>
 	</LayerFolder>
 
 	<!-- The file location where all data search folders are stored. -->
 	<SaveRootDir>
-		<value>H:\Dev\LERCAutomation\DataSearches--ArcObjects2\Reports</value>
+		<value>H:\Dev\LERCAutomation\DataSearches--ArcObjects\Reports</value>
 	</SaveRootDir>
 
 	<!-- The folder where the report will be saved. -->
@@ -78,7 +78,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		<value>1</value>
 	</DefaultBufferSize>
 
-	<!-- The options for the buffer units. It is not recommended that these are changed -->
+	<!-- The options for the buffer units -->
 	<!-- These are read as: unit to display; unit that ArcGIS uses (American spelling); abbreviated unit -->
 	<BufferUnitOptions>
 		<value>Centimetres;Centimeters;cm$Metres;Meters;m$Kilometres;Kilometers;km$Feet;Feet;ft$Yards;Yards;yds$Miles;Miles;mi</value>
@@ -163,7 +163,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>ExampleSpecies</value>
 			</Prefix>
 			<Suffix>
-				<value>_spppts</value>
+				<value>_randpts</value>
 			</Suffix>
 			<Columns>
 				<value>Species, Year, COUNT_Spec</value> <!-- Use commas to separate. NOTE case sensitive! -->
@@ -172,7 +172,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>Species, Year</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</GroupColumns>
 			<StatisticsColumns>
-				<value>Species;COUNT$Distance;FIRST</value><!-- example: area_ha;SUM$Status;FIRST -->
+				<value>Species;COUNT</value><!-- example: area_ha;SUM$Status;FIRST -->
 			</StatisticsColumns>
 			<OrderColumns> <!-- Overrides GroupColumns -->
 				<value></value>
@@ -422,7 +422,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		</Ramsars>
 		<SSSIs>
 			<LayerName>
-				<value>SSSIs</value>
+				<value>Sussex SSSIs</value>
 			</LayerName>
 			<Prefix>
 				<value>SSSIs</value>
@@ -819,7 +819,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		</CountryParks>
 		<SppProt>
 			<LayerName>
-				<value>Protected Species</value>
+				<value>P_N_Species</value>
 			</LayerName>
 			<Prefix>
 				<value>SppProt</value>
@@ -885,7 +885,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		</SppProt>
 		<SppINNS>
 			<LayerName>
-				<value>All Species</value>
+				<value>INN_Species</value>
 			</LayerName>
 			<Prefix>
 				<value>SppINNS</value>
