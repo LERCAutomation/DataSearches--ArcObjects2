@@ -34,10 +34,12 @@ namespace DataSearches
         string strTempFile;
 
         bool blOpenForm; // this tracks all the way through initialisation whether the form should open.
+        bool blFormHasOpened; // This informs all controls whether the form has opened.
 
         public frmDataSearches()
         {
             blOpenForm = true;
+            blFormHasOpened = false;
             InitializeComponent();
             myConfig = new SearchesToolConfig();
             myFileFuncs = new FileFunctions();
@@ -110,12 +112,43 @@ namespace DataSearches
                 cmbUnits.Items.AddRange(myConfig.GetBufferUnitOptionsDisplay().ToArray());
                 cmbUnits.SelectedIndex = myConfig.GetDefaultBufferUnit() - 1;
                 cmbAddLayers.Items.AddRange(myConfig.GetAddSelectedLayerOptions().ToArray());
-                cmbAddLayers.SelectedIndex = myConfig.GetDefaultAddSelectedLayerOption() - 1;
+                if (myConfig.GetDefaultAddSelectedLayerOption() != -1)
+                    cmbAddLayers.SelectedIndex = myConfig.GetDefaultAddSelectedLayerOption() - 1;
                 cmbLabels.Items.AddRange(myConfig.GetOverwriteLabelOptions().ToArray());
-                cmbLabels.SelectedIndex = myConfig.GetDefaultOverwriteLabelsOption() - 1;
-                chkCombinedSites.Checked = myConfig.GetDefaultCombinedSitesTable();
+                if (myConfig.GetDefaultOverwriteLabelsOption() != -1)
+                    cmbLabels.SelectedIndex = myConfig.GetDefaultOverwriteLabelsOption() - 1;
+
+                int intCombinedCheck = myConfig.GetDefaultCombinedSitesTable();
+                chkCombinedSites.Checked = false;
+                if (intCombinedCheck == 1)
+                    chkCombinedSites.Checked = true;
                 chkClearLog.Checked = myConfig.GetDefaultClearLogFile();
 
+                // Hide controls that were not requested
+                if (myConfig.GetDefaultAddSelectedLayerOption() == -1)
+                {
+                    cmbAddLayers.Hide();
+                    label5.Hide();
+                }
+                else
+                {
+                    cmbAddLayers.Show();
+                    label5.Show();
+                }
+                if (myConfig.GetDefaultOverwriteLabelsOption() == -1 || myConfig.GetDefaultAddSelectedLayerOption() == -1)
+                {
+                    cmbLabels.Hide();
+                    label7.Hide();
+                }
+                else 
+                {
+                    cmbLabels.Show();
+                    label7.Show();
+                }
+                if (myConfig.GetDefaultCombinedSitesTable() == -1)
+                    chkCombinedSites.Hide();
+                else
+                    chkCombinedSites.Show();
                 // Warn the user of closed layers.
                 if (ClosedLayers.Count > 0)
                 {
@@ -130,6 +163,7 @@ namespace DataSearches
                     }
                     MessageBox.Show(strWarning);
                 }
+                blFormHasOpened = true;
             }
             else // Something has gone wrong during initialisation; don't load form.
             {
@@ -165,9 +199,23 @@ namespace DataSearches
             string strBufferUnitText = cmbUnits.Text; // Unit to be used in reporting.
             string strBufferUnitShort = myConfig.GetBufferUnitOptionsShort()[intBufferUnitIndex]; // Unit to be used in file naming (abbreviation)
 
-            string strAddSelected = cmbAddLayers.Text; // Add selected layers
-            string strOverwriteLabels = cmbLabels.Text; // Overwrite labels
-            bool blCombinedTable = chkCombinedSites.Checked; // Create combined table.
+            string strAddSelected;
+            if (cmbAddLayers.CanSelect)
+                strAddSelected = cmbAddLayers.Text; // Add selected layers
+            else
+                strAddSelected = "Yes - With labels";
+
+            string strOverwriteLabels;
+            if (cmbLabels.CanSelect)
+                strOverwriteLabels = cmbLabels.Text; // Overwrite labels
+            else
+                strOverwriteLabels = "Yes - Increment Counter";
+
+            bool blCombinedTable;
+            if (chkCombinedSites.CanSelect)
+                blCombinedTable = chkCombinedSites.Checked; // Create combined table.
+            else
+                blCombinedTable = false;
 
             // Check that the user has entered all information correctly.
             if (strReference == "")
@@ -488,6 +536,7 @@ namespace DataSearches
             List<string> strOrderColumnList = myConfig.GetMapOrderByColumns();
             List<string> strCriteriaList = myConfig.GetMapCriteria();
             List<bool> blIncludeDistances = myConfig.getMapIncludeDistances();
+            List<bool> blIncludeRadii = myConfig.getMapIncludeRadii();
             List<string> strKeyColumns = myConfig.GetMapKeyColumns();
             List<string> strFormats = myConfig.GetMapFormats();
             List<bool> blKeepLayers = myConfig.GetMapKeepLayers();
@@ -500,8 +549,6 @@ namespace DataSearches
             List<string> strCombinedSitesStatsColumnList = myConfig.GetMapCombinedSitesStatsColumns();
             List<string> strCombinedSitesOrderColumnList = myConfig.GetMapCombinedSitesOrderByColumns();
             //List<string> strCombinedSitesCriteriaList = myConfig.GetMapCombinedSitesCriteria();
-
-
 
             // Start the combined sites table before we do any analysis.
             //string strCombinedTable = myConfig.GetCombinedSitesTableName();
@@ -544,6 +591,8 @@ namespace DataSearches
                 string strOrderColumns = strOrderColumnList[intIndex];
                 string strCriteria = strCriteriaList[intIndex];
                 bool blIncludeDistance = blIncludeDistances[intIndex];
+                bool blIncludeRadius = blIncludeRadii[intIndex];
+                
                 string strKeyColumn = strKeyColumns[intIndex];
                 string strFormat = strFormats[intIndex];
                 bool blKeepLayer = blKeepLayers[intIndex];
@@ -561,6 +610,8 @@ namespace DataSearches
                 strStatsColumns = myStringFuncs.AlignStatsColumns(strColumns, strStatsColumns, strGroupColumns);
                 if (blIncludeDistance && !strColumns.Contains("Distance") && !strGroupColumns.Contains("Distance"))
                     strColumns = strColumns + ",Distance"; // Distance comes after grouping and hence should not be included in the stats columns.
+                if (blIncludeRadius && !strColumns.Contains("Radius") && !strGroupColumns.Contains("Radius"))
+                    strColumns = strColumns + ",Radius"; // as for Distance column, it comes after the grouping.
                 strCombinedSitesStatsColumns = myStringFuncs.AlignStatsColumns(strCombinedSitesColumns, strCombinedSitesStatsColumns, strCombinedSitesGroupColumns);
 
                 // Create relevant output name. Note this is done whether or not the layer is eventually kept.
@@ -645,8 +696,10 @@ namespace DataSearches
                     string strTempOutput = "TempOutput" + strUserID;
                     string strTempShapeOutput = strTempFolder + @"\" + strTempOutput + ".shp";
                     myFileFuncs.WriteLine(strLogFile, "Extracting summary information from " + strDisplayName);
+                    string strRadius = "none";
+                    if (blIncludeRadius) strRadius = strBufferSize + " " + strBufferUnitText; // Only include radius if requested.
                     myArcMapFuncs.ExportSelectionToShapefile(strTempMaster, strTempShapeOutput, strColumns, strTempFile, strGroupColumns,
-                        strStatsColumns, blIncludeDistance, strTargetLayer);
+                        strStatsColumns, blIncludeDistance, strRadius, strTargetLayer);
 
                     // Write out the results to table as appropriate.
                     bool blIncHeaders = false;
@@ -701,7 +754,7 @@ namespace DataSearches
                     {
                         myFileFuncs.WriteLine(strLogFile, "Extracting summary output for combined sites table");
                         myArcMapFuncs.ExportSelectionToShapefile(strTempMaster, strTempShapeOutput, strCombinedSitesColumns, strTempFile,
-                            strCombinedSitesGroupColumns, strCombinedSitesStatsColumns, blIncludeDistance, strTargetLayer );
+                            strCombinedSitesGroupColumns, strCombinedSitesStatsColumns, blIncludeDistance, strRadius, strTargetLayer );
 
                         // This needs changing to take account of the 'tag' field. Will need a new function that takes account
                         // of the combined sites header columns.
@@ -821,10 +874,21 @@ namespace DataSearches
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void cmbAddLayers_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // myArcMapFuncs.ExportSelection("LWS_001", @"H:\Training\C#\HLTest.shp", null, null, null, null, true, "SearchSites_point");
-            
+            if (cmbAddLayers.Text == "Yes - With labels")
+            {
+                cmbLabels.Enabled = true;
+                if (blFormHasOpened)
+                {
+                    cmbLabels.Text = (string)cmbLabels.Items[myConfig.GetDefaultOverwriteLabelsOption() - 1];
+                }
+            }
+            else
+            {
+                cmbLabels.Enabled = false;
+                cmbLabels.Text = "";
+            }
         }
 
 

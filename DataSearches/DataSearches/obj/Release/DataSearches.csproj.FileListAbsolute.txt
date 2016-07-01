@@ -7,3 +7,12 @@ H:\Dev\LERCAutomation\DataSearches--ArcObjects\DataSearches\DataSearches\obj\Rel
 H:\Dev\LERCAutomation\DataSearches--ArcObjects\DataSearches\DataSearches\obj\Release\DataSearches.pdb
 H:\Dev\LERCAutomation\DataSearches--ArcObjects\DataSearches\DataSearches\obj\Release\DataSearches.csprojResolveAssemblyReference.cache
 H:\Dev\LERCAutomation\DataSearches--ArcObjects\DataSearches\DataSearches\bin\Release\DataSearches.esriAddIn
+H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\bin\Release\DataSearches.dll.config
+H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\bin\Release\DataSearches.dll
+H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\bin\Release\DataSearches.pdb
+H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Release\DataSearches.csprojResolveAssemblyReference.cache
+H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Release\DataSearches.frmDataSearches.resources
+H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Release\DataSearches.csproj.GenerateResource.Cache
+H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Release\DataSearches.dll
+H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Release\DataSearches.pdb
+H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\bin\Release\DataSearches.esriAddIn

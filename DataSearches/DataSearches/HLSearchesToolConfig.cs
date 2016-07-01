@@ -39,7 +39,7 @@ namespace HLSearchesToolConfig
         int DefaultAddSelectedLayers;
         List<string> OverwriteLabelOptions = new List<string>();
         int DefaultOverwriteLabels;
-        bool DefaultCombinedSitesTable;
+        int DefaultCombinedSitesTable; // -1, 0, 1 (not filled in, no, yes)
         //string CombinedSitesTableName;
         string CombinedSitesTableColumns;
         string CombinedSitesTableSuffix;
@@ -55,6 +55,7 @@ namespace HLSearchesToolConfig
         List<string> MapStatsColumns = new List<string>();
         List<string> MapOrderColumns = new List<string>();
         List<bool> MapIncludeDistances = new List<bool>();
+        List<bool> MapIncludeRadii = new List<bool>();
         List<string> MapKeyColumns = new List<string>();
         List<string> MapFormats = new List<string>();
         List<bool> MapKeeps = new List<bool>();
@@ -165,17 +166,6 @@ namespace HLSearchesToolConfig
                     LoadedXML = false;
                     return;
                 }
-
-                //try
-                //{
-                //    EnquiriesDir = xmlDataSearch["EnquiriesDir"].InnerText;
-                //}
-                //catch
-                //{
-                //    MessageBox.Show("Could not locate the item 'EnquiriesDir' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //    LoadedXML = false;
-                //    return;
-                //}
                 
                 try
                 {
@@ -433,6 +423,8 @@ namespace HLSearchesToolConfig
                     bool blResult = Int32.TryParse(strRawText, out i);
                     if (blResult)
                         DefaultAddSelectedLayers = (int)i;
+                    else if (strRawText == "")
+                        DefaultAddSelectedLayers = -1;
                     else
                     {
                         MessageBox.Show("The entry for 'DefaultAddSelectedLayers' in the XML document is not an integer number", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -476,6 +468,8 @@ namespace HLSearchesToolConfig
                     bool blResult = Int32.TryParse(strRawText, out i);
                     if (blResult)
                         DefaultOverwriteLabels = (int)i;
+                    else if (strRawText == "")
+                        DefaultOverwriteLabels = -1;
                     else
                     {
                         MessageBox.Show("The entry for 'DefaultOverwriteLabels' in the XML document is not an integer number", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -492,10 +486,12 @@ namespace HLSearchesToolConfig
 
                 try
                 {
-                    DefaultCombinedSitesTable = false;
+                    DefaultCombinedSitesTable = -1;
                     strRawText = xmlDataSearch["DefaultCombinedSitesTable"].InnerText;
-                    if (strRawText == "Yes")
-                        DefaultCombinedSitesTable = true;
+                    if (strRawText.ToLower() == "yes")
+                        DefaultCombinedSitesTable = 1;
+                    if (strRawText.ToLower() == "no")
+                        DefaultCombinedSitesTable = 0;
                 }
                 catch
                 {
@@ -671,6 +667,20 @@ namespace HLSearchesToolConfig
                         return;
                     }
 
+                    try
+                    {
+                        bool blIncludeRadius = false;
+                        string strIncludeRadius = aNode["IncludeRadius"].InnerText;
+                        if (strIncludeRadius.ToLower() == "yes")
+                            blIncludeRadius = true;
+                        MapIncludeRadii.Add(blIncludeRadius);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Could not locate the item 'IncludeRadius' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        LoadedXML = false;
+                        return;
+                    }
 
                     try
                     {
@@ -980,7 +990,7 @@ namespace HLSearchesToolConfig
             return DefaultOverwriteLabels;
         }
 
-        public bool GetDefaultCombinedSitesTable()
+        public int GetDefaultCombinedSitesTable()
         {
             return DefaultCombinedSitesTable;
         }
@@ -1056,6 +1066,11 @@ namespace HLSearchesToolConfig
         public List<bool> getMapIncludeDistances()
         {
             return MapIncludeDistances;
+        }
+
+        public List<bool> getMapIncludeRadii()
+        {
+            return MapIncludeRadii;
         }
 
         public List<string> GetMapKeyColumns()

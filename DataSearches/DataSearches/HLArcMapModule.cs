@@ -2191,7 +2191,7 @@ namespace HLArcMapModule
         }
 
         public bool ExportSelectionToShapefile(string aLayerName, string anOutShapefile, string OutputColumns, string TempShapeFile, string GroupColumns = "",
-            string StatisticsColumns = "", bool IncludeDistance = false, string aTargetLayer = null, bool Overwrite = true, bool CheckForSelection = false, bool RenameColumns = false, bool Messages = false)
+            string StatisticsColumns = "", bool IncludeDistance = false, string aRadius = "None", string aTargetLayer = null, bool Overwrite = true, bool CheckForSelection = false, bool RenameColumns = false, bool Messages = false)
         {
             // Some sanity tests.
             if (!LayerExists(aLayerName))
@@ -2263,7 +2263,7 @@ namespace HLArcMapModule
             IGeoProcessorResult myresult = new GeoProcessorResultClass();
 
             // If we are including distance, the process is slighly different.
-            if (GroupColumns != null) // include group columns.
+            if (GroupColumns != null && GroupColumns != "") // include group columns.
             {
                 string strOutFile = TempShapeFile;
                 if (!IncludeDistance)
@@ -2431,8 +2431,17 @@ namespace HLArcMapModule
                 }
             }
 
-            // Now drop any fields from the output that we don't want.
+            // Get the output shapefile
             pFC = GetFeatureClass(anOutShapefile);
+
+            // Include radius if requested
+            if (aRadius != "none")
+            {
+                AddField(pFC, "Radius", esriFieldType.esriFieldTypeString, 25);
+                CalculateField(anOutShapefile, "Radius", '"' + aRadius + '"');
+            }
+
+            // Now drop any fields from the output that we don't want.
             IFields pFields = pFC.Fields;
             List<string> strDeleteFields = new List<string>();
 

@@ -153,6 +153,7 @@
             this.cmbAddLayers.Name = "cmbAddLayers";
             this.cmbAddLayers.Size = new System.Drawing.Size(191, 21);
             this.cmbAddLayers.TabIndex = 13;
+            this.cmbAddLayers.SelectedIndexChanged += new System.EventHandler(this.cmbAddLayers_SelectedIndexChanged);
             // 
             // label7
             // 
@@ -165,6 +166,7 @@
             // 
             // cmbLabels
             // 
+            this.cmbLabels.Enabled = false;
             this.cmbLabels.FormattingEnabled = true;
             this.cmbLabels.Location = new System.Drawing.Point(218, 292);
             this.cmbLabels.Name = "cmbLabels";

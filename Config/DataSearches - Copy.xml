@@ -21,6 +21,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 -->
 
 <configuration>
+<!--- General attributes -->
 <DataSearches>
 	<!-- The database where all the data search details are stored. -->
 	<Database>
@@ -131,12 +132,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 
 	<!-- Whether any map label columns should be overwritten (default setting) -->
 	<DefaultOverwriteLabels>
-		<value>2</value>
+		<value>3</value>
 	</DefaultOverwriteLabels>
 
 	<!-- Whether a combined sites table should be created by default -->
 	<DefaultCombinedSitesTable>
-		<value>Yes</value> <!-- Yes / No -->
+		<value>Yes</value>
 	</DefaultCombinedSitesTable>
 
 	<!-- The column names of the combined sites table -->
@@ -156,15 +157,15 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 	<!-- map layer attributes -->
 	<!-- The names, local names, suffixes, SQL clauses and formats of the map tables -->
 	<MapLayers>
-		<Points_-_ExampleSpeciesPoints>
-			<LayerName> 
+		<Points_-_ExampleSpeciesPoints> <!-- This is the name of the map layer as it will be shown on the form -->
+			<LayerName> <!-- This is the name of the layer as it is show in the Table of Contents in ArcMap -->
 				<value>ExampleSpeciesPoints</value>
 			</LayerName>
-			<Prefix> 
-				<value>ExampleSpecies</value><!-- The prefix used for any GIS data extracts -->
+			<Prefix> <!-- The prefix used for any GIS data extracts -->
+				<value>ExampleSpecies</value>
 			</Prefix>
-			<Suffix> 
-				<value>_spppts</value><!-- The suffix used for any tabular extracts -->
+			<Suffix> <!-- The suffix used for any tabular extracts -->
+				<value>_spppts</value>
 			</Suffix>
 			<Columns> <!-- The columns to be used in the tabular extracts -->
 				<value>Species, Year, COUNT_Spec</value> <!-- Use commas to separate. NOTE case sensitive! -->
@@ -184,9 +185,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance> <!-- Yes / No attribute to define whether a Distance field should be included -->
 				<value>Yes</value><!-- Yes / No -->
 			</IncludeDistance>
-			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
-				<value>Yes</value>
-			</IncludeRadius>
 			<KeyColumn> <!-- The column in this layer that contains the unique identifier -->
 				<value>FID</value>
 			</KeyColumn>
@@ -215,7 +213,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- Leave blank if the layer should not be included in the combined sites table -->
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<!-- "SSSI", SSSI_NAME, SSSI_AREA, Map_Label -->
-				<value>"Species","N/A",Distance,Radius</value><!-- Just a proof of concept setting -->
+				<value></value>
 			</CombinedSitesColumns>
 			<CombinedSitesGroupColumns> <!-- Columns that should be used to group data before inclusion in the combined sites table, if any -->
 				<value></value>
@@ -226,7 +224,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns> <!-- Columns by which results should be ordered in the Combined Sites table -->
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</Points_-_ExampleSpeciesPoints> 
+		</Points_-_ExampleSpeciesPoints> <!-- End of this map layer -->
 		<SACs>
 			<LayerName>
 				<value>SACs</value>
@@ -255,9 +253,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
-			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
-				<value>No</value>
-			</IncludeRadius>
 			<KeyColumn>
 				<value>SAC_NAME</value>
 			</KeyColumn>
@@ -324,9 +319,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
-			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
-				<value>No</value>
-			</IncludeRadius>
 			<KeyColumn>
 				<value>SPA_NAME</value>
 			</KeyColumn>
@@ -393,9 +385,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
-			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
-				<value>No</value>
-			</IncludeRadius>
 			<KeyColumn>
 				<value>NAME</value>
 			</KeyColumn>
@@ -462,9 +451,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>Yes</value><!-- Yes / No -->
 			</IncludeDistance>
-			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
-				<value>No</value>
-			</IncludeRadius>
 			<KeyColumn>
 				<value>SSSI_NAME</value>
 			</KeyColumn>
@@ -532,9 +518,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
-			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
-				<value>No</value>
-			</IncludeRadius>
 			<KeyColumn>
 				<value>NNR_NAME</value>
 			</KeyColumn>
@@ -601,9 +584,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
-			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
-				<value>No</value>
-			</IncludeRadius>
 			<KeyColumn>
 				<value>LNR_NAME</value>
 			</KeyColumn>
@@ -670,9 +650,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>Yes</value><!-- Yes / No -->
 			</IncludeDistance>
-			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
-				<value>No</value>
-			</IncludeRadius>
 			<KeyColumn>
 				<value>siteid</value>
 			</KeyColumn>
@@ -739,9 +716,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
-			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
-				<value>No</value>
-			</IncludeRadius>
 			<KeyColumn>
 				<value>NAME</value>
 			</KeyColumn>
@@ -808,9 +782,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
-			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
-				<value>No</value>
-			</IncludeRadius>
 			<KeyColumn>
 				<value>NAME</value>
 			</KeyColumn>
@@ -877,9 +848,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>Yes</value><!-- Yes / No -->
 			</IncludeDistance>
-			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
-				<value>No</value>
-			</IncludeRadius>
 			<KeyColumn>
 				<value>LATIN_NAME</value>
 			</KeyColumn>
@@ -946,9 +914,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
-			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
-				<value>No</value>
-			</IncludeRadius>
 			<KeyColumn>
 				<value>LATIN_NAME</value>
 			</KeyColumn>
