@@ -210,13 +210,13 @@ namespace DataSearches
             if (cmbAddLayers.CanSelect)
                 strAddSelected = cmbAddLayers.Text; // Add selected layers
             else
-                strAddSelected = "Yes - With labels";
+                strAddSelected = "No";
 
             string strOverwriteLabels;
             if (cmbLabels.CanSelect)
                 strOverwriteLabels = cmbLabels.Text; // Overwrite labels
             else
-                strOverwriteLabels = "Yes - Increment Counter";
+                strOverwriteLabels = "No";
 
             bool blCombinedTable;
             bool blCombinedTableOverwrite;
