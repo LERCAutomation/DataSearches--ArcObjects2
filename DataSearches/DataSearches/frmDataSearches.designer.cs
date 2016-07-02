@@ -42,10 +42,11 @@
             this.cmbAddLayers = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
             this.cmbLabels = new System.Windows.Forms.ComboBox();
-            this.chkCombinedSites = new System.Windows.Forms.CheckBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.txtSearch = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.cmbCombinedSites = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // label1
@@ -173,16 +174,6 @@
             this.cmbLabels.Size = new System.Drawing.Size(191, 21);
             this.cmbLabels.TabIndex = 15;
             // 
-            // chkCombinedSites
-            // 
-            this.chkCombinedSites.AutoSize = true;
-            this.chkCombinedSites.Location = new System.Drawing.Point(218, 328);
-            this.chkCombinedSites.Name = "chkCombinedSites";
-            this.chkCombinedSites.Size = new System.Drawing.Size(169, 17);
-            this.chkCombinedSites.TabIndex = 16;
-            this.chkCombinedSites.Text = "Create Combined Sites Table?";
-            this.chkCombinedSites.UseVisualStyleBackColor = true;
-            // 
             // btnCancel
             // 
             this.btnCancel.Location = new System.Drawing.Point(252, 395);
@@ -211,15 +202,33 @@
             this.txtSearch.TabIndex = 0;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(218, 320);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(147, 13);
+            this.label8.TabIndex = 19;
+            this.label8.Text = "Create Combined Sites Table:";
+            // 
+            // cmbCombinedSites
+            // 
+            this.cmbCombinedSites.FormattingEnabled = true;
+            this.cmbCombinedSites.Location = new System.Drawing.Point(218, 336);
+            this.cmbCombinedSites.Name = "cmbCombinedSites";
+            this.cmbCombinedSites.Size = new System.Drawing.Size(191, 21);
+            this.cmbCombinedSites.TabIndex = 20;
+            // 
             // frmDataSearches
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(420, 430);
+            this.Controls.Add(this.cmbCombinedSites);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.txtSearch);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.chkCombinedSites);
             this.Controls.Add(this.cmbLabels);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.cmbAddLayers);
@@ -235,7 +244,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label6);
             this.Name = "frmDataSearches";
-            this.Text = "Data Searches 1.1";
+            this.Text = "Data Searches 1.2";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -257,9 +266,10 @@
         private System.Windows.Forms.ComboBox cmbAddLayers;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox cmbLabels;
-        private System.Windows.Forms.CheckBox chkCombinedSites;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox cmbCombinedSites;
     }
 }

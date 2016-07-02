@@ -39,7 +39,8 @@ namespace HLSearchesToolConfig
         int DefaultAddSelectedLayers;
         List<string> OverwriteLabelOptions = new List<string>();
         int DefaultOverwriteLabels;
-        int DefaultCombinedSitesTable; // -1, 0, 1 (not filled in, no, yes)
+        List<string> CombinedSitesTableOptions = new List<string>();
+        int DefaultCombinedSitesTable; // -1, 0, 1, 2 (not filled in, none, append, overwrite)
         //string CombinedSitesTableName;
         string CombinedSitesTableColumns;
         string CombinedSitesTableSuffix;
@@ -486,12 +487,42 @@ namespace HLSearchesToolConfig
 
                 try
                 {
+                    strRawText = xmlDataSearch["CombinedSitesTableOptions"].InnerText;
+                }
+                catch
+                {
+                    MessageBox.Show("Could not locate the item 'CombinedSitesTableOptions' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoadedXML = false;
+                    return;
+                }
+                try
+                {
+                    char[] chrSplitChars = { ';' };
+                    CombinedSitesTableOptions = strRawText.Split(chrSplitChars).ToList();
+                }
+                catch
+                {
+                    MessageBox.Show("Error parsing 'CombinedSitesTableOptions' string. Please check for correct string formatting and placement of delimiters", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoadedXML = false;
+                    return;
+                }
+
+                try
+                {
                     DefaultCombinedSitesTable = -1;
                     strRawText = xmlDataSearch["DefaultCombinedSitesTable"].InnerText;
-                    if (strRawText.ToLower() == "yes")
-                        DefaultCombinedSitesTable = 1;
-                    if (strRawText.ToLower() == "no")
-                        DefaultCombinedSitesTable = 0;
+                    int i;
+                    bool blResult = Int32.TryParse(strRawText, out i);
+                    if (blResult)
+                        DefaultCombinedSitesTable = (int)i;
+                    else if (strRawText == "")
+                        DefaultCombinedSitesTable = -1;
+                    else
+                    {
+                        MessageBox.Show("The entry for 'DefaultCombinedSitesTable' in the XML document is not an integer number", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        LoadedXML = false;
+                        return;
+                    }
                 }
                 catch
                 {
@@ -988,6 +1019,11 @@ namespace HLSearchesToolConfig
         public int GetDefaultOverwriteLabelsOption()
         {
             return DefaultOverwriteLabels;
+        }
+
+        public List<string> GetCombinedSitesTableOptions()
+        {
+            return CombinedSitesTableOptions;
         }
 
         public int GetDefaultCombinedSitesTable()

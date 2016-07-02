@@ -118,10 +118,10 @@ namespace DataSearches
                 if (myConfig.GetDefaultOverwriteLabelsOption() != -1)
                     cmbLabels.SelectedIndex = myConfig.GetDefaultOverwriteLabelsOption() - 1;
 
-                int intCombinedCheck = myConfig.GetDefaultCombinedSitesTable();
-                chkCombinedSites.Checked = false;
-                if (intCombinedCheck == 1)
-                    chkCombinedSites.Checked = true;
+                cmbCombinedSites.Items.AddRange(myConfig.GetCombinedSitesTableOptions().ToArray());
+                if (myConfig.GetDefaultCombinedSitesTable() != -1)
+                    cmbCombinedSites.SelectedIndex = myConfig.GetDefaultCombinedSitesTable() - 1;
+
                 chkClearLog.Checked = myConfig.GetDefaultClearLogFile();
 
                 // Hide controls that were not requested
@@ -146,9 +146,16 @@ namespace DataSearches
                     label7.Show();
                 }
                 if (myConfig.GetDefaultCombinedSitesTable() == -1)
-                    chkCombinedSites.Hide();
+                {
+                    cmbCombinedSites.Hide();
+                    label8.Hide();
+                }
                 else
-                    chkCombinedSites.Show();
+                {
+                    cmbCombinedSites.Show();
+                    label8.Show();
+                }
+
                 // Warn the user of closed layers.
                 if (ClosedLayers.Count > 0)
                 {
@@ -212,10 +219,28 @@ namespace DataSearches
                 strOverwriteLabels = "Yes - Increment Counter";
 
             bool blCombinedTable;
-            if (chkCombinedSites.CanSelect)
-                blCombinedTable = chkCombinedSites.Checked; // Create combined table.
+            bool blCombinedTableOverwrite;
+            if (cmbCombinedSites.CanSelect)
+                if (cmbCombinedSites.Text.ToLower().Contains("none"))
+                {
+                    blCombinedTable = false;
+                    blCombinedTableOverwrite = false;
+                }
+                else if (cmbCombinedSites.Text.ToLower().Contains("append"))
+                {
+                    blCombinedTable = true;
+                    blCombinedTableOverwrite = false;
+                }
+                else
+                {
+                    blCombinedTable = true;
+                    blCombinedTableOverwrite = true;
+                }
             else
+            {
                 blCombinedTable = false;
+                blCombinedTableOverwrite = false;
+            }
 
             // Check that the user has entered all information correctly.
             if (strReference == "")
@@ -558,19 +583,22 @@ namespace DataSearches
             if (blCombinedTable)
             {
                 string strCombinedSitesHeader = myConfig.GetCombinedSitesTableColumns();
-                // Start the table.
-                blResult = myArcMapFuncs.WriteEmptyCSV(strCombinedTable, strCombinedSitesHeader);
-                if (!blResult)
+                // Start the table if overwrite has been selected, or if the table doesn't exist and Append has been selected.
+                if (blCombinedTableOverwrite || (!myFileFuncs.FileExists(strCombinedTable) && !blCombinedTableOverwrite))
                 {
-                    MessageBox.Show("Error writing to combined sites table. Process aborted");
-                    myFileFuncs.WriteLine(strLogFile, "Error writing to combined sites table. Process aborted");
-                    this.BringToFront();
-                    this.Cursor = Cursors.Default;
-                    myArcMapFuncs.ToggleDrawing(true);
-                    myArcMapFuncs.ToggleTOC();
-                    return;
+                    blResult = myArcMapFuncs.WriteEmptyCSV(strCombinedTable, strCombinedSitesHeader);
+                    if (!blResult)
+                    {
+                        MessageBox.Show("Error writing to combined sites table. Process aborted");
+                        myFileFuncs.WriteLine(strLogFile, "Error writing to combined sites table. Process aborted");
+                        this.BringToFront();
+                        this.Cursor = Cursors.Default;
+                        myArcMapFuncs.ToggleDrawing(true);
+                        myArcMapFuncs.ToggleTOC();
+                        return;
+                    }
+                    myFileFuncs.WriteLine(strLogFile, "Combined sites table started");
                 }
-                myFileFuncs.WriteLine(strLogFile, "Combined sites table started");
             }
 
             // Now go through the layers.

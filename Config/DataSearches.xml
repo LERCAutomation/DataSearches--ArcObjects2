@@ -134,9 +134,14 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		<value>2</value>
 	</DefaultOverwriteLabels>
 
+	<!-- Options for filling out the Combined Sites table dropdown (do not change) -->
+	<CombinedSitesTableOptions>
+		<value>None;Append to existing table;Overwrite existing table</value>
+	</CombinedSitesTableOptions>
+
 	<!-- Whether a combined sites table should be created by default -->
 	<DefaultCombinedSitesTable>
-		<value>Yes</value> <!-- Yes / No -->
+		<value>1</value> <!-- 1, 2, 3 -->
 	</DefaultCombinedSitesTable>
 
 	<!-- The column names of the combined sites table -->
