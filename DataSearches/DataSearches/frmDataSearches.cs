@@ -336,7 +336,7 @@ namespace DataSearches
             // Remove any illegal characters from the names.
             strSaveFolder = myStringFuncs.StripIllegals(strSaveFolder, strReplaceChar);
             strGISFolder = myStringFuncs.StripIllegals(strGISFolder, strReplaceChar);
-            strLogFileName = myStringFuncs.StripIllegals(strLogFileName, strReplaceChar);
+            strLogFileName = myStringFuncs.StripIllegals(strLogFileName, strReplaceChar, true);
 
             // Trim any trailing spaces since directory functions don't deal with them and it causes a crash.
             strSaveFolder = strSaveFolder.Trim();
@@ -636,10 +636,10 @@ namespace DataSearches
 
 
                 strStatsColumns = myStringFuncs.AlignStatsColumns(strColumns, strStatsColumns, strGroupColumns);
-                if (blIncludeDistance && !strColumns.Contains("Distance") && !strGroupColumns.Contains("Distance"))
-                    strColumns = strColumns + ",Distance"; // Distance comes after grouping and hence should not be included in the stats columns.
-                if (blIncludeRadius && !strColumns.Contains("Radius") && !strGroupColumns.Contains("Radius"))
-                    strColumns = strColumns + ",Radius"; // as for Distance column, it comes after the grouping.
+                //if (blIncludeDistance && !strColumns.Contains("Distance") && !strGroupColumns.Contains("Distance"))
+                //    strColumns = strColumns + ",Distance"; // Distance comes after grouping and hence should not be included in the stats columns.
+                //if (blIncludeRadius && !strColumns.Contains("Radius") && !strGroupColumns.Contains("Radius"))
+                //    strColumns = strColumns + ",Radius"; // as for Distance column, it comes after the grouping.
                 strCombinedSitesStatsColumns = myStringFuncs.AlignStatsColumns(strCombinedSitesColumns, strCombinedSitesStatsColumns, strCombinedSitesGroupColumns);
 
                 // Create relevant output name. Note this is done whether or not the layer is eventually kept.

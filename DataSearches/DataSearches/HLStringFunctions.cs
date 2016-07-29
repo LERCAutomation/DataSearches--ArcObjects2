@@ -75,14 +75,28 @@ namespace HLStringFunctions
             // constructor takes no arguments.
         }
 
-        public string StripIllegals(string anInputString, string aReplaceString)
+        public string StripIllegals(string anInputString, string aReplaceString, bool isFileName=false)
         {
             // Function to remove all potentially special characters from a string and return the result.
+
+            // If it is a file name, check if there is a '.' at fourth place before last.
+            bool blAddFileDot = false;
+            if (isFileName)
+            {
+                char chTest = anInputString[anInputString.Length - 4];
+                if (chTest == '.') blAddFileDot = true;
+            }
+
             string strOutputString = anInputString;
             List<string> theIllegals = new List<string>() { @"\", "%", "$", ":", "*", "/", "?", "<", ">", "|", "~", "£" , "."};
             foreach (string aSearchString in theIllegals)
             {
                 strOutputString = strOutputString.Replace(aSearchString, aReplaceString);
+            }
+            if (blAddFileDot)
+            {
+                strOutputString  = strOutputString.Remove(strOutputString.Length - 4, 1);
+                strOutputString = strOutputString.Insert(strOutputString.Length - 3, ".");
             }
             return strOutputString;
         }
