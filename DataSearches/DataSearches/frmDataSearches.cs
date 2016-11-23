@@ -87,7 +87,10 @@ namespace DataSearches
                 // We've found the XML and loaded it successfully. Fill in the form.
                 List<string> AllLayers = myConfig.GetMapLayers(); // All possible layers by name
                 List<string> AllDisplayLayers = myConfig.GetMapNames(); // All possible layers by display name
+                List<bool> blLoadWarnings = myConfig.GetMapLoadWarnings(); // A list telling us whether to warn users if layer not present
+                List<bool> blPreselectLayers = myConfig.GetMapPreselectLayers(); // A list telling us which layers to preselect in the form
                 List<string> OpenLayers = new List<string>(); // The open layers by name
+                List<bool> PreselectLayers = new List<bool>(); // The preselect options of the open layers
                 List<string> ClosedLayers = new List<string>(); // The closed layers by name
 
                 int i = 0;
@@ -96,16 +99,27 @@ namespace DataSearches
                     if (myArcMapFuncs.LayerExists(aLayer))
                     {
                         OpenLayers.Add(AllLayers[i]);
+                        PreselectLayers.Add(blPreselectLayers[i]);
                     }
                     else
                     {
-                        ClosedLayers.Add(aLayer);
+                        if (blLoadWarnings[i] == true) // Only add if the user wants to be warned of this one.
+                            ClosedLayers.Add(aLayer);
                     }
                     i++;
                 }
 
                 // Add the available layers to the form.
                 lstLayers.Items.AddRange(OpenLayers.ToArray());
+
+                // Highlight the preselected ones
+                i = 0;
+                foreach (string aLayer in OpenLayers)
+                {
+                    lstLayers.SetSelected(i, PreselectLayers[i]);
+                    i++;
+                }
+
 
                 // Fill in the rest of the form.
                 txtBufferSize.Text = myConfig.GetDefaultBufferSize().ToString();
@@ -568,7 +582,8 @@ namespace DataSearches
             List<string> strDisplayLayerFiles = myConfig.GetMapLayerFiles();
             List<bool> blOverwriteLabelDefaults = myConfig.GetMapOverwriteLabels();
             List<string> strLabelColumns = myConfig.GetMapLabelColumns();
-            List<string> strLabelClauses = myConfig.GetMapLabelClauses(); // this needs to be different for ArcMap
+            List<string> strLabelClauses = myConfig.GetMapLabelClauses();
+            List<bool> blLabelResets = myConfig.GetMapLabelResets();
             List<string> strCombinedSitesColumnList = myConfig.GetMapCombinedSitesColumns();
             List<string> strCombinedSitesGroupColumnList = myConfig.GetMapCombinedSitesGroupByColumns();
             List<string> strCombinedSitesStatsColumnList = myConfig.GetMapCombinedSitesStatsColumns();
@@ -628,6 +643,7 @@ namespace DataSearches
                 bool blOverwriteLabelDefault = blOverwriteLabelDefaults[intIndex];
                 string strLabelColumn = strLabelColumns[intIndex];
                 string strLabelClause = strLabelClauses[intIndex];
+                bool blLabelReset = blLabelResets[intIndex];
                 string strCombinedSitesColumns = strCombinedSitesColumnList[intIndex];
                 string strCombinedSitesGroupColumns = strCombinedSitesGroupColumnList[intIndex];
                 string strCombinedSitesStatsColumns = strCombinedSitesStatsColumnList[intIndex];
@@ -699,8 +715,11 @@ namespace DataSearches
                         // If not, create it and label.
                         myArcMapFuncs.AddField(strTempMasterOutput, strLabelColumn, esriFieldType.esriFieldTypeInteger, 10);
                         // Add relevant labels. 
-                        if (strOverwriteLabels.ToLower().Contains("reset"))
+                        if (strOverwriteLabels.ToLower().Contains("reset") || blLabelReset == true) // #### ANDY CAN YOU AGREE THE LOGIC PLEASE ####
+                        {
+                            myFileFuncs.WriteLine(strLogFile, "Resetting label counter");
                             intStartLabel = 1;
+                        }
                         else
                             intStartLabel = intMaxLabel;
 
@@ -711,8 +730,11 @@ namespace DataSearches
                     else if (strOverwriteLabels.ToLower() != "no" && blOverwriteLabelDefault && strAddSelected.ToLower().Contains("with") && strLabelColumn != "")
                     // We want to overwrite the labels and are allowed to.
                     {
-                        if (strOverwriteLabels.ToLower().Contains("reset"))
+                        if (strOverwriteLabels.ToLower().Contains("reset") || blLabelReset == true)
+                        {
+                            myFileFuncs.WriteLine(strLogFile, "Resetting label counter");
                             intStartLabel = 1;
+                        }
                         else
                             intStartLabel = intMaxLabel;
 

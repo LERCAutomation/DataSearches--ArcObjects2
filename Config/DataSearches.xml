@@ -201,6 +201,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer> <!-- A Yes/No attribute to define whether a GIS extract should be saved -->
 				<value>Yes</value>
 			</KeepLayer>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>Yes</value>
+			</PreselectLayer>
 			<LayerFileName> <!-- The name of a layer file (*.lyr) that should be used to symbolise the extract -->
 				<value></value>
 			</LayerFileName>
@@ -216,6 +222,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value></value>
 			</LabelClause>
+			<LabelReset>
+				<value></value>
+			</LabelReset>
 			<CombinedSitesColumns> <!-- The columns to be used in the combined sites table. -->
 				<!-- Leave blank if the layer should not be included in the combined sites table -->
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
@@ -234,7 +243,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		</Points_-_ExampleSpeciesPoints> 
 		<SACs>
 			<LayerName>
-				<value>SACs</value>
+				<value>Sussex_SACs</value>
 			</LayerName>
 			<Prefix>
 				<value>SACs</value>
@@ -272,6 +281,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
 			<LayerFileName>
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
@@ -287,6 +302,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value>Font:Arial$Size:10$Red:0$Green:0$Blue:0$Type:OnePerShape</value>
 			</LabelClause>
+			<LabelReset>
+				<value></value>
+			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value>"SAC", SAC_NAME, SUM_SAC_AR, Map_Label</value>
@@ -303,7 +321,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		</SACs>
 		<SPAs>
 			<LayerName>
-				<value>SPAs</value>
+				<value>Sussex_SPAs</value>
 			</LayerName>
 			<Prefix>
 				<value>SPAs</value>
@@ -341,6 +359,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
 			<LayerFileName>
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
@@ -356,6 +380,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value></value>
 			</LabelClause>
+			<LabelReset>
+				<value></value>
+			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value>"SPA", SPA_NAME, FIRST_SPA_, Map_Label</value>
@@ -372,7 +399,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		</SPAs>
 		<Ramsars>
 			<LayerName>
-				<value>Ramsars</value>
+				<value>Sussex_Ramsars</value>
 			</LayerName>
 			<Prefix>
 				<value>Ramsars</value>
@@ -410,6 +437,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
 			<LayerFileName>
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
@@ -425,6 +458,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value></value>
 			</LabelClause>
+			<LabelReset>
+				<value></value>
+			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value>"Ramsar", NAME, FIRST_AREA, Map_Label</value>
@@ -441,7 +477,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		</Ramsars>
 		<SSSIs>
 			<LayerName>
-				<value>SSSIs</value>
+				<value>Sussex SSSIs</value>
 			</LayerName>
 			<Prefix>
 				<value>SSSIs</value>
@@ -479,6 +515,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>Yes</value>
+			</PreselectLayer>
 			<LayerFileName>
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
@@ -494,6 +536,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value></value>
 			</LabelClause>
+			<LabelReset>
+				<value>Yes</value>
+			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<!-- "SSSI", SSSI_NAME, SSSI_AREA, Map_Label -->
@@ -511,7 +556,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		</SSSIs>
 		<NNRs>
 			<LayerName>
-				<value>NNRs</value>
+				<value>Sussex_NNRs</value>
 			</LayerName>
 			<Prefix>
 				<value>NNRs</value>
@@ -549,6 +594,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
 			<LayerFileName>
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
@@ -564,6 +615,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value></value>
 			</LabelClause>
+			<LabelReset>
+				<value></value>
+			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value>"NNR", NNR_NAME, NNR_AREA, NNR_NAME</value>
@@ -580,7 +634,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		</NNRs>
 		<LNRs>
 			<LayerName>
-				<value>LNRs</value>
+				<value>Sussex_LNR</value>
 			</LayerName>
 			<Prefix>
 				<value>LNRs</value>
@@ -618,6 +672,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
 			<LayerFileName>
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
@@ -633,6 +693,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value>Font:Arial$Size:10$Red:0$Green:0$Blue:0$Type:OnePerName</value>
 			</LabelClause>
+			<LabelReset>
+				<value></value>
+			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value>"LNR", LNR_NAME, LNR_AREA, LNR_NAME</value>
@@ -649,7 +712,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		</LNRs>
 		<LWS>
 			<LayerName>
-				<value>LWSs</value>
+				<value>LWS_Sussex</value>
 			</LayerName>
 			<Prefix>
 				<value>LWS</value>
@@ -687,6 +750,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
 			<LayerFileName>
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
@@ -702,6 +771,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value>Font:Arial$Size:10$Red:255$Green:0$Blue:0$Type:OnePerShape</value>
 			</LabelClause>
+			<LabelReset>
+				<value></value>
+			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value>"LWS", siteid, area_ha, Map_Label</value>
@@ -718,7 +790,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		</LWS>
 		<AONBs>
 			<LayerName>
-				<value>AONBs</value>
+				<value>Sussex_AONBs</value>
 			</LayerName>
 			<Prefix>
 				<value>AONBs</value>
@@ -756,6 +828,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
 			<LayerFileName>
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
@@ -771,6 +849,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value></value>
 			</LabelClause>
+			<LabelReset>
+				<value></value>
+			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value>"AONBs", NAME, STAT_AREA, Map_Label</value>
@@ -787,7 +868,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		</AONBs>
 		<CountryParks> <!-- This is an experiment with a layer that will not be added or have its labels ovewritten -->
 			<LayerName>
-				<value>CountryParks</value>
+				<value>Sussex_Country_Parks</value>
 			</LayerName>
 			<Prefix>
 				<value>CountryPks</value>
@@ -825,6 +906,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>No</value>
 			</KeepLayer>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
 			<LayerFileName>
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
@@ -840,6 +927,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value></value>
 			</LabelClause>
+			<LabelReset>
+				<value></value>
+			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value></value>
@@ -894,6 +984,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>No</value>
 			</KeepLayer>
+			<LoadWarning>
+				<value>No</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
 			<LayerFileName>
 				<value></value>
 			</LayerFileName>
@@ -909,6 +1005,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value></value>
 			</LabelClause>
+			<LabelReset>
+				<value></value>
+			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value></value>
@@ -963,6 +1062,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>No</value>
 			</KeepLayer>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
 			<LayerFileName>
 				<value></value>
 			</LayerFileName>
@@ -978,6 +1083,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value></value>
 			</LabelClause>
+			<LabelReset>
+				<value></value>
+			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value></value>

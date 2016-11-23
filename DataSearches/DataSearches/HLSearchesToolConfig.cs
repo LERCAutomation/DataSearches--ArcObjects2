@@ -60,10 +60,13 @@ namespace HLSearchesToolConfig
         List<string> MapKeyColumns = new List<string>();
         List<string> MapFormats = new List<string>();
         List<bool> MapKeeps = new List<bool>();
+        List<bool> MapLoadWarnings = new List<bool>();
+        List<bool> MapPreselectLayers = new List<bool>();
         List<string> LayerFiles = new List<string>();
         List<bool> MapOverwriteLabels = new List<bool>();
         List<string> MapLabelColumns = new List<string>();
         List<string> MapLabelClauses = new List<string>();
+        List<bool> MapLabelResets = new List<bool>();
         List<string> MapCombinedSiteColumns = new List<string>();
         //List<string> MapCombinedSiteCriteria = new List<string>();
         List<string> MapCombinedSiteGroupColumns = new List<string>();
@@ -753,6 +756,38 @@ namespace HLSearchesToolConfig
 
                     try
                     {
+                        string strLoadWarning = aNode["LoadWarning"].InnerText;
+                        bool blLoadWarning = false;
+                        if (strLoadWarning.ToLower() == "yes")
+                            blLoadWarning = true;
+
+                        MapLoadWarnings.Add(blLoadWarning);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Could not locate the item 'LoadWarning' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        LoadedXML = false;
+                        return;
+                    }
+
+                    try
+                    {
+                        string strPreselectLayer = aNode["PreselectLayer"].InnerText;
+                        bool blPreselectLayer = false;
+                        if (strPreselectLayer.ToLower() == "yes")
+                            blPreselectLayer = true;
+
+                        MapPreselectLayers.Add(blPreselectLayer);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Could not locate the item 'PreselectLayer' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        LoadedXML = false;
+                        return;
+                    }
+
+                    try
+                    {
                         LayerFiles.Add(aNode["LayerFileName"].InnerText);
                     }
                     catch
@@ -795,6 +830,21 @@ namespace HLSearchesToolConfig
                     catch
                     {
                         MessageBox.Show("Could not locate the item 'LabelClause' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        LoadedXML = false;
+                        return;
+                    }
+
+                    try
+                    {
+                        string strMapLabelReset = aNode["LabelReset"].InnerText;
+                        bool blLabelReset = false;
+                        if (strMapLabelReset.ToLower() == "yes")
+                            blLabelReset = true;
+                        MapLabelResets.Add(blLabelReset);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Could not locate the item 'LabelReset' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         LoadedXML = false;
                         return;
                     }
@@ -1124,6 +1174,16 @@ namespace HLSearchesToolConfig
             return MapKeeps;
         }
 
+        public List<bool> GetMapLoadWarnings()
+        {
+            return MapLoadWarnings;
+        }
+
+        public List<bool> GetMapPreselectLayers()
+        {
+            return MapPreselectLayers;
+        }
+
         public List<string> GetMapLayerFiles()
         {
             return LayerFiles;
@@ -1142,6 +1202,11 @@ namespace HLSearchesToolConfig
         public List<string> GetMapLabelClauses()
         {
             return MapLabelClauses;
+        }
+
+        public List<bool> GetMapLabelResets()
+        {
+            return MapLabelResets;
         }
 
         public List<string> GetMapCombinedSitesColumns()
