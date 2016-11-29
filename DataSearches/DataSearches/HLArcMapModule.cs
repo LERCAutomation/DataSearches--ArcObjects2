@@ -1374,14 +1374,16 @@ namespace HLArcMapModule
             }
         }
 
-        public int CopyToCSV(string InTable, string OutTable, string aWhereClause, string Columns, string OrderByColumns, bool Spatial, bool Append, bool ExcludeHeader = false, bool Messages = false)
+        public int CopyToCSV(string InTable, string OutTable, string Columns, string OrderByColumns, bool Spatial, bool Append, bool ExcludeHeader = false, bool Messages = false)
         {
             // This sub copies the input table to CSV.
+            // Changed 29/11/2016 to no longer include the where clause - this has already been taken care of when 
+            // selecting features and refining this selection.
             string aFilePath = myFileFuncs.GetDirectoryName(InTable);
             string aTabName = myFileFuncs.GetFileName(InTable);
 
-            IQueryFilter queryFilter = new QueryFilterClass();
-            queryFilter.WhereClause = aWhereClause; // This works.
+            //IQueryFilter queryFilter = new QueryFilterClass();
+            //queryFilter.WhereClause = aWhereClause; // This works.
             ITable pTable = GetTable(myFileFuncs.GetDirectoryName(InTable), myFileFuncs.GetFileName(InTable));
 
             ICursor myCurs = null;
@@ -1390,13 +1392,13 @@ namespace HLArcMapModule
             {
                 
                 IFeatureClass myFC = GetFeatureClass(aFilePath, aTabName, true); 
-                myCurs = (ICursor)myFC.Search(queryFilter, false);
+                myCurs = (ICursor)myFC.Search(null, false);
                 fldsFields = myFC.Fields;
             }
             else
             {
                 ITable myTable = GetTable(aFilePath, aTabName, true);
-                myCurs = myTable.Search(queryFilter, false);
+                myCurs = myTable.Search(null, false);
                 fldsFields = myTable.Fields;
             }
 

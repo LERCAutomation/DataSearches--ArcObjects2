@@ -756,7 +756,8 @@ namespace DataSearches
                     if (strFormat.ToLower() == "csv") blIncHeaders = true;
 
                     myFileFuncs.WriteLine(strLogFile, "Writing summary information for " + strDisplayName + " to " + strTableOutputName);
-                    int intLineCount = myArcMapFuncs.CopyToCSV(strTempShapeOutput, strTableOutputName, strCriteria, strColumns, strOrderColumns, true, false, !blIncHeaders);
+                    // 29/11/2016 note no longer includes strCriteria in the export as taken care of above. 
+                    int intLineCount = myArcMapFuncs.CopyToCSV(strTempShapeOutput, strTableOutputName, strColumns, strOrderColumns, true, false, !blIncHeaders);
                     myFileFuncs.WriteLine(strLogFile, intLineCount.ToString() + " line(s) written for " + strDisplayName);
 
                     // Copy to permanent layer as appropriate
@@ -809,7 +810,7 @@ namespace DataSearches
                         // This needs changing to take account of the 'tag' field. Will need a new function that takes account
                         // of the combined sites header columns.
                         myFileFuncs.WriteLine(strLogFile, "Writing summary output to combined sites table " + strCombinedTable);
-                        intLineCount = myArcMapFuncs.CopyToCSV(strTempShapeOutput, strCombinedTable, "", strCombinedSitesColumns, strCombinedSitesOrderColumns, true, true);
+                        intLineCount = myArcMapFuncs.CopyToCSV(strTempShapeOutput, strCombinedTable, strCombinedSitesColumns, strCombinedSitesOrderColumns, true, true);
                         myFileFuncs.WriteLine(strLogFile, "Summary output written. " + intLineCount.ToString() + " row(s) added for " + strDisplayName);
                         myArcMapFuncs.RemoveLayer(strTempOutput);
                         myArcMapFuncs.DeleteFeatureclass(strTempShapeOutput);
