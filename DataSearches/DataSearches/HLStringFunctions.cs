@@ -194,6 +194,39 @@ namespace HLStringFunctions
 
             return StatsColumns;
         }
+
+        public List<string> ExtractGroups(List<string> LayerList)
+        {
+            // This function looks at each layer in LayerList and extracts unique group names (in front of any hyphen in the name) 
+            List<string> liGroups = new List<string>();
+            foreach (string strLayerName in LayerList)
+            {
+                int intHyphenIndex = strLayerName.IndexOf('-');
+                if (intHyphenIndex != -1) // It has a group name
+                {
+                    string strGroupName = strLayerName.Substring(0, intHyphenIndex); // Check if we already have this one
+                    if (liGroups.IndexOf(strGroupName) == -1)
+                    {
+                        liGroups.Add(strGroupName); // If not, add it.
+                    }
+                }
+            }
+            return liGroups; // Return the list of group names.
+
+        }
+
+        public string GetGroupName(string LayerName)
+        {
+            int intHyphenIndex = LayerName.IndexOf('-');
+            if (intHyphenIndex != -1) // It has a group name
+            {
+                string strGroupName = LayerName.Substring(0, intHyphenIndex);
+                return strGroupName; // Return the group name
+            }
+            else
+                return ""; // No group name.
+        }
+
     }
 
 

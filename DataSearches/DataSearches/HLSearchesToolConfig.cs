@@ -39,6 +39,7 @@ namespace HLSearchesToolConfig
         int DefaultAddSelectedLayers;
         List<string> OverwriteLabelOptions = new List<string>();
         int DefaultOverwriteLabels;
+        bool DefaultGroupLabelReset;
         List<string> CombinedSitesTableOptions = new List<string>();
         int DefaultCombinedSitesTable; // -1, 0, 1, 2 (not filled in, none, append, overwrite)
         //string CombinedSitesTableName;
@@ -66,7 +67,6 @@ namespace HLSearchesToolConfig
         List<bool> MapOverwriteLabels = new List<bool>();
         List<string> MapLabelColumns = new List<string>();
         List<string> MapLabelClauses = new List<string>();
-        List<bool> MapLabelResets = new List<bool>();
         List<string> MapCombinedSiteColumns = new List<string>();
         //List<string> MapCombinedSiteCriteria = new List<string>();
         List<string> MapCombinedSiteGroupColumns = new List<string>();
@@ -490,6 +490,21 @@ namespace HLSearchesToolConfig
 
                 try
                 {
+                    DefaultGroupLabelReset = false;
+                    strRawText = xmlDataSearch["DefaultResetGroupLabels"].InnerText;
+                    if (strRawText.ToLower() == "yes")
+                        DefaultGroupLabelReset = true;
+                }
+                catch
+                {
+                    MessageBox.Show("Could not locate the item 'DefaultResetGroupLabels' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoadedXML = false;
+                    return;
+                }
+
+
+                try
+                {
                     strRawText = xmlDataSearch["CombinedSitesTableOptions"].InnerText;
                 }
                 catch
@@ -836,21 +851,6 @@ namespace HLSearchesToolConfig
 
                     try
                     {
-                        string strMapLabelReset = aNode["LabelReset"].InnerText;
-                        bool blLabelReset = false;
-                        if (strMapLabelReset.ToLower() == "yes")
-                            blLabelReset = true;
-                        MapLabelResets.Add(blLabelReset);
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Could not locate the item 'LabelReset' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        LoadedXML = false;
-                        return;
-                    }
-
-                    try
-                    {
                         MapCombinedSiteColumns.Add(aNode["CombinedSitesColumns"].InnerText);
                     }
                     catch
@@ -1071,6 +1071,11 @@ namespace HLSearchesToolConfig
             return DefaultOverwriteLabels;
         }
 
+        public bool GetDefaultGroupLabelReset()
+        {
+            return DefaultGroupLabelReset;
+        }
+
         public List<string> GetCombinedSitesTableOptions()
         {
             return CombinedSitesTableOptions;
@@ -1202,11 +1207,6 @@ namespace HLSearchesToolConfig
         public List<string> GetMapLabelClauses()
         {
             return MapLabelClauses;
-        }
-
-        public List<bool> GetMapLabelResets()
-        {
-            return MapLabelResets;
         }
 
         public List<string> GetMapCombinedSitesColumns()

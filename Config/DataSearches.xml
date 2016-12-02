@@ -134,6 +134,11 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		<value>2</value>
 	</DefaultOverwriteLabels>
 
+	<!-- Whether the check box for Reset Group Labels should be checked by default -->
+	<DefaultResetGroupLabels>
+		<value>No</value>
+	</DefaultResetGroupLabels>
+
 	<!-- Options for filling out the Combined Sites table dropdown (do not change) -->
 	<CombinedSitesTableOptions>
 		<value>None;Append to existing table;Overwrite existing table</value>
@@ -222,9 +227,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value></value>
 			</LabelClause>
-			<LabelReset>
-				<value></value>
-			</LabelReset>
 			<CombinedSitesColumns> <!-- The columns to be used in the combined sites table. -->
 				<!-- Leave blank if the layer should not be included in the combined sites table -->
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
@@ -241,7 +243,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
 		</Points_-_ExampleSpeciesPoints> 
-		<SACs>
+		<Polys_-_SACs>
 			<LayerName>
 				<value>Sussex_SACs</value>
 			</LayerName>
@@ -302,9 +304,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value>Font:Arial$Size:10$Red:0$Green:0$Blue:0$Type:OnePerShape</value>
 			</LabelClause>
-			<LabelReset>
-				<value></value>
-			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value>"SAC", SAC_NAME, SUM_SAC_AR, Map_Label</value>
@@ -318,8 +317,8 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</SACs>
-		<SPAs>
+		</Polys_-_SACs>
+		<Polys_-_SPAs>
 			<LayerName>
 				<value>Sussex_SPAs</value>
 			</LayerName>
@@ -380,9 +379,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value></value>
 			</LabelClause>
-			<LabelReset>
-				<value></value>
-			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value>"SPA", SPA_NAME, FIRST_SPA_, Map_Label</value>
@@ -396,8 +392,8 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</SPAs>
-		<Ramsars>
+		</Polys_-_SPAs>
+		<Polys_-_Ramsars>
 			<LayerName>
 				<value>Sussex_Ramsars</value>
 			</LayerName>
@@ -458,9 +454,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value></value>
 			</LabelClause>
-			<LabelReset>
-				<value></value>
-			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value>"Ramsar", NAME, FIRST_AREA, Map_Label</value>
@@ -474,8 +467,8 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</Ramsars>
-		<SSSIs>
+		</Polys_-_Ramsars>
+		<Polys1_-_SSSIs>
 			<LayerName>
 				<value>Sussex SSSIs</value>
 			</LayerName>
@@ -536,9 +529,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value></value>
 			</LabelClause>
-			<LabelReset>
-				<value>Yes</value>
-			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<!-- "SSSI", SSSI_NAME, SSSI_AREA, Map_Label -->
@@ -553,8 +543,8 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</SSSIs>
-		<NNRs>
+		</Polys1_-_SSSIs>
+		<Polys1_-_NNRs>
 			<LayerName>
 				<value>Sussex_NNRs</value>
 			</LayerName>
@@ -615,9 +605,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value></value>
 			</LabelClause>
-			<LabelReset>
-				<value></value>
-			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value>"NNR", NNR_NAME, NNR_AREA, NNR_NAME</value>
@@ -631,8 +618,8 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</NNRs>
-		<LNRs>
+		</Polys1_-_NNRs>
+		<Polys1_-_LNRs>
 			<LayerName>
 				<value>Sussex_LNR</value>
 			</LayerName>
@@ -693,9 +680,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value>Font:Arial$Size:10$Red:0$Green:0$Blue:0$Type:OnePerName</value>
 			</LabelClause>
-			<LabelReset>
-				<value></value>
-			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value>"LNR", LNR_NAME, LNR_AREA, LNR_NAME</value>
@@ -709,8 +693,8 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</LNRs>
-		<LWS>
+		</Polys1_-_LNRs>
+		<Polys2_-_LWS>
 			<LayerName>
 				<value>LWS_Sussex</value>
 			</LayerName>
@@ -771,9 +755,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value>Font:Arial$Size:10$Red:255$Green:0$Blue:0$Type:OnePerShape</value>
 			</LabelClause>
-			<LabelReset>
-				<value></value>
-			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value>"LWS", siteid, area_ha, Map_Label</value>
@@ -787,8 +768,8 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</LWS>
-		<AONBs>
+		</Polys2_-_LWS>
+		<Polys2_-_AONBs>
 			<LayerName>
 				<value>Sussex_AONBs</value>
 			</LayerName>
@@ -849,9 +830,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value></value>
 			</LabelClause>
-			<LabelReset>
-				<value></value>
-			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value>"AONBs", NAME, STAT_AREA, Map_Label</value>
@@ -865,8 +843,8 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</AONBs>
-		<CountryParks> <!-- This is an experiment with a layer that will not be added or have its labels ovewritten -->
+		</Polys2_-_AONBs>
+		<Polys_-_CountryParks> <!-- This is an experiment with a layer that will not be added or have its labels ovewritten -->
 			<LayerName>
 				<value>Sussex_Country_Parks</value>
 			</LayerName>
@@ -927,9 +905,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value></value>
 			</LabelClause>
-			<LabelReset>
-				<value></value>
-			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value></value>
@@ -943,7 +918,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</CountryParks>
+		</Polys_-_CountryParks>
 		<SppProt>
 			<LayerName>
 				<value>Protected Species</value>
@@ -1005,9 +980,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value></value>
 			</LabelClause>
-			<LabelReset>
-				<value></value>
-			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value></value>
@@ -1083,9 +1055,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- If no clause is filled in the above settings are applied -->
 				<value></value>
 			</LabelClause>
-			<LabelReset>
-				<value></value>
-			</LabelReset>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<value></value>

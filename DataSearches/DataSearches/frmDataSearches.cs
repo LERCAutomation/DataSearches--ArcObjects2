@@ -132,6 +132,16 @@ namespace DataSearches
                 if (myConfig.GetDefaultOverwriteLabelsOption() != -1)
                     cmbLabels.SelectedIndex = myConfig.GetDefaultOverwriteLabelsOption() - 1;
 
+                if (cmbLabels.Text.Contains("Increment"))                {
+                    chkResetGroups.Enabled = true;
+                    chkResetGroups.Checked = myConfig.GetDefaultGroupLabelReset();
+                }
+                else
+                {
+                    chkResetGroups.Checked = myConfig.GetDefaultGroupLabelReset();
+                    chkResetGroups.Enabled = false;
+                }
+
                 cmbCombinedSites.Items.AddRange(myConfig.GetCombinedSitesTableOptions().ToArray());
                 if (myConfig.GetDefaultCombinedSitesTable() != -1)
                     cmbCombinedSites.SelectedIndex = myConfig.GetDefaultCombinedSitesTable() - 1;
@@ -153,11 +163,13 @@ namespace DataSearches
                 {
                     cmbLabels.Hide();
                     label7.Hide();
+                    chkResetGroups.Hide();
                 }
                 else 
                 {
                     cmbLabels.Show();
                     label7.Show();
+                    chkResetGroups.Show();
                 }
                 if (myConfig.GetDefaultCombinedSitesTable() == -1)
                 {
@@ -212,6 +224,7 @@ namespace DataSearches
                 SelectedLayers.Add(strSelectedItem);
             }
 
+
             bool blClearLogFile = chkClearLog.Checked; // Clear log file
             string strBufferSize = txtBufferSize.Text; // Buffer size 
             int intBufferUnitIndex = cmbUnits.SelectedIndex; // Index of the selected item in Buffer Units combobox
@@ -231,6 +244,8 @@ namespace DataSearches
                 strOverwriteLabels = cmbLabels.Text; // Overwrite labels
             else
                 strOverwriteLabels = "No";
+
+            bool blResetGroups = chkResetGroups.Checked; 
 
             bool blCombinedTable;
             bool blCombinedTableOverwrite;
@@ -583,7 +598,6 @@ namespace DataSearches
             List<bool> blOverwriteLabelDefaults = myConfig.GetMapOverwriteLabels();
             List<string> strLabelColumns = myConfig.GetMapLabelColumns();
             List<string> strLabelClauses = myConfig.GetMapLabelClauses();
-            List<bool> blLabelResets = myConfig.GetMapLabelResets();
             List<string> strCombinedSitesColumnList = myConfig.GetMapCombinedSitesColumns();
             List<string> strCombinedSitesGroupColumnList = myConfig.GetMapCombinedSitesGroupByColumns();
             List<string> strCombinedSitesStatsColumnList = myConfig.GetMapCombinedSitesStatsColumns();
@@ -617,7 +631,20 @@ namespace DataSearches
             }
 
             // Now go through the layers.
-            int intStartLabel = 1; // Keep track of the label numbers.
+
+            // Get any groups and initialise required layers.
+            List<string> liGroupNames = new List<string>();
+            List<int> liGroupLabels = new List<int>();
+            if (blResetGroups)
+            {
+                liGroupNames = myStringFuncs.ExtractGroups(SelectedLayers);
+                foreach (string strGroupName in liGroupNames)
+                {
+                    liGroupLabels.Add(1); // each group has its own label counter.
+                }
+            }
+
+            int intStartLabel = 1; // Keep track of the label numbers if there are no groups.
             int intMaxLabel = 1;
             foreach (string aLayer in SelectedLayers)
             {
@@ -643,7 +670,6 @@ namespace DataSearches
                 bool blOverwriteLabelDefault = blOverwriteLabelDefaults[intIndex];
                 string strLabelColumn = strLabelColumns[intIndex];
                 string strLabelClause = strLabelClauses[intIndex];
-                bool blLabelReset = blLabelResets[intIndex];
                 string strCombinedSitesColumns = strCombinedSitesColumnList[intIndex];
                 string strCombinedSitesGroupColumns = strCombinedSitesGroupColumnList[intIndex];
                 string strCombinedSitesStatsColumns = strCombinedSitesStatsColumnList[intIndex];
@@ -710,37 +736,49 @@ namespace DataSearches
                     
 
                     // Check if the map label field exists. Create if necessary. 
+                    string strGroupName = myStringFuncs.GetGroupName(aLayer);
+                    bool blNewLabelField = false;
                     if (!myArcMapFuncs.FieldExists(strTempMasterOutput, strLabelColumn) && strAddSelected.ToLower().Contains("with") && strLabelColumn != "")
                     {
                         // If not, create it and label.
                         myArcMapFuncs.AddField(strTempMasterOutput, strLabelColumn, esriFieldType.esriFieldTypeInteger, 10);
-                        // Add relevant labels. 
-                        if (strOverwriteLabels.ToLower().Contains("reset") || blLabelReset == true) // #### ANDY CAN YOU AGREE THE LOGIC PLEASE ####
-                        {
-                            myFileFuncs.WriteLine(strLogFile, "Resetting label counter");
-                            intStartLabel = 1;
-                        }
-                        else
-                            intStartLabel = intMaxLabel;
-
-                        intMaxLabel = myArcMapFuncs.AddIncrementalNumbers(strTempMasterOutput, strLabelColumn, strKeyColumn, intStartLabel);
-                        intMaxLabel++; // the new start label for incremental labeling
-                        myFileFuncs.WriteLine(strLogFile, "Map labels added");
+                        blNewLabelField = true;
                     }
-                    else if (strOverwriteLabels.ToLower() != "no" && blOverwriteLabelDefault && strAddSelected.ToLower().Contains("with") && strLabelColumn != "")
-                    // We want to overwrite the labels and are allowed to.
+                    
+                    // Add labels as required
+                    if (blNewLabelField || (strOverwriteLabels.ToLower() != "no" && blOverwriteLabelDefault && strAddSelected.ToLower().Contains("with") && strLabelColumn != ""))
+                    // Either we  have a new label field, or we want to overwrite the labels and are allowed to.
                     {
-                        if (strOverwriteLabels.ToLower().Contains("reset") || blLabelReset == true)
+                        // Add relevant labels. 
+                        if (strOverwriteLabels.ToLower().Contains("reset")) // Always reset to 1.
                         {
                             myFileFuncs.WriteLine(strLogFile, "Resetting label counter");
                             intStartLabel = 1;
+                            myArcMapFuncs.AddIncrementalNumbers(strTempMasterOutput, strLabelColumn, strKeyColumn, intStartLabel);
+                            myFileFuncs.WriteLine(strLogFile, "Map labels added");
+                        }
+
+                        else if (blResetGroups && strGroupName != "")
+                        {
+                            // Increment within but reset between groups. Note all group labels are already initialised as 1.
+                            // Only triggered if a group name has been found.
+
+                            int intGroupIndex = liGroupNames.IndexOf(strGroupName);
+                            int intGroupLabel = liGroupLabels[intGroupIndex];
+                            intGroupLabel = myArcMapFuncs.AddIncrementalNumbers(strTempMasterOutput, strLabelColumn, strKeyColumn, intGroupLabel);
+                            intGroupLabel++;
+                            liGroupLabels[intGroupIndex] = intGroupLabel; // Store the new max label.
+                            myFileFuncs.WriteLine(strLogFile, "Map labels added");
                         }
                         else
+                        {
+                            // There is no group or groups are ignored. Use the existing max label number.
                             intStartLabel = intMaxLabel;
 
-                        intMaxLabel = myArcMapFuncs.AddIncrementalNumbers(strTempMasterOutput, strLabelColumn, strKeyColumn, intStartLabel);
-                        intMaxLabel++; // the new start label for incremental labeling
-                        myFileFuncs.WriteLine(strLogFile, "Map labels updated for " + strDisplayName);
+                            intMaxLabel = myArcMapFuncs.AddIncrementalNumbers(strTempMasterOutput, strLabelColumn, strKeyColumn, intStartLabel);
+                            intMaxLabel++; // the new start label for incremental labeling
+                            myFileFuncs.WriteLine(strLogFile, "Map labels added");
+                        }
                     }
 
                     string strTempOutput = "TempOutput" + strUserID;
@@ -939,6 +977,23 @@ namespace DataSearches
             {
                 cmbLabels.Enabled = false;
                 cmbLabels.Text = "";
+            }
+        }
+
+        private void chkResetGroups_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmbLabels_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbLabels.Text.Contains("Increment"))
+            {
+                chkResetGroups.Enabled = true;
+            }
+            else
+            {
+                 chkResetGroups.Enabled = false;
             }
         }
 
