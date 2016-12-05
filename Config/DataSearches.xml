@@ -126,18 +126,13 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 
 	<!-- The options for overwritting the map labels -->
 	<OverwriteLabelOptions>
-		<value>No;Yes - Reset Counter;Yes - Increment Counter</value><!-- do not change -->
+		<value>No;Yes - Reset Each Layer; Yes - Reset Each Group;Yes - Do Not Reset</value><!-- do not change -->
 	</OverwriteLabelOptions>
 
 	<!-- Whether any map label columns should be overwritten (default setting) -->
 	<DefaultOverwriteLabels>
 		<value>2</value>
 	</DefaultOverwriteLabels>
-
-	<!-- Whether the check box for Reset Group Labels should be checked by default -->
-	<DefaultResetGroupLabels>
-		<value>No</value>
-	</DefaultResetGroupLabels>
 
 	<!-- Options for filling out the Combined Sites table dropdown (do not change) -->
 	<CombinedSitesTableOptions>

@@ -132,16 +132,6 @@ namespace DataSearches
                 if (myConfig.GetDefaultOverwriteLabelsOption() != -1)
                     cmbLabels.SelectedIndex = myConfig.GetDefaultOverwriteLabelsOption() - 1;
 
-                if (cmbLabels.Text.Contains("Increment"))                {
-                    chkResetGroups.Enabled = true;
-                    chkResetGroups.Checked = myConfig.GetDefaultGroupLabelReset();
-                }
-                else
-                {
-                    chkResetGroups.Checked = myConfig.GetDefaultGroupLabelReset();
-                    chkResetGroups.Enabled = false;
-                }
-
                 cmbCombinedSites.Items.AddRange(myConfig.GetCombinedSitesTableOptions().ToArray());
                 if (myConfig.GetDefaultCombinedSitesTable() != -1)
                     cmbCombinedSites.SelectedIndex = myConfig.GetDefaultCombinedSitesTable() - 1;
@@ -163,13 +153,11 @@ namespace DataSearches
                 {
                     cmbLabels.Hide();
                     label7.Hide();
-                    chkResetGroups.Hide();
                 }
                 else 
                 {
                     cmbLabels.Show();
                     label7.Show();
-                    chkResetGroups.Show();
                 }
                 if (myConfig.GetDefaultCombinedSitesTable() == -1)
                 {
@@ -245,7 +233,9 @@ namespace DataSearches
             else
                 strOverwriteLabels = "No";
 
-            bool blResetGroups = chkResetGroups.Checked; 
+            bool blResetGroups = false;
+            if (cmbLabels.Text.ToLower().Contains("group"))
+                blResetGroups = true;
 
             bool blCombinedTable;
             bool blCombinedTableOverwrite;
@@ -750,7 +740,7 @@ namespace DataSearches
                     // Either we  have a new label field, or we want to overwrite the labels and are allowed to.
                     {
                         // Add relevant labels. 
-                        if (strOverwriteLabels.ToLower().Contains("reset")) // Always reset to 1.
+                        if (strOverwriteLabels.ToLower().Contains("layer")) // Reset each layer to 1.
                         {
                             myFileFuncs.WriteLine(strLogFile, "Resetting label counter");
                             intStartLabel = 1;
@@ -772,7 +762,7 @@ namespace DataSearches
                         }
                         else
                         {
-                            // There is no group or groups are ignored. Use the existing max label number.
+                            // There is no group or groups are ignored, or we are not resetting. Use the existing max label number.
                             intStartLabel = intMaxLabel;
 
                             intMaxLabel = myArcMapFuncs.AddIncrementalNumbers(strTempMasterOutput, strLabelColumn, strKeyColumn, intStartLabel);
@@ -979,25 +969,6 @@ namespace DataSearches
                 cmbLabels.Text = "";
             }
         }
-
-        private void chkResetGroups_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void cmbLabels_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cmbLabels.Text.Contains("Increment"))
-            {
-                chkResetGroups.Enabled = true;
-            }
-            else
-            {
-                 chkResetGroups.Enabled = false;
-            }
-        }
-
-
 
 
 

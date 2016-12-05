@@ -39,7 +39,6 @@ namespace HLSearchesToolConfig
         int DefaultAddSelectedLayers;
         List<string> OverwriteLabelOptions = new List<string>();
         int DefaultOverwriteLabels;
-        bool DefaultGroupLabelReset;
         List<string> CombinedSitesTableOptions = new List<string>();
         int DefaultCombinedSitesTable; // -1, 0, 1, 2 (not filled in, none, append, overwrite)
         //string CombinedSitesTableName;
@@ -487,21 +486,6 @@ namespace HLSearchesToolConfig
                     LoadedXML = false;
                     return;
                 }
-
-                try
-                {
-                    DefaultGroupLabelReset = false;
-                    strRawText = xmlDataSearch["DefaultResetGroupLabels"].InnerText;
-                    if (strRawText.ToLower() == "yes")
-                        DefaultGroupLabelReset = true;
-                }
-                catch
-                {
-                    MessageBox.Show("Could not locate the item 'DefaultResetGroupLabels' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    LoadedXML = false;
-                    return;
-                }
-
 
                 try
                 {
@@ -1069,11 +1053,6 @@ namespace HLSearchesToolConfig
         public int GetDefaultOverwriteLabelsOption()
         {
             return DefaultOverwriteLabels;
-        }
-
-        public bool GetDefaultGroupLabelReset()
-        {
-            return DefaultGroupLabelReset;
         }
 
         public List<string> GetCombinedSitesTableOptions()

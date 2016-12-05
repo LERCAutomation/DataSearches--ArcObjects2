@@ -47,7 +47,6 @@
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.cmbCombinedSites = new System.Windows.Forms.ComboBox();
-            this.chkResetGroups = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -174,7 +173,6 @@
             this.cmbLabels.Name = "cmbLabels";
             this.cmbLabels.Size = new System.Drawing.Size(191, 21);
             this.cmbLabels.TabIndex = 15;
-            this.cmbLabels.SelectedIndexChanged += new System.EventHandler(this.cmbLabels_SelectedIndexChanged);
             // 
             // btnCancel
             // 
@@ -207,7 +205,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(214, 341);
+            this.label8.Location = new System.Drawing.Point(214, 323);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(147, 13);
             this.label8.TabIndex = 19;
@@ -216,27 +214,16 @@
             // cmbCombinedSites
             // 
             this.cmbCombinedSites.FormattingEnabled = true;
-            this.cmbCombinedSites.Location = new System.Drawing.Point(214, 357);
+            this.cmbCombinedSites.Location = new System.Drawing.Point(214, 339);
             this.cmbCombinedSites.Name = "cmbCombinedSites";
             this.cmbCombinedSites.Size = new System.Drawing.Size(191, 21);
             this.cmbCombinedSites.TabIndex = 20;
-            // 
-            // chkResetGroups
-            // 
-            this.chkResetGroups.AutoSize = true;
-            this.chkResetGroups.Location = new System.Drawing.Point(217, 304);
-            this.chkResetGroups.Name = "chkResetGroups";
-            this.chkResetGroups.Size = new System.Drawing.Size(126, 17);
-            this.chkResetGroups.TabIndex = 22;
-            this.chkResetGroups.Text = "Reset Group Counter";
-            this.chkResetGroups.UseVisualStyleBackColor = true;
             // 
             // frmDataSearches
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(420, 430);
-            this.Controls.Add(this.chkResetGroups);
             this.Controls.Add(this.cmbCombinedSites);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.txtSearch);
@@ -257,7 +244,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label6);
             this.Name = "frmDataSearches";
-            this.Text = "Data Searches 1.4.0";
+            this.Text = "Data Searches 1.4.1";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -284,6 +271,5 @@
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox cmbCombinedSites;
-        private System.Windows.Forms.CheckBox chkResetGroups;
     }
 }
