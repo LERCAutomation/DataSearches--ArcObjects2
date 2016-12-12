@@ -244,7 +244,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label6);
             this.Name = "frmDataSearches";
-            this.Text = "Data Searches 1.4.1";
+            this.Text = "Data Searches 1.4.2";
             this.ResumeLayout(false);
             this.PerformLayout();
 

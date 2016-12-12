@@ -803,7 +803,7 @@ namespace DataSearches
                         if (strAddSelected.ToLower().Contains("with "))
                         {
                             // Translate the label string.
-                            if (strLabelClause != "")
+                            if (strLabelClause != "" && strDisplayLayer == "") // Only if we don't have a layer file.
                             {
                                 List<string> strLabelOptions = strLabelClause.Split('$').ToList();
                                 string strFont = strLabelOptions[0].Split(':')[1];
@@ -816,7 +816,7 @@ namespace DataSearches
                                     intRed, intGreen, intBlue, strOverlap);
                                 myFileFuncs.WriteLine(strLogFile, "Labels added to output " + strShapeLayerName);
                             }
-                            else if (strLabelColumn != "")
+                            else if (strLabelColumn != "" && strDisplayLayer == "")
                             {
                                 myArcMapFuncs.AnnotateLayer(strShapeLayerName, "[" + strLabelColumn + "]");
                                 myFileFuncs.WriteLine(strLogFile, "Labels added to output " + strShapeLayerName);

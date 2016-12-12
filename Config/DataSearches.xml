@@ -126,7 +126,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 
 	<!-- The options for overwritting the map labels -->
 	<OverwriteLabelOptions>
-		<value>No;Yes - Reset Each Layer; Yes - Reset Each Group;Yes - Do Not Reset</value><!-- do not change -->
+		<value>No;Yes - Reset Each Layer;Yes - Reset Each Group;Yes - Do Not Reset</value><!-- do not change -->
 	</OverwriteLabelOptions>
 
 	<!-- Whether any map label columns should be overwritten (default setting) -->
@@ -208,7 +208,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>Yes</value>
 			</PreselectLayer>
 			<LayerFileName> <!-- The name of a layer file (*.lyr) that should be used to symbolise the extract -->
-				<value></value>
+				<value></value><!-- Overrides any label settings defined below -->
 			</LayerFileName>
 			<OverwriteLabels> <!-- A Yes/No attribute to define whether labels may be overwritten -->
 				<value>Yes</value>
@@ -285,7 +285,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>No</value>
 			</PreselectLayer>
 			<LayerFileName>
-				<value>TestLayer.lyr</value>
+				<value>TestLayer2.lyr</value><!-- Overrides any label settings defined below -->
 			</LayerFileName>
 			<OverwriteLabels>
 				<value>Yes</value>
@@ -359,7 +359,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
-			<LayerFileName>
+			<LayerFileName> <!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
@@ -434,7 +434,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
-			<LayerFileName>
+			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
@@ -509,7 +509,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>Yes</value>
 			</PreselectLayer>
-			<LayerFileName>
+			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
@@ -585,7 +585,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
-			<LayerFileName>
+			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
@@ -660,7 +660,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
-			<LayerFileName>
+			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
@@ -735,7 +735,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
-			<LayerFileName>
+			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
@@ -810,7 +810,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
-			<LayerFileName>
+			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
@@ -885,7 +885,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
-			<LayerFileName>
+			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
@@ -960,7 +960,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
-			<LayerFileName>
+			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value></value>
 			</LayerFileName>
 			<OverwriteLabels>
@@ -1035,7 +1035,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
-			<LayerFileName>
+			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value></value>
 			</LayerFileName>
 			<OverwriteLabels>

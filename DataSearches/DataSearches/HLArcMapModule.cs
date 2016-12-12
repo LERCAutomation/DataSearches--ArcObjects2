@@ -190,6 +190,7 @@ namespace HLArcMapModule
         {
             return FeatureclassExists(myFileFuncs.GetDirectoryName(aFullPath), myFileFuncs.GetFileName(aFullPath));
         }
+
         #endregion
 
         #region GetFeatureClass
@@ -872,7 +873,7 @@ namespace HLArcMapModule
             // Check there is input.
             if (aLayerName == null)
             {
-                if (Messages) MessageBox.Show("Please pass a valid layer name", "Find Layer By Name");
+                if (Messages) MessageBox.Show("Please pass a valid layer name", "Layer Exists");
                 return false;
             }
 
@@ -880,7 +881,7 @@ namespace HLArcMapModule
             IMap pMap = GetMap();
             if (pMap == null)
             {
-                if (Messages) MessageBox.Show("No map found", "Find Layer By Name");
+                if (Messages) MessageBox.Show("No map found", "Layer Exists");
                 return false;
             }
             IEnumLayer pLayers = pMap.Layers;
@@ -895,7 +896,11 @@ namespace HLArcMapModule
                 {
                     if (pLayer.Name == aLayerName)
                     {
-                        return true;
+                        // Check that the data is there
+                        if (pLayer.Valid)
+                            return true;
+                        else
+                            return false;
                     }
 
                 }
@@ -2146,10 +2151,13 @@ namespace HLArcMapModule
 
             IGeoFeatureLayer pTemplateLayer = (IGeoFeatureLayer)pLayerFile.Layer;
             IFeatureRenderer pTemplateSymbology = pTemplateLayer.Renderer;
+            IAnnotateLayerPropertiesCollection pTemplateAnnotation = pTemplateLayer.AnnotationProperties;
+
             pLayerFile.Close();
 
             IObjectCopy pCopy = new ObjectCopyClass();
             pTargetLayer.Renderer = (IFeatureRenderer)pCopy.Copy(pTemplateSymbology);
+            pTargetLayer.AnnotationProperties = pTemplateAnnotation;
 
         }
 
