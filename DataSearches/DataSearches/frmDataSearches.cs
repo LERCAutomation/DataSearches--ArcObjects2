@@ -802,7 +802,7 @@ namespace DataSearches
                             myArcMapFuncs.ChangeLegend(strShapeLayerName, strDisplayLayerFile, blDisplayLabel);
                         }
                         myFileFuncs.WriteLine(strLogFile, "Output " + strShapeLayerName + " added to display");
-                        if (strAddSelected.ToLower().Contains("with "))
+                        if (strAddSelected.ToLower().Contains("with ") && blDisplayLabel)
                         {
                             // Translate the label string.
                             if (strLabelClause != "" && strDisplayLayer == "") // Only if we don't have a layer file.
