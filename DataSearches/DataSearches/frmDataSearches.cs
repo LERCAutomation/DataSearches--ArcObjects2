@@ -824,6 +824,10 @@ namespace DataSearches
                                 myFileFuncs.WriteLine(strLogFile, "Labels added to output " + strShapeLayerName);
                             }
                         }
+                        else
+                        {
+                            myArcMapFuncs.SwitchLabels(strShapeLayerName, blDisplayLabel);
+                        }
                     }
                     myArcMapFuncs.RemoveLayer(strTempOutput);
                     myArcMapFuncs.DeleteFeatureclass(strTempShapeOutput);

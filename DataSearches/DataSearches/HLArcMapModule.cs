@@ -2158,6 +2158,32 @@ namespace HLArcMapModule
             IObjectCopy pCopy = new ObjectCopyClass();
             pTargetLayer.Renderer = (IFeatureRenderer)pCopy.Copy(pTemplateSymbology);
             pTargetLayer.AnnotationProperties = pTemplateAnnotation;
+
+            SwitchLabels(aLayerName, DisplayLabels);
+
+        }
+
+        public void SwitchLabels(string aLayerName, bool DisplayLabels = false, bool Messages = false)
+        {
+            if (!LayerExists(aLayerName))
+            {
+                if (Messages)
+                    MessageBox.Show("The layer " + aLayerName + " does not exist in the map");
+                return;
+            }
+            ILayer pLayer = GetLayer(aLayerName);
+            IGeoFeatureLayer pTargetLayer = null;
+            try
+            {
+                pTargetLayer = (IGeoFeatureLayer)pLayer;
+            }
+            catch
+            {
+                if (Messages)
+                    MessageBox.Show("The input layer " + aLayerName + " is not a feature layer");
+                return;
+            }
+
             if (DisplayLabels)
             {
                 pTargetLayer.DisplayAnnotation = true;
@@ -2166,7 +2192,6 @@ namespace HLArcMapModule
             {
                 pTargetLayer.DisplayAnnotation = false;
             }
-
         }
 
         public bool CalculateField(string aLayerName, string aFieldName, string aCalculate, bool Messages = false)
