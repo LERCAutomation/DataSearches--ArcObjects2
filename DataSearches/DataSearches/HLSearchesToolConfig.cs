@@ -62,6 +62,7 @@ namespace HLSearchesToolConfig
         List<bool> MapKeeps = new List<bool>();
         List<bool> MapLoadWarnings = new List<bool>();
         List<bool> MapPreselectLayers = new List<bool>();
+        List<bool> MapDisplayLabels = new List<bool>();
         List<string> LayerFiles = new List<string>();
         List<bool> MapOverwriteLabels = new List<bool>();
         List<string> MapLabelColumns = new List<string>();
@@ -787,6 +788,22 @@ namespace HLSearchesToolConfig
 
                     try
                     {
+                        string strDisplayLabels = aNode["DisplayLabels"].InnerText;
+                        bool blDisplayLabels = false;
+                        if (strDisplayLabels.ToLower() == "yes")
+                            blDisplayLabels = true;
+
+                        MapDisplayLabels.Add(blDisplayLabels);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Could not locate the item 'DisplayLabels' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        LoadedXML = false;
+                        return;
+                    }
+
+                    try
+                    {
                         LayerFiles.Add(aNode["LayerFileName"].InnerText);
                     }
                     catch
@@ -1166,6 +1183,11 @@ namespace HLSearchesToolConfig
         public List<bool> GetMapPreselectLayers()
         {
             return MapPreselectLayers;
+        }
+
+        public List<bool> GetMapDisplayLabels()
+        {
+            return MapDisplayLabels;
         }
 
         public List<string> GetMapLayerFiles()

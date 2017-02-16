@@ -207,6 +207,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>Yes</value>
 			</PreselectLayer>
+			<DisplayLabels> <!-- switch to decide whether the defined labels should be switched on when displayed. -->
+				<value>No</value>
+			</DisplayLabels>
 			<LayerFileName> <!-- The name of a layer file (*.lyr) that should be used to symbolise the extract -->
 				<value></value><!-- Overrides any label settings defined below -->
 			</LayerFileName>
@@ -284,6 +287,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
+			<DisplayLabels> <!-- switch to decide whether the defined labels should be switched on when displayed. -->
+				<value>No</value>
+			</DisplayLabels>
 			<LayerFileName>
 				<value>TestLayer2.lyr</value><!-- Overrides any label settings defined below -->
 			</LayerFileName>
@@ -359,8 +365,11 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
+			<DisplayLabels> <!-- switch to decide whether the defined labels should be switched on when displayed. -->
+				<value>No</value>
+			</DisplayLabels>
 			<LayerFileName> <!-- Overrides any label settings defined below -->
-				<value>TestLayer.lyr</value>
+				<value>SPALayer.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
 				<value>Yes</value>
@@ -434,6 +443,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
+			<DisplayLabels> <!-- switch to decide whether the defined labels should be switched on when displayed. -->
+				<value>No</value>
+			</DisplayLabels>
 			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
@@ -509,6 +521,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>Yes</value>
 			</PreselectLayer>
+			<DisplayLabels> <!-- switch to decide whether the defined labels should be switched on when displayed. -->
+				<value>No</value>
+			</DisplayLabels>
 			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
@@ -585,6 +600,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
+			<DisplayLabels> <!-- switch to decide whether the defined labels should be switched on when displayed. -->
+				<value>No</value>
+			</DisplayLabels>
 			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
@@ -660,6 +678,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
+			<DisplayLabels> <!-- switch to decide whether the defined labels should be switched on when displayed. -->
+				<value>No</value>
+			</DisplayLabels>
 			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
@@ -735,6 +756,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
+			<DisplayLabels> <!-- switch to decide whether the defined labels should be switched on when displayed. -->
+				<value>No</value>
+			</DisplayLabels>
 			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
@@ -810,6 +834,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
+			<DisplayLabels> <!-- switch to decide whether the defined labels should be switched on when displayed. -->
+				<value>No</value>
+			</DisplayLabels>
 			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
@@ -885,6 +912,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
+			<DisplayLabels> <!-- switch to decide whether the defined labels should be switched on when displayed. -->
+				<value>No</value>
+			</DisplayLabels>
 			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
@@ -960,6 +990,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
+			<DisplayLabels> <!-- switch to decide whether the defined labels should be switched on when displayed. -->
+				<value>No</value>
+			</DisplayLabels>
 			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value></value>
 			</LayerFileName>
@@ -1035,6 +1068,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<PreselectLayer>
 				<value>No</value>
 			</PreselectLayer>
+			<DisplayLabels> <!-- switch to decide whether the defined labels should be switched on when displayed. -->
+				<value>No</value>
+			</DisplayLabels>
 			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value></value>
 			</LayerFileName>

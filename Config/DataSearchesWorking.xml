@@ -21,7 +21,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 -->
 
 <configuration>
-<!--- General attributes -->
 <DataSearches>
 	<!-- The database where all the data search details are stored. -->
 	<Database>
@@ -127,17 +126,22 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 
 	<!-- The options for overwritting the map labels -->
 	<OverwriteLabelOptions>
-		<value>No;Yes - Reset Counter;Yes - Increment Counter</value><!-- do not change -->
+		<value>No;Yes - Reset Each Layer;Yes - Reset Each Group;Yes - Do Not Reset</value><!-- do not change -->
 	</OverwriteLabelOptions>
 
 	<!-- Whether any map label columns should be overwritten (default setting) -->
 	<DefaultOverwriteLabels>
-		<value>3</value>
+		<value>2</value>
 	</DefaultOverwriteLabels>
+
+	<!-- Options for filling out the Combined Sites table dropdown (do not change) -->
+	<CombinedSitesTableOptions>
+		<value>None;Append to existing table;Overwrite existing table</value>
+	</CombinedSitesTableOptions>
 
 	<!-- Whether a combined sites table should be created by default -->
 	<DefaultCombinedSitesTable>
-		<value>Yes</value>
+		<value>1</value> <!-- 1, 2, 3 -->
 	</DefaultCombinedSitesTable>
 
 	<!-- The column names of the combined sites table -->
@@ -157,15 +161,15 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 	<!-- map layer attributes -->
 	<!-- The names, local names, suffixes, SQL clauses and formats of the map tables -->
 	<MapLayers>
-		<Points_-_ExampleSpeciesPoints> <!-- This is the name of the map layer as it will be shown on the form -->
-			<LayerName> <!-- This is the name of the layer as it is show in the Table of Contents in ArcMap -->
+		<Points_-_ExampleSpeciesPoints>
+			<LayerName> 
 				<value>ExampleSpeciesPoints</value>
 			</LayerName>
-			<Prefix> <!-- The prefix used for any GIS data extracts -->
-				<value>ExampleSpecies</value>
+			<Prefix> 
+				<value>ExampleSpecies</value><!-- The prefix used for any GIS data extracts -->
 			</Prefix>
-			<Suffix> <!-- The suffix used for any tabular extracts -->
-				<value>_spppts</value>
+			<Suffix> 
+				<value>_spppts</value><!-- The suffix used for any tabular extracts -->
 			</Suffix>
 			<Columns> <!-- The columns to be used in the tabular extracts -->
 				<value>Species, Year, COUNT_Spec</value> <!-- Use commas to separate. NOTE case sensitive! -->
@@ -185,6 +189,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance> <!-- Yes / No attribute to define whether a Distance field should be included -->
 				<value>Yes</value><!-- Yes / No -->
 			</IncludeDistance>
+			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
+				<value>Yes</value>
+			</IncludeRadius>
 			<KeyColumn> <!-- The column in this layer that contains the unique identifier -->
 				<value>FID</value>
 			</KeyColumn>
@@ -194,8 +201,14 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer> <!-- A Yes/No attribute to define whether a GIS extract should be saved -->
 				<value>Yes</value>
 			</KeepLayer>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>Yes</value>
+			</PreselectLayer>
 			<LayerFileName> <!-- The name of a layer file (*.lyr) that should be used to symbolise the extract -->
-				<value></value>
+				<value></value><!-- Overrides any label settings defined below -->
 			</LayerFileName>
 			<OverwriteLabels> <!-- A Yes/No attribute to define whether labels may be overwritten -->
 				<value>Yes</value>
@@ -213,7 +226,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<!-- Leave blank if the layer should not be included in the combined sites table -->
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<!-- "SSSI", SSSI_NAME, SSSI_AREA, Map_Label -->
-				<value></value>
+				<value>"Species","N/A",Distance,Radius</value><!-- Just a proof of concept setting -->
 			</CombinedSitesColumns>
 			<CombinedSitesGroupColumns> <!-- Columns that should be used to group data before inclusion in the combined sites table, if any -->
 				<value></value>
@@ -224,10 +237,10 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns> <!-- Columns by which results should be ordered in the Combined Sites table -->
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</Points_-_ExampleSpeciesPoints> <!-- End of this map layer -->
-		<SACs>
+		</Points_-_ExampleSpeciesPoints> 
+		<Polys_-_SACs>
 			<LayerName>
-				<value>SACs</value>
+				<value>Sussex_SACs</value>
 			</LayerName>
 			<Prefix>
 				<value>SACs</value>
@@ -253,6 +266,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
+			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
+				<value>No</value>
+			</IncludeRadius>
 			<KeyColumn>
 				<value>SAC_NAME</value>
 			</KeyColumn>
@@ -262,8 +278,14 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
 			<LayerFileName>
-				<value>TestLayer.lyr</value>
+				<value>TestLayer2.lyr</value><!-- Overrides any label settings defined below -->
 			</LayerFileName>
 			<OverwriteLabels>
 				<value>Yes</value>
@@ -290,10 +312,10 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</SACs>
-		<SPAs>
+		</Polys_-_SACs>
+		<Polys_-_SPAs>
 			<LayerName>
-				<value>SPAs</value>
+				<value>Sussex_SPAs</value>
 			</LayerName>
 			<Prefix>
 				<value>SPAs</value>
@@ -319,6 +341,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
+			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
+				<value>No</value>
+			</IncludeRadius>
 			<KeyColumn>
 				<value>SPA_NAME</value>
 			</KeyColumn>
@@ -328,8 +353,14 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
-			<LayerFileName>
-				<value>TestLayer.lyr</value>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
+			<LayerFileName> <!-- Overrides any label settings defined below -->
+				<value>SPALayer.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
 				<value>Yes</value>
@@ -356,10 +387,10 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</SPAs>
-		<Ramsars>
+		</Polys_-_SPAs>
+		<Polys_-_Ramsars>
 			<LayerName>
-				<value>Ramsars</value>
+				<value>Sussex_Ramsars</value>
 			</LayerName>
 			<Prefix>
 				<value>Ramsars</value>
@@ -385,6 +416,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
+			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
+				<value>No</value>
+			</IncludeRadius>
 			<KeyColumn>
 				<value>NAME</value>
 			</KeyColumn>
@@ -394,7 +428,13 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
-			<LayerFileName>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
+			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
@@ -422,10 +462,10 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</Ramsars>
-		<SSSIs>
+		</Polys_-_Ramsars>
+		<Polys1_-_SSSIs>
 			<LayerName>
-				<value>SSSIs</value>
+				<value>Sussex SSSIs</value>
 			</LayerName>
 			<Prefix>
 				<value>SSSIs</value>
@@ -451,6 +491,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>Yes</value><!-- Yes / No -->
 			</IncludeDistance>
+			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
+				<value>No</value>
+			</IncludeRadius>
 			<KeyColumn>
 				<value>SSSI_NAME</value>
 			</KeyColumn>
@@ -460,7 +503,13 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
-			<LayerFileName>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>Yes</value>
+			</PreselectLayer>
+			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
@@ -489,10 +538,10 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</SSSIs>
-		<NNRs>
+		</Polys1_-_SSSIs>
+		<Polys1_-_NNRs>
 			<LayerName>
-				<value>NNRs</value>
+				<value>Sussex_NNRs</value>
 			</LayerName>
 			<Prefix>
 				<value>NNRs</value>
@@ -518,6 +567,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
+			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
+				<value>No</value>
+			</IncludeRadius>
 			<KeyColumn>
 				<value>NNR_NAME</value>
 			</KeyColumn>
@@ -527,7 +579,13 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
-			<LayerFileName>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
+			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
@@ -555,10 +613,10 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</NNRs>
-		<LNRs>
+		</Polys1_-_NNRs>
+		<Polys1_-_LNRs>
 			<LayerName>
-				<value>LNRs</value>
+				<value>Sussex_LNR</value>
 			</LayerName>
 			<Prefix>
 				<value>LNRs</value>
@@ -584,6 +642,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
+			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
+				<value>No</value>
+			</IncludeRadius>
 			<KeyColumn>
 				<value>LNR_NAME</value>
 			</KeyColumn>
@@ -593,7 +654,13 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
-			<LayerFileName>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
+			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
@@ -621,10 +688,10 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</LNRs>
-		<LWS>
+		</Polys1_-_LNRs>
+		<Polys2_-_LWS>
 			<LayerName>
-				<value>LWSs</value>
+				<value>LWS_Sussex</value>
 			</LayerName>
 			<Prefix>
 				<value>LWS</value>
@@ -650,6 +717,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>Yes</value><!-- Yes / No -->
 			</IncludeDistance>
+			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
+				<value>No</value>
+			</IncludeRadius>
 			<KeyColumn>
 				<value>siteid</value>
 			</KeyColumn>
@@ -659,7 +729,13 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
-			<LayerFileName>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
+			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
@@ -687,10 +763,10 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</LWS>
-		<AONBs>
+		</Polys2_-_LWS>
+		<Polys2_-_AONBs>
 			<LayerName>
-				<value>AONBs</value>
+				<value>Sussex_AONBs</value>
 			</LayerName>
 			<Prefix>
 				<value>AONBs</value>
@@ -716,6 +792,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
+			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
+				<value>No</value>
+			</IncludeRadius>
 			<KeyColumn>
 				<value>NAME</value>
 			</KeyColumn>
@@ -725,7 +804,13 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
-			<LayerFileName>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
+			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
@@ -753,10 +838,10 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</AONBs>
-		<CountryParks> <!-- This is an experiment with a layer that will not be added or have its labels ovewritten -->
+		</Polys2_-_AONBs>
+		<Polys_-_CountryParks> <!-- This is an experiment with a layer that will not be added or have its labels ovewritten -->
 			<LayerName>
-				<value>CountryParks</value>
+				<value>Sussex_Country_Parks</value>
 			</LayerName>
 			<Prefix>
 				<value>CountryPks</value>
@@ -782,6 +867,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
+			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
+				<value>No</value>
+			</IncludeRadius>
 			<KeyColumn>
 				<value>NAME</value>
 			</KeyColumn>
@@ -791,7 +879,13 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>No</value>
 			</KeepLayer>
-			<LayerFileName>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
+			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value>TestLayer.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
@@ -819,7 +913,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</CountryParks>
+		</Polys_-_CountryParks>
 		<SppProt>
 			<LayerName>
 				<value>Protected Species</value>
@@ -848,6 +942,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>Yes</value><!-- Yes / No -->
 			</IncludeDistance>
+			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
+				<value>No</value>
+			</IncludeRadius>
 			<KeyColumn>
 				<value>LATIN_NAME</value>
 			</KeyColumn>
@@ -857,7 +954,13 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>No</value>
 			</KeepLayer>
-			<LayerFileName>
+			<LoadWarning>
+				<value>No</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
+			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value></value>
 			</LayerFileName>
 			<OverwriteLabels>
@@ -914,6 +1017,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
+			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
+				<value>No</value>
+			</IncludeRadius>
 			<KeyColumn>
 				<value>LATIN_NAME</value>
 			</KeyColumn>
@@ -923,7 +1029,13 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>No</value>
 			</KeepLayer>
-			<LayerFileName>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>No</value>
+			</PreselectLayer>
+			<LayerFileName><!-- Overrides any label settings defined below -->
 				<value></value>
 			</LayerFileName>
 			<OverwriteLabels>

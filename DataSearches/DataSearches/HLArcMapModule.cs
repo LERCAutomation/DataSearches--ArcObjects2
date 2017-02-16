@@ -2119,7 +2119,7 @@ namespace HLArcMapModule
             activeView.Refresh();
         }
 
-        public void ChangeLegend(string aLayerName, string aLayerFile, bool Messages = false)
+        public void ChangeLegend(string aLayerName, string aLayerFile, bool DisplayLabels = false, bool Messages = false)
         {
             if (!LayerExists(aLayerName))
             {
@@ -2158,6 +2158,14 @@ namespace HLArcMapModule
             IObjectCopy pCopy = new ObjectCopyClass();
             pTargetLayer.Renderer = (IFeatureRenderer)pCopy.Copy(pTemplateSymbology);
             pTargetLayer.AnnotationProperties = pTemplateAnnotation;
+            if (DisplayLabels)
+            {
+                pTargetLayer.DisplayAnnotation = true;
+            }
+            else
+            {
+                pTargetLayer.DisplayAnnotation = false;
+            }
 
         }
 

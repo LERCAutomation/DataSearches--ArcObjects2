@@ -584,6 +584,7 @@ namespace DataSearches
             List<string> strKeyColumns = myConfig.GetMapKeyColumns();
             List<string> strFormats = myConfig.GetMapFormats();
             List<bool> blKeepLayers = myConfig.GetMapKeepLayers();
+            List<bool> blDisplayLabels = myConfig.GetMapDisplayLabels();
             List<string> strDisplayLayerFiles = myConfig.GetMapLayerFiles();
             List<bool> blOverwriteLabelDefaults = myConfig.GetMapOverwriteLabels();
             List<string> strLabelColumns = myConfig.GetMapLabelColumns();
@@ -656,6 +657,7 @@ namespace DataSearches
                 string strKeyColumn = strKeyColumns[intIndex];
                 string strFormat = strFormats[intIndex];
                 bool blKeepLayer = blKeepLayers[intIndex];
+                bool blDisplayLabel = blDisplayLabels[intIndex];
                 string strDisplayLayer = strDisplayLayerFiles[intIndex];
                 bool blOverwriteLabelDefault = blOverwriteLabelDefaults[intIndex];
                 string strLabelColumn = strLabelColumns[intIndex];
@@ -797,7 +799,7 @@ namespace DataSearches
                         if (strDisplayLayer != "")
                         {
                             string strDisplayLayerFile = strLayerDir + @"\" + strDisplayLayer;
-                            myArcMapFuncs.ChangeLegend(strShapeLayerName, strDisplayLayerFile);
+                            myArcMapFuncs.ChangeLegend(strShapeLayerName, strDisplayLayerFile, blDisplayLabel);
                         }
                         myFileFuncs.WriteLine(strLogFile, "Output " + strShapeLayerName + " added to display");
                         if (strAddSelected.ToLower().Contains("with "))
