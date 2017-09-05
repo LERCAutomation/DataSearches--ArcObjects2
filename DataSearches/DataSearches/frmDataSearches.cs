@@ -19,6 +19,8 @@ using HLSearchesToolConfig;
 using HLFileFunctions;
 using HLStringFunctions; 
 using HLArcMapModule;
+using HLSearchesToolLaunchConfig;
+using DataSearches.Properties;
 
 using System.Data.OleDb;
 
@@ -30,6 +32,7 @@ namespace DataSearches
         FileFunctions myFileFuncs;
         StringFunctions myStringFuncs;
         ArcMapFunctions myArcMapFuncs;
+        SearchesToolLaunchConfig myLaunchConfig;
         string strUserID;
         string strTempFile;
 
@@ -41,23 +44,73 @@ namespace DataSearches
             blOpenForm = true;
             blFormHasOpened = false;
             InitializeComponent();
-            myConfig = new SearchesToolConfig();
+            myLaunchConfig = new SearchesToolLaunchConfig();
             myFileFuncs = new FileFunctions();
-            IApplication pApp = ArcMap.Application;
-            myArcMapFuncs = new ArcMapFunctions(pApp);
-            myStringFuncs = new StringFunctions();
-            
-
-            // Get the relevant from the Config file.
-            if (myConfig.GetFoundXML() == false)
+            string strConfigFile = "";
+            if (!myLaunchConfig.XMLFound)
             {
-                MessageBox.Show("XML file not found; form cannot load.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("XML file 'DataSearches.xml' not found; form cannot load.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 blOpenForm = false;
             }
-            else if (myConfig.GetLoadedXML() == false)
+            if (!myLaunchConfig.XMLLoaded)
             {
-                MessageBox.Show("Error loading XML File; form cannot load.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error loading XML File 'DataSearches.xml'; form cannot load.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 blOpenForm = false;
+            }
+
+            if (blOpenForm)
+            {
+                string strXMLFolder = myFileFuncs.GetDirectoryName(Settings.Default.XMLFile);
+                if (myLaunchConfig.ChooseConfig)
+                {
+                    // User has to choose the configuration file first.
+                    
+                    using (var myConfigForm = new frmChooseConfig(strXMLFolder, myLaunchConfig.DefaultXML))
+                    {
+                        var result = myConfigForm.ShowDialog();
+                        if (result == System.Windows.Forms.DialogResult.OK)
+                        {
+                            strConfigFile = strXMLFolder + "\\" + myConfigForm.ChosenXMLFile;
+                        }
+                        else
+                        {
+                            MessageBox.Show("No XML file was chosen; form cannot load.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            blOpenForm = false;
+                        }
+                    }
+
+                }
+                else
+                {
+                    strConfigFile = strXMLFolder + "\\" + myLaunchConfig.DefaultXML; // don't allow the user to choose, just use the default.
+                    // Just check it exists, though.
+                    if (!myFileFuncs.FileExists(strConfigFile))
+                    {
+                        MessageBox.Show("The default XML file '" + myLaunchConfig.DefaultXML + "' was not found in the XML directory; form cannot load.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        blOpenForm = false;
+                    }
+                }
+            }
+
+            if (blOpenForm)
+            {
+                myConfig = new SearchesToolConfig(strConfigFile); // Must now pass the correct XML name.
+                IApplication pApp = ArcMap.Application;
+                myArcMapFuncs = new ArcMapFunctions(pApp);
+                myStringFuncs = new StringFunctions();
+
+
+                // Get the relevant from the Config file.
+                if (myConfig.GetFoundXML() == false)
+                {
+                    MessageBox.Show("XML file not found; form cannot load.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    blOpenForm = false;
+                }
+                else if (myConfig.GetLoadedXML() == false)
+                {
+                    MessageBox.Show("Error loading XML File; form cannot load.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    blOpenForm = false;
+                }
             }
 
             if (!blOpenForm)
@@ -891,7 +944,7 @@ namespace DataSearches
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             
-            if (txtSearch.Text != "" && txtSearch.Text.Length > 11) // Only fire it when it looks like we have a complete reference.
+            if (txtSearch.Text != "" && txtSearch.Text.Length >= 2) // Only fire it when it looks like we have a complete reference.
             {
                 
                 string strAccessConn = "Provider='Microsoft.Jet.OLEDB.4.0';data source='" + myConfig.GetDatabase() + "'";

@@ -92,6 +92,20 @@ namespace HLFileFunctions
             return aFile;
         }
 
+        public List<string> GetAllFilesInDirectory(string aPath)
+        {
+            List<string> myFileList = new List<string>();
+            if (DirExists(aPath))
+            {
+                string[] fileEntries = Directory.GetFiles(aPath);
+                foreach (string aFile in fileEntries)
+                {
+                    myFileList.Add(aFile);
+                }
+            }
+            return myFileList;
+        }
+
         public string ReturnWithoutExtension(string aFileName)
         {
             // check input

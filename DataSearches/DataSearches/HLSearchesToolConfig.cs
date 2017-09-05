@@ -80,12 +80,12 @@ namespace HLSearchesToolConfig
         FileFunctions myFileFuncs;
         StringFunctions myStringFuncs;
         XmlElement xmlDataSearch;
-        public SearchesToolConfig()
+        public SearchesToolConfig(string anXMLProfile)
         {
             // Open xml
             myFileFuncs = new FileFunctions();
             myStringFuncs = new StringFunctions();
-            string strXMLFile = null;
+            string strXMLFile = anXMLProfile; // null;
             BufferUnitOptionsDisplay = new List<string>();
             BufferUnitOptionsProcess = new List<string>();
             FoundXML = false;
@@ -93,22 +93,24 @@ namespace HLSearchesToolConfig
             try
             {
                 // Get the XML file
-                strXMLFile = Settings.Default.XMLFile;
+                //strXMLFile = Settings.Default.XMLFile;
 
                 // If the XML file path is blank or doesn't exist
                 if (String.IsNullOrEmpty(strXMLFile) || (!myFileFuncs.FileExists(strXMLFile)))
                 {
                     // Prompt the user for the correct file path
-                    string strFolder = GetConfigFilePath();
-                    if (!String.IsNullOrEmpty(strFolder))
-                        strXMLFile = strFolder + @"\DataSearches.xml";
+                    //string strFolder = GetConfigFilePath();
+                    //if (!String.IsNullOrEmpty(strFolder))
+                    //    strXMLFile = strFolder + @"\DataSearches.xml";
+
+                    // Throw appropriate error.
                 }
 
                 // Check the xml file path exists
                 if (myFileFuncs.FileExists(strXMLFile))
                 {
-                    Settings.Default.XMLFile = strXMLFile;
-                    Settings.Default.Save();
+                    //Settings.Default.XMLFile = strXMLFile;
+                    //Settings.Default.Save();
                     FoundXML = true;
                 }
             }
