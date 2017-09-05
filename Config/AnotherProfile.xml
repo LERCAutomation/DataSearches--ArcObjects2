@@ -22,9 +22,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 
 <configuration>
 <DataSearches>
-	<!-- The database where all the data search details are stored. -->
+	<!-- The database where all the data search details are stored. May be left blank for manual entry. -->
 	<Database>
-		<value>H:\Dev\LERCAutomation\DataSearches--ArcObjects2\Access\SxBRC Data Searches v3.52.mdb</value>
+		<value></value>
 	</Database>
 
 	<!-- The field name of the search reference unique value. -->
@@ -93,6 +93,11 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		<value>BufferOutline.lyr</value>
 	</BufferLayerName>
 
+	<!-- Are we keeping the buffer GIS file? Yes/No -->
+	<KeepBufferArea>
+		<value>No</value>
+	</KeepBufferArea>
+
 	<!-- The base name of the layer to use as the search area -->
 	<SearchLayer>
 		<value>SearchSites</value>
@@ -108,6 +113,23 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 	<SearchColumn>
 		<value>ref</value>
 	</SearchColumn>
+
+	<!-- Are we keeping the search feature as a layer? Yes/No -->
+	<KeepSearchFeature>
+		<value>Yes</value>
+	</KeepSearchFeature>
+
+	<!-- The base name of the search layer symbology file (without the .lyr). 
+	Note the relevant extension (from SearchLayerExtensions) will be added -->
+	<SearchSymbologyBase>
+		<value>FeatureSymbology</value>
+	</SearchSymbologyBase>
+
+
+	<!-- Is a site name required? Yes/No -->
+	<RequireSiteName>
+		<value>No</value>
+	</RequireSiteName>
 
 	<!-- The buffer aggregate column values. Delimited with semicolons -->
 	<AggregateColumns>

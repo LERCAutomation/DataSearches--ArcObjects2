@@ -16,10 +16,10 @@ namespace HLSearchesToolConfig
         // Declare all the variables
         string Database;
         string LayerDir;
-        string BufferLayer;
         //string EnquiriesDir;
         string RefColumn;
         string SiteColumn;
+        bool RequireSiteName;
         string ReplaceChar;
         string SaveRootDir;
         string SaveFolder;
@@ -31,9 +31,13 @@ namespace HLSearchesToolConfig
         List<string> BufferUnitOptionsDisplay = new List<string>();
         List<string> BufferUnitOptionsProcess = new List<string>();
         List<string> BufferUnitOptionsShort = new List<string>();
+        bool KeepBufferArea;
+        string BufferLayer;
         string SearchLayer;
         List<string> SearchLayerExtensions = new List<string>();
         string SearchColumn;
+        bool KeepSearchFeature;
+        string SearchSymbologyBase;
         string AggregateColumns;
         List<string> AddSelectedLayersOptions = new List<string>();
         int DefaultAddSelectedLayers;
@@ -85,39 +89,11 @@ namespace HLSearchesToolConfig
             // Open xml
             myFileFuncs = new FileFunctions();
             myStringFuncs = new StringFunctions();
-            string strXMLFile = anXMLProfile; // null;
+            string strXMLFile = anXMLProfile; // The user has specified this and we've checked it exists.
             BufferUnitOptionsDisplay = new List<string>();
             BufferUnitOptionsProcess = new List<string>();
-            FoundXML = false;
+            FoundXML = true; // In this version we have already checked that it exists.
             LoadedXML = true;
-            try
-            {
-                // Get the XML file
-                //strXMLFile = Settings.Default.XMLFile;
-
-                // If the XML file path is blank or doesn't exist
-                if (String.IsNullOrEmpty(strXMLFile) || (!myFileFuncs.FileExists(strXMLFile)))
-                {
-                    // Prompt the user for the correct file path
-                    //string strFolder = GetConfigFilePath();
-                    //if (!String.IsNullOrEmpty(strFolder))
-                    //    strXMLFile = strFolder + @"\DataSearches.xml";
-
-                    // Throw appropriate error.
-                }
-
-                // Check the xml file path exists
-                if (myFileFuncs.FileExists(strXMLFile))
-                {
-                    //Settings.Default.XMLFile = strXMLFile;
-                    //Settings.Default.Save();
-                    FoundXML = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error " + ex.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
 
             // Now get all the config variables.
             // Read the file.
@@ -162,16 +138,7 @@ namespace HLSearchesToolConfig
                     return;
                 }
 
-                try
-                {
-                    BufferLayer = xmlDataSearch["BufferLayerName"].InnerText;
-                }
-                catch
-                {
-                    MessageBox.Show("Could not locate the item 'BufferLayerName' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    LoadedXML = false;
-                    return;
-                }
+
                 
                 try
                 {
@@ -191,6 +158,20 @@ namespace HLSearchesToolConfig
                 catch
                 {
                     MessageBox.Show("Could not locate the item 'SiteColumn' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoadedXML = false;
+                    return;
+                }
+
+                try
+                {
+                    RequireSiteName = false;
+                    strRawText = xmlDataSearch["RequireSiteName"].InnerText;
+                    if (strRawText.ToLower() == "yes" || strRawText.ToLower() == "y")
+                        RequireSiteName = true;
+                }
+                catch
+                {
+                    MessageBox.Show("Could not locate the item 'RequireSiteName' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     LoadedXML = false;
                     return;
                 }
@@ -339,7 +320,32 @@ namespace HLSearchesToolConfig
                     LoadedXML = false;
                     return;
                 }
-                
+
+
+                try
+                {
+                    BufferLayer = xmlDataSearch["BufferLayerName"].InnerText;
+                }
+                catch
+                {
+                    MessageBox.Show("Could not locate the item 'BufferLayerName' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoadedXML = false;
+                    return;
+                }
+
+                try
+                {
+                    KeepBufferArea = false;
+                    strRawText = xmlDataSearch["KeepBufferArea"].InnerText;
+                    if (strRawText.ToLower() == "yes" || strRawText.ToLower() == "y")
+                        KeepBufferArea = true;
+                }
+                catch
+                {
+                    MessageBox.Show("Could not locate the item 'KeepBufferArea' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoadedXML = false;
+                    return;
+                }
 
                 try
                 {
@@ -385,6 +391,33 @@ namespace HLSearchesToolConfig
                 catch
                 {
                     MessageBox.Show("Could not locate the item 'SearchColumn' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoadedXML = false;
+                    return;
+                }
+
+                try
+                {
+                    KeepSearchFeature = false;
+                    strRawText = xmlDataSearch["KeepSearchFeature"].InnerText;
+                    if (strRawText.ToLower() == "yes" || strRawText.ToLower() == "y")
+                    {
+                        KeepSearchFeature = true;
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show("Could not locate the item 'KeepSearchFeature' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoadedXML = false;
+                    return;
+                }
+
+                try
+                {
+                    SearchSymbologyBase = xmlDataSearch["SearchSymbologyBase"].InnerText;
+                }
+                catch
+                {
+                    MessageBox.Show("Could not locate the item 'SearchSymbologyBase' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     LoadedXML = false;
                     return;
                 }
@@ -959,11 +992,6 @@ namespace HLSearchesToolConfig
             return LayerDir;
         }
 
-        public string GetBufferLayer()
-        {
-            return BufferLayer;
-        }
-
         //public string GetEnquiriesDir()
         //{
         //    return EnquiriesDir;
@@ -977,6 +1005,11 @@ namespace HLSearchesToolConfig
         public string GetSiteColumn()
         {
             return SiteColumn;
+        }
+
+        public bool GetRequireSiteName()
+        {
+            return RequireSiteName;
         }
 
         public string GetReplaceChar()
@@ -1034,6 +1067,16 @@ namespace HLSearchesToolConfig
             return BufferUnitOptionsShort;
         }
 
+        public bool GetKeepBufferArea()
+        {
+            return KeepBufferArea;
+        }
+
+        public string GetBufferLayer()
+        {
+            return BufferLayer;
+        }
+
         public string GetSearchLayer()
         {
             return SearchLayer;
@@ -1047,6 +1090,16 @@ namespace HLSearchesToolConfig
         public string GetSearchColumn()
         {
             return SearchColumn;
+        }
+
+        public bool GetKeepSearchFeature()
+        {
+            return KeepSearchFeature;
+        }
+
+        public string GetSearchSymbologyBase()
+        {
+            return SearchSymbologyBase;
         }
 
         public string GetAggregateColumns()

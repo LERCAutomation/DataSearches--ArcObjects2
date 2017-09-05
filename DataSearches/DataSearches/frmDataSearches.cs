@@ -323,7 +323,9 @@ namespace DataSearches
                 return;
             }
 
-            if (strSiteName == "")
+            bool blRequireSiteName = myConfig.GetRequireSiteName();
+            // site name is not always required.
+            if (strSiteName == "" && blRequireSiteName)
             {
                 MessageBox.Show("Please enter a location");
                 this.BringToFront();
@@ -394,16 +396,23 @@ namespace DataSearches
             strSaveFolder = strSaveFolder.Replace("%shortref%", strShortRef);
             strSaveFolder = strSaveFolder.Replace("%subref%", strSubref);
             strSaveFolder = strSaveFolder.Replace("%sitename%", strSiteName);
+            // Take account of the occurrence of dangling underscores (if no site name was given).
+            if (strSaveFolder.Substring(strSaveFolder.Length - 1, 1) == "_")
+                strSaveFolder = strSaveFolder.Substring(0, strSaveFolder.Length - 1);
 
             strGISFolder = strGISFolder.Replace("%ref%", strReference);
             strGISFolder = strGISFolder.Replace("%shortref%", strShortRef);
             strGISFolder = strGISFolder.Replace("%subref%", strSubref);
             strGISFolder = strGISFolder.Replace("%sitename%", strSiteName);
+            if (strGISFolder.Substring(strGISFolder.Length - 1, 1) == "_")
+                strGISFolder = strGISFolder.Substring(0, strGISFolder.Length - 1);
 
             strLogFileName = strLogFileName.Replace("%ref%", strReference);
             strLogFileName = strLogFileName.Replace("%shortref%", strShortRef);
             strLogFileName = strLogFileName.Replace("%subref%", strSubref);
             strLogFileName = strLogFileName.Replace("%sitename%", strSiteName);
+            if (strLogFileName.Substring(strLogFileName.Length - 1, 1) == "_")
+                strLogFileName = strLogFileName.Substring(0, strLogFileName.Length - 1);
 
             // Remove any illegal characters from the names.
             strSaveFolder = myStringFuncs.StripIllegals(strSaveFolder, strReplaceChar);
@@ -518,6 +527,11 @@ namespace DataSearches
             string strOutputFile = strGISFolder + "\\" + strLayerName + ".shp";
             string strSubGroupLayerName = strSubref + "_" + strBufferSize + strBufferUnitShort;
             string strBufferFields = myConfig.GetAggregateColumns();
+            bool blKeepBuffer = myConfig.GetKeepBufferArea();
+
+            bool blKeepSearchFeature = myConfig.GetKeepSearchFeature();
+            string strSearchSymbology = myConfig.GetSearchSymbologyBase();
+            
 
             // Find the search feature.
             int aCount = 0;
@@ -541,6 +555,7 @@ namespace DataSearches
                             strTargetLayer = strSearchLayer;
                             aCount = aCount + 1;
                             myFileFuncs.WriteLine(strLogFile, "Found feature with reference " + strReference + " in layer " + strSearchLayer);
+                            strSearchSymbology = strSearchSymbology + strExtension + ".lyr";
                         }
                         else
                             aCount = aCount + 1;
@@ -602,25 +617,45 @@ namespace DataSearches
                 return;
             }
 
-            // Add aggregate columns to the buffer.
+
+            // Save the selected feature if required.
+            string strLayerDir = myConfig.GetLayerDir();
+            if (blKeepSearchFeature)
+            {
+                string strOutputFeature = "Feature_" + strSubref;
+                myArcMapFuncs.CopyFeatures(strTargetLayer, strGISFolder + "\\" + strOutputFeature);
+                if (strAddSelected.ToLower() != "no")
+                {
+                    // apply layer symbology
+                    myArcMapFuncs.ChangeLegend(strOutputFeature, strLayerDir + "\\" + strSearchSymbology);
+                    // Move it to the group layer
+                    myArcMapFuncs.MoveToSubGroupLayer(strShortRef, strSubGroupLayerName, myArcMapFuncs.GetLayer(strOutputFeature));
+                }
+                else
+                {
+                    myArcMapFuncs.RemoveLayer(strOutputFeature);
+                }
+            }
 
             // Clear the selected features.
             myArcMapFuncs.ClearSelectedMapFeatures(strTargetLayer);
 
             // Is the buffer in the map? If not, add it.
-            if (!myArcMapFuncs.LayerExists(strLayerName))
+            if (!myArcMapFuncs.LayerExists(strLayerName) && strAddSelected.ToLower() != "no")
             {
                 myArcMapFuncs.AddFeatureLayerFromString(strOutputFile);
             }
 
             // Add the buffer to the group layer. Zoom to the buffer.
-            myArcMapFuncs.MoveToSubGroupLayer(strShortRef, strSubGroupLayerName, myArcMapFuncs.GetLayer(strLayerName));
+            if (strAddSelected.ToLower() != "no")
+            {
+                myArcMapFuncs.MoveToSubGroupLayer(strShortRef, strSubGroupLayerName, myArcMapFuncs.GetLayer(strLayerName));
+                // Change the symbology of the buffer.
+                string strLayerFile = strLayerDir + @"\" + myConfig.GetBufferLayer();
+                myArcMapFuncs.ChangeLegend(strLayerName, strLayerFile);
+                myFileFuncs.WriteLine(strLogFile, "Buffer added to display");
+            }
             
-            // Change the symbology of the buffer.
-            string strLayerDir = myConfig.GetLayerDir();
-            string strLayerFile = strLayerDir + @"\" + myConfig.GetBufferLayer();
-            myArcMapFuncs.ChangeLegend(strLayerName, strLayerFile);
-            myFileFuncs.WriteLine(strLogFile, "Buffer added to display");
 
             // go through each of the requested layers and carry out the relevant analysis. 
             List<string> strLayerNames = myConfig.GetMapLayers();
@@ -844,42 +879,51 @@ namespace DataSearches
                     myFileFuncs.WriteLine(strLogFile, intLineCount.ToString() + " line(s) written for " + strDisplayName);
 
                     // Copy to permanent layer as appropriate
-                    if (blKeepLayer && strAddSelected.ToLower() != "no")
+                    if (blKeepLayer)
                     {
+                        // Keep the layer - write to permanent file.
                         myFileFuncs.WriteLine(strLogFile, "Copying selected GIS features from " + strDisplayName + " to " + strShapeOutputName);
                         myArcMapFuncs.CopyFeatures(strTempMaster, strShapeOutputName);
-                        myArcMapFuncs.MoveToSubGroupLayer(strShortRef, strSubGroupLayerName, myArcMapFuncs.GetLayer(strShapeLayerName));
-                        if (strDisplayLayer != "")
+                        if (strAddSelected.ToLower() != "no")
                         {
-                            string strDisplayLayerFile = strLayerDir + @"\" + strDisplayLayer;
-                            myArcMapFuncs.ChangeLegend(strShapeLayerName, strDisplayLayerFile, blDisplayLabel);
-                        }
-                        myFileFuncs.WriteLine(strLogFile, "Output " + strShapeLayerName + " added to display");
-                        if (strAddSelected.ToLower().Contains("with ") && blDisplayLabel)
-                        {
-                            // Translate the label string.
-                            if (strLabelClause != "" && strDisplayLayer == "") // Only if we don't have a layer file.
+                            myArcMapFuncs.MoveToSubGroupLayer(strShortRef, strSubGroupLayerName, myArcMapFuncs.GetLayer(strShapeLayerName));
+                            if (strDisplayLayer != "")
                             {
-                                List<string> strLabelOptions = strLabelClause.Split('$').ToList();
-                                string strFont = strLabelOptions[0].Split(':')[1];
-                                double dblSize = double.Parse(strLabelOptions[1].Split(':')[1]); // Needs error trapping
-                                int intRed = int.Parse(strLabelOptions[2].Split(':')[1]); // Needs error trapping
-                                int intGreen = int.Parse(strLabelOptions[3].Split(':')[1]);
-                                int intBlue = int.Parse(strLabelOptions[4].Split(':')[1]);
-                                string strOverlap = strLabelOptions[5].Split(':')[1];
-                                myArcMapFuncs.AnnotateLayer(strShapeLayerName, "[" + strLabelColumn + "]", strFont, dblSize,
-                                    intRed, intGreen, intBlue, strOverlap);
-                                myFileFuncs.WriteLine(strLogFile, "Labels added to output " + strShapeLayerName);
+                                string strDisplayLayerFile = strLayerDir + @"\" + strDisplayLayer;
+                                myArcMapFuncs.ChangeLegend(strShapeLayerName, strDisplayLayerFile, blDisplayLabel);
                             }
-                            else if (strLabelColumn != "" && strDisplayLayer == "")
+                            myFileFuncs.WriteLine(strLogFile, "Output " + strShapeLayerName + " added to display");
+                            if (strAddSelected.ToLower().Contains("with ") && blDisplayLabel)
                             {
-                                myArcMapFuncs.AnnotateLayer(strShapeLayerName, "[" + strLabelColumn + "]");
-                                myFileFuncs.WriteLine(strLogFile, "Labels added to output " + strShapeLayerName);
+                                // Translate the label string.
+                                if (strLabelClause != "" && strDisplayLayer == "") // Only if we don't have a layer file.
+                                {
+                                    List<string> strLabelOptions = strLabelClause.Split('$').ToList();
+                                    string strFont = strLabelOptions[0].Split(':')[1];
+                                    double dblSize = double.Parse(strLabelOptions[1].Split(':')[1]); // Needs error trapping
+                                    int intRed = int.Parse(strLabelOptions[2].Split(':')[1]); // Needs error trapping
+                                    int intGreen = int.Parse(strLabelOptions[3].Split(':')[1]);
+                                    int intBlue = int.Parse(strLabelOptions[4].Split(':')[1]);
+                                    string strOverlap = strLabelOptions[5].Split(':')[1];
+                                    myArcMapFuncs.AnnotateLayer(strShapeLayerName, "[" + strLabelColumn + "]", strFont, dblSize,
+                                        intRed, intGreen, intBlue, strOverlap);
+                                    myFileFuncs.WriteLine(strLogFile, "Labels added to output " + strShapeLayerName);
+                                }
+                                else if (strLabelColumn != "" && strDisplayLayer == "")
+                                {
+                                    myArcMapFuncs.AnnotateLayer(strShapeLayerName, "[" + strLabelColumn + "]");
+                                    myFileFuncs.WriteLine(strLogFile, "Labels added to output " + strShapeLayerName);
+                                }
+                            }
+                            else
+                            {
+                                myArcMapFuncs.SwitchLabels(strShapeLayerName, blDisplayLabel);
                             }
                         }
                         else
                         {
-                            myArcMapFuncs.SwitchLabels(strShapeLayerName, blDisplayLabel);
+                            // User doesn't want to add the layer to the display.
+                            myArcMapFuncs.RemoveLayer(strShapeLayerName);
                         }
                     }
                     myArcMapFuncs.RemoveLayer(strTempOutput);
@@ -919,6 +963,27 @@ namespace DataSearches
 
             }
 
+            // Do we want to keep the buffer layer? If not, remove it.
+            
+            if (!blKeepBuffer)
+            {
+                try
+                {
+                    myArcMapFuncs.RemoveLayer(strLayerName);
+                    myArcMapFuncs.DeleteFeatureclass(strOutputFile);
+                    myFileFuncs.WriteLine(strLogFile, "Buffer layer deleted.");
+                    
+                }
+                catch
+                {
+                    MessageBox.Show("Error deleting the buffer layer.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else if (strAddSelected.ToLower() == "no")
+            {
+                myArcMapFuncs.RemoveLayer(strLayerName);
+            }
+
             // All done, bring to front etc. 
             myFileFuncs.WriteLine(strLogFile, "---------------------------------------------------------------------------");
             myFileFuncs.WriteLine(strLogFile, "Process complete");
@@ -946,63 +1011,71 @@ namespace DataSearches
             
             if (txtSearch.Text != "" && txtSearch.Text.Length >= 2) // Only fire it when it looks like we have a complete reference.
             {
-                
-                string strAccessConn = "Provider='Microsoft.Jet.OLEDB.4.0';data source='" + myConfig.GetDatabase() + "'";
-                string strQuery = "SELECT " + myConfig.GetSiteColumn() + " from Enquiries WHERE " + myConfig.GetRefColumn() + " = " + '"' + txtSearch.Text + '"';
-                string strLocation = "";
-                OleDbConnection myAccessConn = null;
-                try
-                {
-                    myAccessConn = new OleDbConnection(strAccessConn);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error: Failed to create a database connection. System error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                DataSet myDataSet = new DataSet();
-                try
+                // Do we have a database name? If so, look up the reference.
+                if (myConfig.GetDatabase() != "")
                 {
 
-                    OleDbCommand myAccessCommand = new OleDbCommand(strQuery, myAccessConn);
-                    OleDbDataAdapter myDataAdapter = new OleDbDataAdapter(myAccessCommand);
+                    string strAccessConn = "Provider='Microsoft.Jet.OLEDB.4.0';data source='" + myConfig.GetDatabase() + "'";
+                    string strQuery = "SELECT " + myConfig.GetSiteColumn() + " from Enquiries WHERE LCASE(" + myConfig.GetRefColumn() + ") = " + '"' + txtSearch.Text.ToLower() + '"';
+                    string strLocation = "";
+                    OleDbConnection myAccessConn = null;
+                    try
+                    {
+                        myAccessConn = new OleDbConnection(strAccessConn);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error: Failed to create a database connection. System error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
 
-                    myAccessConn.Open();
-                    myDataAdapter.Fill(myDataSet, "Enquiries");
+                    DataSet myDataSet = new DataSet();
+                    try
+                    {
 
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error: Failed to retrieve the required data from the database. System error:" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                finally
-                {
-                    myAccessConn.Close();
-                }
+                        OleDbCommand myAccessCommand = new OleDbCommand(strQuery, myAccessConn);
+                        OleDbDataAdapter myDataAdapter = new OleDbDataAdapter(myAccessCommand);
 
-                DataRowCollection myRS = myDataSet.Tables["Enquiries"].Rows;
-                foreach (DataRow aRow in myRS) // Really there should only be one. We can check for this.
-                {
-                    // Get the location name
-                    strLocation = aRow[0].ToString();
-                }
+                        myAccessConn.Open();
+                        myDataAdapter.Fill(myDataSet, "Enquiries");
 
-                if (strLocation != "")
-                {
-                    // The location is known. Fill it in and do not allow editing.
-                    txtLocation.Text = strLocation;
-                    txtLocation.Enabled = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error: Failed to retrieve the required data from the database. System error:" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    finally
+                    {
+                        myAccessConn.Close();
+                    }
+
+                    DataRowCollection myRS = myDataSet.Tables["Enquiries"].Rows;
+                    foreach (DataRow aRow in myRS) // Really there should only be one. We can check for this.
+                    {
+                        // Get the location name
+                        strLocation = aRow[0].ToString();
+                    }
+
+                    if (strLocation != "")
+                    {
+                        // The location is known. Fill it in and do not allow editing.
+                        txtLocation.Text = strLocation;
+                        txtLocation.Enabled = false;
+                    }
+                    else
+                    {
+                        // The location is not known. Allow user to enter it.
+                        txtLocation.Text = "";
+                        txtLocation.Enabled = true;
+                        // Should we allow an update??
+                    }
+
                 }
                 else
                 {
-                    // The location is not known. Allow user to enter it.
-                    txtLocation.Text = "";
                     txtLocation.Enabled = true;
-                    // Should we allow an update??
                 }
-
             }
             else
             {
