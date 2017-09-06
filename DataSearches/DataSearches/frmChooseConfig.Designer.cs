@@ -36,6 +36,7 @@
             // 
             // cmbChooseXML
             // 
+            this.cmbChooseXML.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbChooseXML.FormattingEnabled = true;
             this.cmbChooseXML.Location = new System.Drawing.Point(12, 35);
             this.cmbChooseXML.Name = "cmbChooseXML";
