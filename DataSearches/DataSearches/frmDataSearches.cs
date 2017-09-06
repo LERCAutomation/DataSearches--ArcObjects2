@@ -387,6 +387,7 @@ namespace DataSearches
             string strSaveFolder = myConfig.GetSaveFolder();
             string strGISFolder = myConfig.GetGISFolder();
             string strLogFileName = myConfig.GetLogFileName();
+            string strCombinedSitesName = myConfig.GetCombinedSitesTableName();
 
             string strUserID = Environment.UserName;
             string strTempFolder = strSaveRootDir + @"\Temp";
@@ -414,10 +415,18 @@ namespace DataSearches
             if (strLogFileName.Substring(strLogFileName.Length - 1, 1) == "_")
                 strLogFileName = strLogFileName.Substring(0, strLogFileName.Length - 1);
 
+            strCombinedSitesName = strCombinedSitesName.Replace("%ref%", strReference);
+            strCombinedSitesName = strCombinedSitesName.Replace("%shortref%", strShortRef);
+            strCombinedSitesName = strCombinedSitesName.Replace("%subref%", strSubref);
+            strCombinedSitesName = strCombinedSitesName.Replace("%sitename%", strSiteName);
+            if (strCombinedSitesName.Substring(strCombinedSitesName.Length - 1, 1) == "_")
+                strCombinedSitesName = strCombinedSitesName.Substring(0, strCombinedSitesName.Length - 1);
+
             // Remove any illegal characters from the names.
             strSaveFolder = myStringFuncs.StripIllegals(strSaveFolder, strReplaceChar);
             strGISFolder = myStringFuncs.StripIllegals(strGISFolder, strReplaceChar);
             strLogFileName = myStringFuncs.StripIllegals(strLogFileName, strReplaceChar, true);
+            strCombinedSitesName = myStringFuncs.StripIllegals(strCombinedSitesName, strReplaceChar);
 
             // Trim any trailing spaces since directory functions don't deal with them and it causes a crash.
             strSaveFolder = strSaveFolder.Trim();
@@ -660,8 +669,8 @@ namespace DataSearches
             // go through each of the requested layers and carry out the relevant analysis. 
             List<string> strLayerNames = myConfig.GetMapLayers();
             List<string> strDisplayNames = myConfig.GetMapNames();
-            List<string> strPrefixes = myConfig.GetMapPrefixes();
-            List<string> strSuffixes = myConfig.GetMapSuffixes();
+            List<string> strGISOutNames = myConfig.GetMapGISOutNames();
+            List<string> strTableOutNames = myConfig.GetMapTableOutNames();
             List<string> strColumnList = myConfig.GetMapColumns();
             List<string> strGroupColumnList = myConfig.GetMapGroupByColumns();
             List<string> strStatsColumnList = myConfig.GetMapStatisticsColumns();
@@ -684,10 +693,10 @@ namespace DataSearches
             //List<string> strCombinedSitesCriteriaList = myConfig.GetMapCombinedSitesCriteria();
 
             // Start the combined sites table before we do any analysis.
-            //string strCombinedTable = myConfig.GetCombinedSitesTableName();
             string strCombinedFormat = myConfig.GetCombinedSitesTableFormat();
-            string strCombinedSuffix = myConfig.GetCombinedSitesTableSuffix();
-            string strCombinedTable = strGISFolder + @"\" + strSubref + strCombinedSuffix + "." + strCombinedFormat;
+            //string strCombinedSuffix = myConfig.GetCombinedSitesTableSuffix();
+            
+            string strCombinedTable = strGISFolder + @"\" + strCombinedSitesName + "." + strCombinedFormat;
             if (blCombinedTable)
             {
                 string strCombinedSitesHeader = myConfig.GetCombinedSitesTableColumns();
@@ -732,8 +741,8 @@ namespace DataSearches
                 // Get all the settings relevant to this layer.
                 int intIndex = strLayerNames.IndexOf(aLayer); // Finds the first occurrence. 
                 string strDisplayName = strDisplayNames[intIndex];
-                string strPrefix = strPrefixes[intIndex];
-                string strSuffix = strSuffixes[intIndex];
+                string strGISOutName = strGISOutNames[intIndex];
+                string strTableOutName = strTableOutNames[intIndex];
                 string strColumns = strColumnList[intIndex]; // Note there could be multiple columns.
                 string strGroupColumns = strGroupColumnList[intIndex];
                 string strStatsColumns = strStatsColumnList[intIndex];
@@ -756,6 +765,20 @@ namespace DataSearches
                 string strCombinedSitesOrderColumns = strCombinedSitesOrderColumnList[intIndex];
                 //string strCombinedSitesCriteria = strCombinedSitesCriteriaList[intIndex];
 
+                // Deal with wildcards in the output names.
+                strGISOutName = strGISOutName.Replace("%ref%", strReference);
+                strGISOutName = strGISOutName.Replace("%shortref%", strShortRef);
+                strGISOutName = strGISOutName.Replace("%subref%", strSubref);
+                strGISOutName = strGISOutName.Replace("%sitename%", strSiteName);
+                if (strGISOutName.Substring(strGISOutName.Length - 1, 1) == "_")
+                    strGISOutName = strGISOutName.Substring(0, strGISOutName.Length - 1);
+
+                strTableOutName = strTableOutName.Replace("%ref%", strReference);
+                strTableOutName = strTableOutName.Replace("%shortref%", strShortRef);
+                strTableOutName = strTableOutName.Replace("%subref%", strSubref);
+                strTableOutName = strTableOutName.Replace("%sitename%", strSiteName);
+                if (strTableOutName.Substring(strTableOutName.Length - 1, 1) == "_")
+                    strTableOutName = strTableOutName.Substring(0, strTableOutName.Length - 1);
 
                 strStatsColumns = myStringFuncs.AlignStatsColumns(strColumns, strStatsColumns, strGroupColumns);
                 //if (blIncludeDistance && !strColumns.Contains("Distance") && !strGroupColumns.Contains("Distance"))
@@ -765,9 +788,9 @@ namespace DataSearches
                 strCombinedSitesStatsColumns = myStringFuncs.AlignStatsColumns(strCombinedSitesColumns, strCombinedSitesStatsColumns, strCombinedSitesGroupColumns);
 
                 // Create relevant output name. Note this is done whether or not the layer is eventually kept.
-                string strShapeLayerName = strPrefix + "_" + strSubref; // Use the prefix as the layer name.
-                string strShapeOutputName = strGISFolder + @"\" + strShapeLayerName + ".shp"; // output shapefile / feature class name
-                string strTableOutputName = strGISFolder + @"\" + strSubref + strSuffix + "." + strFormat; // output table name
+                string strShapeLayerName = strGISOutName;
+                string strShapeOutputName = strGISFolder + @"\" + strGISOutName; // output shapefile / feature class name. Note no extension to allow write to GDB
+                string strTableOutputName = strGISFolder + @"\" + strTableOutName + "." + strFormat.ToLower(); // output table name
 
                 myFileFuncs.WriteLine(strLogFile, "Starting analysis for " + aLayer);
 
@@ -882,7 +905,7 @@ namespace DataSearches
                     if (blKeepLayer)
                     {
                         // Keep the layer - write to permanent file.
-                        myFileFuncs.WriteLine(strLogFile, "Copying selected GIS features from " + strDisplayName + " to " + strShapeOutputName);
+                        myFileFuncs.WriteLine(strLogFile, "Copying selected GIS features from " + strDisplayName + " to " + strShapeOutputName + ".shp");
                         myArcMapFuncs.CopyFeatures(strTempMaster, strShapeOutputName);
                         if (strAddSelected.ToLower() != "no")
                         {

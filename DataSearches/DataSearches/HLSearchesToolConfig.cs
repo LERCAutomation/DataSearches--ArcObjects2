@@ -45,15 +45,15 @@ namespace HLSearchesToolConfig
         int DefaultOverwriteLabels;
         List<string> CombinedSitesTableOptions = new List<string>();
         int DefaultCombinedSitesTable; // -1, 0, 1, 2 (not filled in, none, append, overwrite)
-        //string CombinedSitesTableName;
+        string CombinedSitesTableName;
         string CombinedSitesTableColumns;
         string CombinedSitesTableSuffix;
         string CombinedSitesTableFormat;
 
         List<string> MapLayers = new List<string>();
         List<string> MapNames = new List<string>();
-        List<string> MapPrefixes = new List<string>();
-        List<string> MapSuffixes = new List<string>();
+        List<string> MapGISOutNames = new List<string>();
+        List<string> MapTableOutNames = new List<string>();
         List<string> MapColumns = new List<string>();
         List<string> MapCriteria = new List<string>();
         List<string> MapGroupColumns = new List<string>();
@@ -569,6 +569,16 @@ namespace HLSearchesToolConfig
                     return;
                 }
 
+                try
+                {
+                    CombinedSitesTableName = xmlDataSearch["CombinedSitesTable"]["Name"].InnerText;
+                }
+                catch
+                {
+                    MessageBox.Show("Could not locate the item 'Name' for entry 'CombinedSitesTable' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoadedXML = false;
+                    return;
+                }
 
                 try
                 {
@@ -581,16 +591,16 @@ namespace HLSearchesToolConfig
                     return;
                 }
 
-                try
-                {
-                    CombinedSitesTableSuffix = xmlDataSearch["CombinedSitesTable"]["Suffix"].InnerText;
-                }
-                catch
-                {
-                    MessageBox.Show("Could not locate the item 'Suffix' for entry 'CombinedSitesTable' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    LoadedXML = false;
-                    return;
-                }
+                //try
+                //{
+                //    CombinedSitesTableSuffix = xmlDataSearch["CombinedSitesTable"]["Suffix"].InnerText;
+                //}
+                //catch
+                //{
+                //    MessageBox.Show("Could not locate the item 'Suffix' for entry 'CombinedSitesTable' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //    LoadedXML = false;
+                //    return;
+                //}
 
                 try
                 {
@@ -635,11 +645,11 @@ namespace HLSearchesToolConfig
 
                     try
                     {
-                        MapPrefixes.Add(aNode["Prefix"].InnerText);
+                        MapGISOutNames.Add(aNode["GISOutputName"].InnerText);
                     }
                     catch
                     {
-                        MessageBox.Show("Could not locate the item 'Prefix' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Could not locate the item 'GISOutputName' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         LoadedXML = false;
                         return;
                     }
@@ -647,11 +657,11 @@ namespace HLSearchesToolConfig
 
                     try
                     {
-                        MapSuffixes.Add(aNode["Suffix"].InnerText);
+                        MapTableOutNames.Add(aNode["TableOutputName"].InnerText);
                     }
                     catch
                     {
-                        MessageBox.Show("Could not locate the item 'Suffix' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Could not locate the item 'TableOutputName' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         LoadedXML = false;
                         return;
                     }
@@ -1138,20 +1148,20 @@ namespace HLSearchesToolConfig
         }
 
         // 3. Setup of the combined sites table.
-        //public string GetCombinedSitesTableName()
-        //{
-        //    return CombinedSitesTableName;
-        //}
+        public string GetCombinedSitesTableName()
+        {
+            return CombinedSitesTableName;
+        }
 
         public string GetCombinedSitesTableColumns()
         {
             return CombinedSitesTableColumns;
         }
 
-        public string GetCombinedSitesTableSuffix()
-        {
-            return CombinedSitesTableSuffix;
-        }
+        //public string GetCombinedSitesTableSuffix()
+        //{
+        //    return CombinedSitesTableSuffix;
+        //}
 
         public string GetCombinedSitesTableFormat()
         {
@@ -1170,14 +1180,14 @@ namespace HLSearchesToolConfig
             return MapNames;
         }
 
-        public List<string> GetMapPrefixes()
+        public List<string> GetMapGISOutNames()
         {
-            return MapPrefixes;
+            return MapGISOutNames;
         }
 
-        public List<string> GetMapSuffixes()
+        public List<string> GetMapTableOutNames()
         {
-            return MapSuffixes;
+            return MapTableOutNames;
         }
 
         public List<string> GetMapColumns()

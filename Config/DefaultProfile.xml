@@ -165,14 +165,19 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		<value>1</value> <!-- 1, 2, 3 -->
 	</DefaultCombinedSitesTable>
 
-	<!-- The column names of the combined sites table -->
+	<!-- The name of the combined sites table (allows for search variables (e.g. %ref%, %shortref%) -->
+	<CombinedSitesTableName>
+		<value>Sites_%subref%</value>
+	</CombinedSitesTableName>
+
+	<!-- The details of the combined sites table -->
 	<CombinedSitesTable>
+		<Name>
+			<value>Sites_%subref%</value> <!-- do not include .txt or .csv -->
+		</Name>
 		<Columns>
 			<value>Site_Type,Site_Name,Site_Area,Map_Label</value>
 		</Columns>
-		<Suffix>
-			<value>_sites</value>
-		</Suffix>
 		<Format>
 			<value>csv</value>
 		</Format>
@@ -183,15 +188,15 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 	<!-- The names, local names, suffixes, SQL clauses and formats of the map tables -->
 	<MapLayers>
 		<Points_-_ExampleSpeciesPoints>
-			<LayerName> 
+			<LayerName> <!-- The name of the layer in the display -->
 				<value>ExampleSpeciesPoints</value>
 			</LayerName>
-			<Prefix> 
-				<value>ExampleSpecies</value><!-- The prefix used for any GIS data extracts -->
-			</Prefix>
-			<Suffix> 
-				<value>_spppts</value><!-- The suffix used for any tabular extracts -->
-			</Suffix>
+			<GISOutputName> 
+				<value>%subref%_ExampleSpecies</value><!-- The name used for any GIS data extracts -->
+			</GISOutputName>
+			<TableOutputName> 
+				<value>%shortref%_spptable</value><!-- The name used for any tabular extracts -->
+			</TableOutputName>
 			<Columns> <!-- The columns to be used in the tabular extracts -->
 				<value>Species, Year, COUNT_Spec</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</Columns>
@@ -266,12 +271,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<LayerName>
 				<value>Sussex_SACs</value>
 			</LayerName>
-			<Prefix>
-				<value>SACs</value>
-			</Prefix>
-			<Suffix>
-				<value>_sacs</value>
-			</Suffix>
+			<GISOutputName>
+				<value>%shortref%_SACs</value>
+			</GISOutputName>
+			<TableOutputName>
+				<value>%subref%_sacs</value>
+			</TableOutputName>
 			<Columns>
 				<value>SAC_NAME, SAC_CODE</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</Columns>
@@ -344,12 +349,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<LayerName>
 				<value>Sussex_SPAs</value>
 			</LayerName>
-			<Prefix>
+			<GISOutputName>
 				<value>SPAs</value>
-			</Prefix>
-			<Suffix>
+			</GISOutputName>
+			<TableOutputName>
 				<value>_spas</value>
-			</Suffix>
+			</TableOutputName>
 			<Columns>
 				<value>SPA_NAME</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</Columns>
@@ -422,12 +427,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<LayerName>
 				<value>Sussex_Ramsars</value>
 			</LayerName>
-			<Prefix>
+			<GISOutputName>
 				<value>Ramsars</value>
-			</Prefix>
-			<Suffix>
+			</GISOutputName>
+			<TableOutputName>
 				<value>_ramsars</value>
-			</Suffix>
+			</TableOutputName>
 			<Columns>
 				<value>NAME</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</Columns>
@@ -500,12 +505,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<LayerName>
 				<value>Sussex SSSIs</value>
 			</LayerName>
-			<Prefix>
-				<value>SSSIs</value>
-			</Prefix>
-			<Suffix>
-				<value>_sssis</value>
-			</Suffix>
+			<GISOutputName>
+				<value>%subref%_SSSIs</value>
+			</GISOutputName>
+			<TableOutputName>
+				<value>%shortref%_sssis</value>
+			</TableOutputName>
 			<Columns>
 				<value>SSSI_NAME</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</Columns>
@@ -579,12 +584,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<LayerName>
 				<value>Sussex_NNRs</value>
 			</LayerName>
-			<Prefix>
+			<GISOutputName>
 				<value>NNRs</value>
-			</Prefix>
-			<Suffix>
+			</GISOutputName>
+			<TableOutputName>
 				<value>_nnrs</value>
-			</Suffix>
+			</TableOutputName>
 			<Columns>
 				<value>NNR_NAME, theBla</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</Columns>
@@ -657,12 +662,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<LayerName>
 				<value>Sussex_LNR</value>
 			</LayerName>
-			<Prefix>
+			<GISOutputName>
 				<value>LNRs</value>
-			</Prefix>
-			<Suffix>
+			</GISOutputName>
+			<TableOutputName>
 				<value>_lnrs</value>
-			</Suffix>
+			</TableOutputName>
 			<Columns>
 				<value>LNR_NAME</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</Columns>
@@ -735,12 +740,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<LayerName>
 				<value>LWS_Sussex</value>
 			</LayerName>
-			<Prefix>
+			<GISOutputName>
 				<value>LWS</value>
-			</Prefix>
-			<Suffix>
+			</GISOutputName>
+			<TableOutputName>
 				<value>_lws</value>
-			</Suffix>
+			</TableOutputName>
 			<Columns>
 				<value>siteid</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</Columns>
@@ -813,12 +818,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<LayerName>
 				<value>Sussex_AONBs</value>
 			</LayerName>
-			<Prefix>
+			<GISOutputName>
 				<value>AONBs</value>
-			</Prefix>
-			<Suffix>
+			</GISOutputName>
+			<TableOutputName>
 				<value>_aonbs</value>
-			</Suffix>
+			</TableOutputName>
 			<Columns>
 				<value>NAME</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</Columns>
@@ -891,12 +896,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<LayerName>
 				<value>Sussex_Country_Parks</value>
 			</LayerName>
-			<Prefix>
+			<GISOutputName>
 				<value>CountryPks</value>
-			</Prefix>
-			<Suffix>
+			</GISOutputName>
+			<TableOutputName>
 				<value>_cps</value>
-			</Suffix>
+			</TableOutputName>
 			<Columns>
 				<value>NAME</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</Columns>
@@ -969,12 +974,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<LayerName>
 				<value>Protected Species</value>
 			</LayerName>
-			<Prefix>
+			<GISOutputName>
 				<value>SppProt</value>
-			</Prefix>
-			<Suffix>
+			</GISOutputName>
+			<TableOutputName>
 				<value>_sppprot</value>
-			</Suffix>
+			</TableOutputName>
 			<Columns> <!-- Use commas to separate. NOTE case sensitive! -->
 				<value>LATIN_NAME, SPP_NAME, STATUS_PLANNING, STATUS_OTHER, QUALIFIER, Distance(CentroidX(Select_Table.obj), CentroidY(Select_Table.obj), CentroidX(Buffer_Area.obj), CentroidY(Buffer_Area.obj), "m")"DISTANCE", CentroidX(Select_Table.obj)"SppX", CentroidY(Select_Table.obj)"SppY", CentroidX(Buffer_Area.obj)"SearchX", CentroidY(Buffer_Area.obj)"SearchY", DATE_START, DATE_END, DATE_RANGE, BREEDING_STATUS</value>
 			</Columns>
@@ -1047,12 +1052,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<LayerName>
 				<value>All Species</value>
 			</LayerName>
-			<Prefix>
+			<GISOutputName>
 				<value>SppINNS</value>
-			</Prefix>
-			<Suffix>
+			</GISOutputName>
+			<TableOutputName>
 				<value>_sppinns</value>
-			</Suffix>
+			</TableOutputName>
 			<Columns> <!-- Use commas to separate. NOTE case sensitive! -->
 				<value>LATIN_NAME, SPP_NAME, STATUS_LISI, QUALIFIER, Distance(CentroidX(Select_Table.obj), CentroidY(Select_Table.obj), CentroidX(Buffer_Area.obj), CentroidY(Buffer_Area.obj), "m")"DISTANCE", DATE_START, DATE_END, DATE_RANGE, GRIDREF</value>
 			</Columns>
