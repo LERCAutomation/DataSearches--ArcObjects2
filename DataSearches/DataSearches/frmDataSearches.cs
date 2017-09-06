@@ -904,7 +904,7 @@ namespace DataSearches
                     // Copy to permanent layer as appropriate
                     if (blKeepLayer)
                     {
-                        // Keep the layer - write to permanent file.
+                        // Keep the layer - write to permanent file (note this is not the summarised layer).
                         myFileFuncs.WriteLine(strLogFile, "Copying selected GIS features from " + strDisplayName + " to " + strShapeOutputName + ".shp");
                         myArcMapFuncs.CopyFeatures(strTempMaster, strShapeOutputName);
                         if (strAddSelected.ToLower() != "no")

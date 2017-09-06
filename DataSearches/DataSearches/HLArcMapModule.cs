@@ -2306,7 +2306,7 @@ namespace HLArcMapModule
             IGeoProcessorResult myresult = new GeoProcessorResultClass();
 
             // If we are including distance, the process is slighly different.
-            if (GroupColumns != null && GroupColumns != "") // include group columns.
+            if ((GroupColumns != null && GroupColumns != "") || StatisticsColumns != "") // include group columns OR statistics columns.
             {
                 string strOutFile = TempShapeFile;
                 if (!IncludeDistance)

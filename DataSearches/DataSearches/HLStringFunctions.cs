@@ -169,7 +169,7 @@ namespace HLStringFunctions
 
         public string AlignStatsColumns(string AllColumns, string StatsColumns, string GroupColumns)
         {
-            if (GroupColumns == "" || AllColumns == "")
+            if (AllColumns == "") //GroupColumns == "" || 
                 return StatsColumns;
             List<string> liAllColumns = AllColumns.Split(',').ToList();
             foreach (string strFieldName in liAllColumns)

@@ -512,13 +512,13 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>%shortref%_sssis</value>
 			</TableOutputName>
 			<Columns>
-				<value>SSSI_NAME</value> <!-- Use commas to separate. NOTE case sensitive! -->
+				<value>SSSI_NAME,FIRST_SSSI,SUM_AREA</value> <!-- Use commas to separate. NOTE case sensitive! It is possible to fool the system a little as is demonstrated above, which will include SSSI_NAME in the analysis and include the abbreviated column FIRST_SSSI (from FIRST_SSSI_NAME) as output. -->
 			</Columns>
 			<GroupColumns>
-				<value>SSSI_NAME</value> <!-- Use commas to separate. NOTE case sensitive! -->
+				<value></value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</GroupColumns>
 			<StatisticsColumns>
-				<value></value><!-- example: area_ha;SUM$Status;FIRST -->
+				<value>AREA;SUM</value><!-- example: area_ha;SUM$Status;FIRST -->
 			</StatisticsColumns>
 			<OrderColumns> <!-- Overrides GroupColumns -->
 				<value></value>
