@@ -19,7 +19,7 @@ namespace HLSearchesToolLaunchConfig
     class SearchesToolLaunchConfig
     {
         bool blChooseConfig;
-        string strDefaultXML;
+        string strDefaultXML = "DefaultProfile.xml";
 
         bool FoundXML;
         bool LoadedXML;
@@ -104,7 +104,9 @@ namespace HLSearchesToolLaunchConfig
                 // Get the default XML file.
                 try
                 {
-                    strDefaultXML = xmlDataSearch["DefaultProfile"].InnerText;
+                    strRawText = xmlDataSearch["DefaultProfile"].InnerText;
+                    if (strRawText != "")
+                        strDefaultXML = strRawText; // If there is an entry; otherwise use the default.
                 }
                 catch
                 {
