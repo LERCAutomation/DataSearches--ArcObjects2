@@ -27,7 +27,7 @@ namespace DataSearches
             {
                 // Add it if it's not DataSearches.xml.
                 string aFileName = myFileFuncs.GetFileName(aFile);
-                if (aFileName.ToLower() != "datasearches.xml")
+                if (aFileName.ToLower() != "datasearches.xml" && myFileFuncs.GetExtension(aFile).ToLower() == "xml")
                 {
                     myFilteredFiles.Add(aFileName);
                     if (aFileName.ToLower() == DefaultXMLName.ToLower())

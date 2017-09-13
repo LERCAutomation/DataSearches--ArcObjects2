@@ -61,7 +61,29 @@ namespace DataSearches
             if (blOpenForm)
             {
                 string strXMLFolder = myFileFuncs.GetDirectoryName(Settings.Default.XMLFile);
-                if (myLaunchConfig.ChooseConfig)
+                bool blOnlyDefault = true;
+                int intCount = 0;
+                if (myLaunchConfig.ChooseConfig) // If we are allowed to choose, check if there are multiple profiles. 
+                    // If there is only the default XML file in the directory, launch the form. Otherwise the user has to choose.
+                {
+                    foreach (string strFileName in myFileFuncs.GetAllFilesInDirectory(strXMLFolder))
+                    {
+                        if (myFileFuncs.GetFileName(strFileName).ToLower() != "datasearches.xml" && myFileFuncs.GetExtension(strFileName).ToLower() == "xml")
+                        {
+                            // is it the default?
+                            intCount++;
+                            if (myFileFuncs.GetFileName(strFileName) != myLaunchConfig.DefaultXML)
+                            {
+                                blOnlyDefault = false;
+                            }
+                        }
+                    }
+                    if (intCount > 1)
+                    {
+                        blOnlyDefault = false;
+                    }
+                }
+                if (myLaunchConfig.ChooseConfig && !blOnlyDefault)
                 {
                     // User has to choose the configuration file first.
                     

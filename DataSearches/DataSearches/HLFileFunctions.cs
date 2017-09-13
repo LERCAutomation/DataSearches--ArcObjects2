@@ -92,6 +92,15 @@ namespace HLFileFunctions
             return aFile;
         }
 
+        public string GetExtension(string aFullPath)
+        {
+            if (aFullPath == null) return null;
+
+            // get the last three letters.
+            string anExtension = aFullPath.Substring(aFullPath.Length - 3, 3);
+            return anExtension;
+        }
+
         public List<string> GetAllFilesInDirectory(string aPath)
         {
             List<string> myFileList = new List<string>();
