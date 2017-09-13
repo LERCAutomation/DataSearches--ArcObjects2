@@ -165,10 +165,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		<value>1</value> <!-- 1, 2, 3 -->
 	</DefaultCombinedSitesTable>
 
-	<!-- The name of the combined sites table (allows for search variables (e.g. %ref%, %shortref%) -->
-	<CombinedSitesTableName>
-		<value>Sites_%subref%</value>
-	</CombinedSitesTableName>
 
 	<!-- The details of the combined sites table -->
 	<CombinedSitesTable>

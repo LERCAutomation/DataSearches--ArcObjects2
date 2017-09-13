@@ -83,7 +83,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cmbChooseXML);
             this.Name = "frmChooseConfig";
-            this.Text = "frmChooseConfig";
+            this.Text = "Choose XML File";
             this.Load += new System.EventHandler(this.frmChooseConfig_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
