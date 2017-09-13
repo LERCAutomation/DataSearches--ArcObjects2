@@ -32,15 +32,18 @@ namespace HLSearchesToolConfig
         List<string> BufferUnitOptionsProcess = new List<string>();
         List<string> BufferUnitOptionsShort = new List<string>();
         bool KeepBufferArea;
+        string BufferOutputName;
         string BufferLayer;
         string SearchLayer;
         List<string> SearchLayerExtensions = new List<string>();
         string SearchColumn;
         bool KeepSearchFeature;
+        string SearchFeatureName;
         string SearchSymbologyBase;
         string AggregateColumns;
         List<string> AddSelectedLayersOptions = new List<string>();
         int DefaultAddSelectedLayers;
+        string GroupLayerName;
         List<string> OverwriteLabelOptions = new List<string>();
         int DefaultOverwriteLabels;
         List<string> CombinedSitesTableOptions = new List<string>();
@@ -349,6 +352,17 @@ namespace HLSearchesToolConfig
 
                 try
                 {
+                    BufferOutputName = xmlDataSearch["BufferSaveName"].InnerText;
+                }
+                catch
+                {
+                    MessageBox.Show("Could not locate the item 'BufferSaveName' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoadedXML = false;
+                    return;
+                }
+
+                try
+                {
                     SearchLayer = xmlDataSearch["SearchLayer"].InnerText;
                 }
                 catch
@@ -407,6 +421,17 @@ namespace HLSearchesToolConfig
                 catch
                 {
                     MessageBox.Show("Could not locate the item 'KeepSearchFeature' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoadedXML = false;
+                    return;
+                }
+
+                try
+                {
+                    SearchFeatureName = xmlDataSearch["SearchFeatureName"].InnerText;
+                }
+                catch
+                {
+                    MessageBox.Show("Could not locate the item 'SearchFeatureName' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     LoadedXML = false;
                     return;
                 }
@@ -474,6 +499,17 @@ namespace HLSearchesToolConfig
                 catch
                 {
                     MessageBox.Show("Could not locate the item 'DefaultAddSelectedLayers' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoadedXML = false;
+                    return;
+                }
+
+                try
+                {
+                    GroupLayerName = xmlDataSearch["GroupLayerName"].InnerText;
+                }
+                catch
+                {
+                    MessageBox.Show("Could not locate the item 'GroupLayerName' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     LoadedXML = false;
                     return;
                 }
@@ -1082,6 +1118,11 @@ namespace HLSearchesToolConfig
             return KeepBufferArea;
         }
 
+        public string GetBufferOutputName()
+        {
+            return BufferOutputName;
+        }
+
         public string GetBufferLayer()
         {
             return BufferLayer;
@@ -1107,6 +1148,11 @@ namespace HLSearchesToolConfig
             return KeepSearchFeature;
         }
 
+        public string GetSearchFeatureName()
+        {
+            return SearchFeatureName;
+        }
+
         public string GetSearchSymbologyBase()
         {
             return SearchSymbologyBase;
@@ -1125,6 +1171,11 @@ namespace HLSearchesToolConfig
         public int GetDefaultAddSelectedLayerOption()
         {
             return DefaultAddSelectedLayers;
+        }
+
+        public string GetGroupLayerName()
+        {
+            return GroupLayerName;
         }
 
         public List<string> GetOverwriteLabelOptions()

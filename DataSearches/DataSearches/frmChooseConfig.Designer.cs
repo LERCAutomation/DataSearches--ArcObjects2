@@ -48,9 +48,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(13, 13);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(140, 13);
+            this.label1.Size = new System.Drawing.Size(122, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Please Choose an XML File:";
+            this.label1.Text = "Please Choose a Profile:";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // btnOK
@@ -82,8 +82,11 @@
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cmbChooseXML);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmChooseConfig";
-            this.Text = "Choose XML File";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Choose Profile";
             this.Load += new System.EventHandler(this.frmChooseConfig_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

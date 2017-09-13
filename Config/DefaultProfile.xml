@@ -98,6 +98,12 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		<value>Yes</value>
 	</KeepBufferArea>
 
+	<!-- The output name for the buffer GIS file. The size of the buffer will be added automatically. -->
+	<BufferSaveName>
+		<value>Buffer_%subref%</value>
+	</BufferSaveName>
+
+
 	<!-- The name of the buffer symbology layer file -->
 	<BufferLayerName>
 		<value>BufferOutline.lyr</value>
@@ -124,6 +130,11 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		<value>Yes</value>
 	</KeepSearchFeature>
 
+	<!-- The name of the search feature output layer -->
+	<SearchFeatureName>
+		<value>%sitename%</value>
+	</SearchFeatureName>
+
 	<!-- The base name of the search layer symbology file (without the .lyr). 
 	Note the relevant extension (from SearchLayerExtensions) will be added -->
 	<SearchSymbologyBase>
@@ -144,6 +155,10 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 	<DefaultAddSelectedLayers>
 		<value>3</value>
 	</DefaultAddSelectedLayers>
+
+	<GroupLayerName>
+		<value>%subref%_%sitename%</value>
+	</GroupLayerName>
 
 	<!-- The options for overwritting the map labels -->
 	<OverwriteLabelOptions>

@@ -410,45 +410,31 @@ namespace DataSearches
             string strGISFolder = myConfig.GetGISFolder();
             string strLogFileName = myConfig.GetLogFileName();
             string strCombinedSitesName = myConfig.GetCombinedSitesTableName();
+            string strBufferOutputName = myConfig.GetBufferOutputName();
+            string strFeatureOutputName = myConfig.GetSearchFeatureName();
+            string strGroupLayerName = myConfig.GetGroupLayerName();
 
             string strUserID = Environment.UserName;
             string strTempFolder = strSaveRootDir + @"\Temp";
             string strTempFile = strTempFolder + @"\TempShapes_" + strUserID + ".shp";
 
-            strSaveFolder = strSaveFolder.Replace("%ref%", strReference);
-            strSaveFolder = strSaveFolder.Replace("%shortref%", strShortRef);
-            strSaveFolder = strSaveFolder.Replace("%subref%", strSubref);
-            strSaveFolder = strSaveFolder.Replace("%sitename%", strSiteName);
-            // Take account of the occurrence of dangling underscores (if no site name was given).
-            if (strSaveFolder.Substring(strSaveFolder.Length - 1, 1) == "_")
-                strSaveFolder = strSaveFolder.Substring(0, strSaveFolder.Length - 1);
-
-            strGISFolder = strGISFolder.Replace("%ref%", strReference);
-            strGISFolder = strGISFolder.Replace("%shortref%", strShortRef);
-            strGISFolder = strGISFolder.Replace("%subref%", strSubref);
-            strGISFolder = strGISFolder.Replace("%sitename%", strSiteName);
-            if (strGISFolder.Substring(strGISFolder.Length - 1, 1) == "_")
-                strGISFolder = strGISFolder.Substring(0, strGISFolder.Length - 1);
-
-            strLogFileName = strLogFileName.Replace("%ref%", strReference);
-            strLogFileName = strLogFileName.Replace("%shortref%", strShortRef);
-            strLogFileName = strLogFileName.Replace("%subref%", strSubref);
-            strLogFileName = strLogFileName.Replace("%sitename%", strSiteName);
-            if (strLogFileName.Substring(strLogFileName.Length - 1, 1) == "_")
-                strLogFileName = strLogFileName.Substring(0, strLogFileName.Length - 1);
-
-            strCombinedSitesName = strCombinedSitesName.Replace("%ref%", strReference);
-            strCombinedSitesName = strCombinedSitesName.Replace("%shortref%", strShortRef);
-            strCombinedSitesName = strCombinedSitesName.Replace("%subref%", strSubref);
-            strCombinedSitesName = strCombinedSitesName.Replace("%sitename%", strSiteName);
-            if (strCombinedSitesName.Substring(strCombinedSitesName.Length - 1, 1) == "_")
-                strCombinedSitesName = strCombinedSitesName.Substring(0, strCombinedSitesName.Length - 1);
+            strSaveFolder = ReplaceSearchStrings(strSaveFolder, strReference, strSiteName, strShortRef, strSubref);
+            strGISFolder = ReplaceSearchStrings(strGISFolder, strReference, strSiteName, strShortRef, strSubref);
+            strLogFileName = ReplaceSearchStrings(strLogFileName, strReference, strSiteName, strShortRef, strSubref);
+            strCombinedSitesName = ReplaceSearchStrings(strCombinedSitesName, strReference, strSiteName, strShortRef, strSubref);
+            strBufferOutputName = ReplaceSearchStrings(strBufferOutputName, strReference, strSiteName, strShortRef, strSubref);
+            strFeatureOutputName = ReplaceSearchStrings(strFeatureOutputName, strReference, strSiteName, strShortRef, strSubref);
+            strGroupLayerName = ReplaceSearchStrings(strGroupLayerName, strReference, strSiteName, strShortRef, strSubref);
+            
 
             // Remove any illegal characters from the names.
             strSaveFolder = myStringFuncs.StripIllegals(strSaveFolder, strReplaceChar);
             strGISFolder = myStringFuncs.StripIllegals(strGISFolder, strReplaceChar);
             strLogFileName = myStringFuncs.StripIllegals(strLogFileName, strReplaceChar, true);
             strCombinedSitesName = myStringFuncs.StripIllegals(strCombinedSitesName, strReplaceChar);
+            strBufferOutputName = myStringFuncs.StripIllegals(strBufferOutputName, strReplaceChar);
+            strFeatureOutputName = myStringFuncs.StripIllegals(strFeatureOutputName, strReplaceChar);
+            strGroupLayerName = myStringFuncs.StripIllegals(strGroupLayerName, strReplaceChar);
 
             // Trim any trailing spaces since directory functions don't deal with them and it causes a crash.
             strSaveFolder = strSaveFolder.Trim();
@@ -554,9 +540,9 @@ namespace DataSearches
             string strSaveBuffer = strBufferSize;
             if (strSaveBuffer.Contains('.'))
                 strSaveBuffer = strSaveBuffer.Replace('.', '_');
-            string strLayerName = "Buffer_" + strSubref + "_" + strSaveBuffer + strBufferUnitShort;
+            string strLayerName = strBufferOutputName + "_" + strSaveBuffer + strBufferUnitShort;
             string strOutputFile = strGISFolder + "\\" + strLayerName + ".shp";
-            string strSubGroupLayerName = strSubref + "_" + strBufferSize + strBufferUnitShort;
+            string strSubGroupLayerName = strGroupLayerName + "_" + strBufferSize + strBufferUnitShort;
             string strBufferFields = myConfig.GetAggregateColumns();
             bool blKeepBuffer = myConfig.GetKeepBufferArea();
 
@@ -653,14 +639,14 @@ namespace DataSearches
             string strLayerDir = myConfig.GetLayerDir();
             if (blKeepSearchFeature)
             {
-                string strOutputFeature = "Feature_" + strSubref;
-                myArcMapFuncs.CopyFeatures(strTargetLayer, strGISFolder + "\\" + strOutputFeature);
+                string strOutputFeature = strFeatureOutputName;
+                myArcMapFuncs.CopyFeatures(strTargetLayer, strGISFolder + "\\" + strFeatureOutputName);
                 if (strAddSelected.ToLower() != "no")
                 {
                     // apply layer symbology
-                    myArcMapFuncs.ChangeLegend(strOutputFeature, strLayerDir + "\\" + strSearchSymbology);
+                    myArcMapFuncs.ChangeLegend(strFeatureOutputName, strLayerDir + "\\" + strSearchSymbology);
                     // Move it to the group layer
-                    myArcMapFuncs.MoveToSubGroupLayer(strShortRef, strSubGroupLayerName, myArcMapFuncs.GetLayer(strOutputFeature));
+                    myArcMapFuncs.MoveToSubGroupLayer(strShortRef, strSubGroupLayerName, myArcMapFuncs.GetLayer(strFeatureOutputName));
                 }
                 else
                 {
@@ -788,19 +774,8 @@ namespace DataSearches
                 //string strCombinedSitesCriteria = strCombinedSitesCriteriaList[intIndex];
 
                 // Deal with wildcards in the output names.
-                strGISOutName = strGISOutName.Replace("%ref%", strReference);
-                strGISOutName = strGISOutName.Replace("%shortref%", strShortRef);
-                strGISOutName = strGISOutName.Replace("%subref%", strSubref);
-                strGISOutName = strGISOutName.Replace("%sitename%", strSiteName);
-                if (strGISOutName.Substring(strGISOutName.Length - 1, 1) == "_")
-                    strGISOutName = strGISOutName.Substring(0, strGISOutName.Length - 1);
-
-                strTableOutName = strTableOutName.Replace("%ref%", strReference);
-                strTableOutName = strTableOutName.Replace("%shortref%", strShortRef);
-                strTableOutName = strTableOutName.Replace("%subref%", strSubref);
-                strTableOutName = strTableOutName.Replace("%sitename%", strSiteName);
-                if (strTableOutName.Substring(strTableOutName.Length - 1, 1) == "_")
-                    strTableOutName = strTableOutName.Substring(0, strTableOutName.Length - 1);
+                strGISOutName = ReplaceSearchStrings(strGISOutName, strReference, strSiteName, strShortRef, strSubref);
+                strTableOutName = ReplaceSearchStrings(strTableOutName, strReference, strSiteName, strShortRef, strSubref);
 
                 strStatsColumns = myStringFuncs.AlignStatsColumns(strColumns, strStatsColumns, strGroupColumns);
                 //if (blIncludeDistance && !strColumns.Contains("Distance") && !strGroupColumns.Contains("Distance"))
@@ -1048,6 +1023,18 @@ namespace DataSearches
 
             Process.Start("notepad.exe", strLogFile);
 
+        }
+
+        private static string ReplaceSearchStrings(string RawName, string Reference, string SiteName, string ShortRef, string Subref)
+        {
+            RawName = RawName.Replace("%ref%", Reference);
+            RawName = RawName.Replace("%shortref%", ShortRef);
+            RawName = RawName.Replace("%subref%", Subref);
+            RawName = RawName.Replace("%sitename%", SiteName);
+            // Take account of the occurrence of dangling underscores (if no site name was given).
+            if (RawName.Substring(RawName.Length - 1, 1) == "_")
+                RawName = RawName.Substring(0, RawName.Length - 1);
+            return RawName;
         }
               
 
