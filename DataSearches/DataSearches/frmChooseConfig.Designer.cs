@@ -85,7 +85,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmChooseConfig";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Choose Profile";
             this.Load += new System.EventHandler(this.frmChooseConfig_Load);
             this.ResumeLayout(false);

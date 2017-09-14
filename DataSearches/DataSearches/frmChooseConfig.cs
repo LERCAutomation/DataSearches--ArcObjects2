@@ -38,11 +38,11 @@ namespace DataSearches
             // Add the files to the dropdown list.
             foreach (string aFile in myFilteredFiles)
             {
-                cmbChooseXML.Items.Add(aFile);
+                cmbChooseXML.Items.Add(myFileFuncs.ReturnWithoutExtension(aFile));
             }
             // Now select the default.
             if (blDefaultFound)
-                cmbChooseXML.SelectedItem = DefaultXMLName;
+                cmbChooseXML.SelectedItem = myFileFuncs.ReturnWithoutExtension(DefaultXMLName);
         }
 
         private void frmChooseConfig_Load(object sender, EventArgs e)
@@ -52,7 +52,7 @@ namespace DataSearches
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            this.ChosenXMLFile = cmbChooseXML.Text;
+            this.ChosenXMLFile = cmbChooseXML.Text + ".xml";
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();
         }

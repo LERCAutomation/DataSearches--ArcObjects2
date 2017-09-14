@@ -244,6 +244,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label6);
             this.Name = "frmDataSearches";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Data Searches 2.0";
             this.ResumeLayout(false);
             this.PerformLayout();
