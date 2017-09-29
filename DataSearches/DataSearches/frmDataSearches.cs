@@ -296,6 +296,9 @@ namespace DataSearches
             string strBufferUnitText = cmbUnits.Text; // Unit to be used in reporting.
             string strBufferUnitShort = myConfig.GetBufferUnitOptionsShort()[intBufferUnitIndex]; // Unit to be used in file naming (abbreviation)
 
+            // What is the area measurement unit?
+            string strAreaMeasureUnit = myConfig.getAreaMeasurementUnit();
+
             string strAddSelected;
             if (cmbAddLayers.CanSelect)
                 strAddSelected = cmbAddLayers.Text; // Add selected layers
@@ -528,6 +531,7 @@ namespace DataSearches
             foreach (string aLayer in SelectedLayers)
                 strLayerString = strLayerString + aLayer + ", ";
             myFileFuncs.WriteLine(strLogFile, "Layers included: " + strLayerString.Substring(0, strLayerString.Length - 2));
+            myFileFuncs.WriteLine(strLogFile, "Area measurement unit: " + strAreaMeasureUnit);
 
             string strSearchLayerBase = myConfig.GetSearchLayer();
             List<string> strSearchLayerExtensions = myConfig.GetSearchLayerExtensions();
@@ -684,11 +688,13 @@ namespace DataSearches
             List<string> strStatsColumnList = myConfig.GetMapStatisticsColumns();
             List<string> strOrderColumnList = myConfig.GetMapOrderByColumns();
             List<string> strCriteriaList = myConfig.GetMapCriteria();
+            List<bool> blIncludeAreas = myConfig.getMapIncludeAreas();
             List<bool> blIncludeDistances = myConfig.getMapIncludeDistances();
             List<bool> blIncludeRadii = myConfig.getMapIncludeRadii();
             List<string> strKeyColumns = myConfig.GetMapKeyColumns();
             List<string> strFormats = myConfig.GetMapFormats();
             List<bool> blKeepLayers = myConfig.GetMapKeepLayers();
+            List<bool> blClipLayers = myConfig.GetMapClipOutputs();
             List<bool> blDisplayLabels = myConfig.GetMapDisplayLabels();
             List<string> strDisplayLayerFiles = myConfig.GetMapLayerFiles();
             List<bool> blOverwriteLabelDefaults = myConfig.GetMapOverwriteLabels();
@@ -756,12 +762,14 @@ namespace DataSearches
                 string strStatsColumns = strStatsColumnList[intIndex];
                 string strOrderColumns = strOrderColumnList[intIndex];
                 string strCriteria = strCriteriaList[intIndex];
+                bool blIncludeArea = blIncludeAreas[intIndex];
                 bool blIncludeDistance = blIncludeDistances[intIndex];
                 bool blIncludeRadius = blIncludeRadii[intIndex];
                 
                 string strKeyColumn = strKeyColumns[intIndex];
                 string strFormat = strFormats[intIndex];
                 bool blKeepLayer = blKeepLayers[intIndex];
+                bool blClipLayer = blClipLayers[intIndex];
                 bool blDisplayLabel = blDisplayLabels[intIndex];
                 string strDisplayLayer = strDisplayLayerFiles[intIndex];
                 bool blOverwriteLabelDefault = blOverwriteLabelDefaults[intIndex];
@@ -822,7 +830,16 @@ namespace DataSearches
                     // Firstly take a copy of the full selection in a temporary file; This will be used to do the summaries on.
                     string strTempMaster = "TempMaster" + strUserID;
                     string strTempMasterOutput = strTempFolder + @"\" + strTempMaster + ".shp";
-                    blResult = myArcMapFuncs.CopyFeatures(strDisplayName, strTempMasterOutput);
+                    // If the output layer should be clipped, do so now. Otherwise do a straight copy.
+                    if (blClipLayer)
+                    {
+                        // Clip
+                        blResult = myArcMapFuncs.ClipFeatures(strDisplayName, strOutputFile, strTempMasterOutput); // Selected features in input, buffer FC, output.
+                    }
+                    else
+                    {
+                        blResult = myArcMapFuncs.CopyFeatures(strDisplayName, strTempMasterOutput);
+                    }
                     if (!blResult)
                     {
                         MessageBox.Show("Cannot copy selection from " + strDisplayName + " to " + strTempMasterOutput + ". Please ensure this file is not open elsewhere");
@@ -887,7 +904,7 @@ namespace DataSearches
                     string strRadius = "none";
                     if (blIncludeRadius) strRadius = strBufferSize + " " + strBufferUnitText; // Only include radius if requested.
                     myArcMapFuncs.ExportSelectionToShapefile(strTempMaster, strTempShapeOutput, strColumns, strTempFile, strGroupColumns,
-                        strStatsColumns, blIncludeDistance, strRadius, strTargetLayer);
+                        strStatsColumns, blIncludeArea, strAreaMeasureUnit, blIncludeDistance, strRadius, strTargetLayer);
 
                     // Write out the results to table as appropriate.
                     bool blIncHeaders = false;
@@ -948,15 +965,14 @@ namespace DataSearches
                     }
                     myArcMapFuncs.RemoveLayer(strTempOutput);
                     myArcMapFuncs.DeleteFeatureclass(strTempShapeOutput);
-                    
-
+ 
                     // Add to combined sites table as appropriate
                     // Function to take account of group by, order by and statistics fields.
                     if (strCombinedSitesColumns != "" && blCombinedTable)
                     {
                         myFileFuncs.WriteLine(strLogFile, "Extracting summary output for combined sites table");
                         myArcMapFuncs.ExportSelectionToShapefile(strTempMaster, strTempShapeOutput, strCombinedSitesColumns, strTempFile,
-                            strCombinedSitesGroupColumns, strCombinedSitesStatsColumns, blIncludeDistance, strRadius, strTargetLayer );
+                            strCombinedSitesGroupColumns, strCombinedSitesStatsColumns, blIncludeArea, strAreaMeasureUnit, blIncludeDistance, strRadius, strTargetLayer );
 
                         // This needs changing to take account of the 'tag' field. Will need a new function that takes account
                         // of the combined sites header columns.

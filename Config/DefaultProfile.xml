@@ -156,6 +156,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		<value>3</value>
 	</DefaultAddSelectedLayers>
 
+	<!-- The name of the group layer that will be created in the ArcGIS table of contents -->
 	<GroupLayerName>
 		<value>%subref%_%sitename%</value>
 	</GroupLayerName>
@@ -169,6 +170,10 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 	<DefaultOverwriteLabels>
 		<value>2</value>
 	</DefaultOverwriteLabels>
+
+	<AreaMeasurementUnit><!-- The units any area measurements will be done in. Choose from Ha, Km2, m2. Default is Ha. -->
+		<value>ha</value>
+	</AreaMeasurementUnit>
 
 	<!-- Options for filling out the Combined Sites table dropdown (do not change) -->
 	<CombinedSitesTableOptions>
@@ -223,6 +228,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<Criteria> <!-- Any criteria that should be applied to this layer before extracts are saved -->
 				<value></value><!-- example: Name = 'myName' OR area_ha > 5 -->
 			</Criteria>
+			<IncludeArea> <!-- Yes / No attribute to define whether an Area field should be included. Ignored for points. -->
+				<value>No</value>
+			</IncludeArea>
 			<IncludeDistance> <!-- Yes / No attribute to define whether a Distance field should be included -->
 				<value>Yes</value><!-- Yes / No -->
 			</IncludeDistance>
@@ -238,6 +246,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer> <!-- A Yes/No attribute to define whether a GIS extract should be saved -->
 				<value>Yes</value>
 			</KeepLayer>
+			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
+				<value>Yes</value>
+			</ClipOutput>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -303,6 +314,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<Criteria>
 				<value></value><!-- example: Name = 'myName' OR area_ha > 5 -->
 			</Criteria>
+			<IncludeArea> <!-- Yes / No attribute to define whether an Area field should be included. Ignored for points. -->
+				<value>Yes</value>
+			</IncludeArea>
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
@@ -318,6 +332,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
+			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
+				<value>Yes</value>
+			</ClipOutput>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -381,6 +398,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<Criteria>
 				<value></value><!-- example: Name = 'myName' OR area_ha > 5 -->
 			</Criteria>
+			<IncludeArea> <!-- Yes / No attribute to define whether an Area field should be included. Ignored for points. -->
+				<value>Yes</value>
+			</IncludeArea>
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
@@ -396,6 +416,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
+			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
+				<value>Yes</value>
+			</ClipOutput>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -459,6 +482,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<Criteria>
 				<value></value><!-- example: Name = 'myName' OR area_ha > 5 -->
 			</Criteria>
+			<IncludeArea> <!-- Yes / No attribute to define whether an Area field should be included. Ignored for points. -->
+				<value>Yes</value>
+			</IncludeArea>
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
@@ -474,6 +500,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
+			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
+				<value>Yes</value>
+			</ClipOutput>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -523,13 +552,13 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>%shortref%_sssis</value>
 			</TableOutputName>
 			<Columns>
-				<value>SSSI_NAME,FIRST_SSSI,SUM_AREA</value> <!-- Use commas to separate. NOTE case sensitive! -->
+				<value>SSSI_NAME, SUM_AREA, FIRST_STAT</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</Columns>
 			<GroupColumns>
-				<value></value> <!-- Use commas to separate. NOTE case sensitive! -->
+				<value>SSSI_NAME</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</GroupColumns>
 			<StatisticsColumns>
-				<value>AREA;SUM</value><!-- example: area_ha;SUM$Status;FIRST -->
+				<value>AREA;SUM$STATUS;FIRST</value><!-- example: area_ha;SUM$Status;FIRST -->
 			</StatisticsColumns>
 			<OrderColumns> <!-- Overrides GroupColumns -->
 				<value></value>
@@ -537,6 +566,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<Criteria>
 				<value></value><!-- example: Name = 'myName' OR area_ha > 5 -->
 			</Criteria>
+			<IncludeArea> <!-- Yes / No attribute to define whether an Area field should be included. Ignored for points. Note the Area field is recalculated. -->
+				<value>Yes</value>
+			</IncludeArea>
 			<IncludeDistance>
 				<value>Yes</value><!-- Yes / No -->
 			</IncludeDistance>
@@ -552,6 +584,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
+			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
+				<value>Yes</value>
+			</ClipOutput>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -579,13 +614,13 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
 				<!-- "SSSI", SSSI_NAME, SSSI_AREA, Map_Label -->
-				<value>"SSSI", SSSI_NAME, FIRST_SSSI, Map_Label</value>
+				<value>"SSSI", SSSI_NAME, SUM_AREA, Map_Label</value>
 			</CombinedSitesColumns>
 			<CombinedSitesGroupColumns>
 				<value>SSSI_NAME, Map_Label</value>
 			</CombinedSitesGroupColumns>
 			<CombinedSitesStatisticsColumns>
-				<value>SSSI_AREA;FIRST</value> <!-- Must include the remaining columns -->
+				<value>SSSI_AREA;FIRST$AREA;SUM</value> <!-- Must include the remaining columns -->
 			</CombinedSitesStatisticsColumns>
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
@@ -616,6 +651,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<Criteria>
 				<value></value><!-- example: Name = 'myName' OR area_ha > 5 -->
 			</Criteria>
+			<IncludeArea> <!-- Yes / No attribute to define whether an Area field should be included. Ignored for points. -->
+				<value>Yes</value>
+			</IncludeArea>
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
@@ -631,6 +669,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
+			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
+				<value>Yes</value>
+			</ClipOutput>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -680,13 +721,13 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>_lnrs</value>
 			</TableOutputName>
 			<Columns>
-				<value>LNR_NAME</value> <!-- Use commas to separate. NOTE case sensitive! -->
+				<value>LNR_NAME, Area</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</Columns>
 			<GroupColumns>
 				<value>LNR_NAME</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</GroupColumns>
 			<StatisticsColumns>
-				<value></value><!-- example: area_ha;SUM$Status;FIRST -->
+				<value>Area;SUM</value><!-- example: area_ha;SUM$Status;FIRST -->
 			</StatisticsColumns>
 			<OrderColumns> <!-- Overrides GroupColumns -->
 				<value></value>
@@ -694,6 +735,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<Criteria>
 				<value></value><!-- example: Name = 'myName' OR area_ha > 5 -->
 			</Criteria>
+			<IncludeArea> <!-- Yes / No attribute to define whether an Area field should be included. Ignored for points. -->
+				<value>Yes</value>
+			</IncludeArea>
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
@@ -709,6 +753,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
+			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
+				<value>Yes</value>
+			</ClipOutput>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -772,6 +819,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<Criteria>
 				<value></value><!-- example: Name = 'myName' OR area_ha > 5 -->
 			</Criteria>
+			<IncludeArea> <!-- Yes / No attribute to define whether an Area field should be included. Ignored for points. -->
+				<value>Yes</value>
+			</IncludeArea>
 			<IncludeDistance>
 				<value>Yes</value><!-- Yes / No -->
 			</IncludeDistance>
@@ -787,6 +837,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
+			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
+				<value>Yes</value>
+			</ClipOutput>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -850,6 +903,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<Criteria>
 				<value></value><!-- example: Name = 'myName' OR area_ha > 5 -->
 			</Criteria>
+			<IncludeArea> <!-- Yes / No attribute to define whether an Area field should be included. Ignored for points. -->
+				<value>Yes</value>
+			</IncludeArea>
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
@@ -865,6 +921,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
+			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
+				<value>Yes</value>
+			</ClipOutput>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -928,6 +987,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<Criteria>
 				<value></value><!-- example: Name = 'myName' OR area_ha > 5 -->
 			</Criteria>
+			<IncludeArea> <!-- Yes / No attribute to define whether an Area field should be included. Ignored for points. -->
+				<value>Yes</value>
+			</IncludeArea>
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
@@ -943,6 +1005,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>No</value>
 			</KeepLayer>
+			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
+				<value>Yes</value>
+			</ClipOutput>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -1006,6 +1071,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<Criteria>
 				<value>CONFIDENTIAL = ""</value><!-- example: Name = 'myName' OR area_ha > 5 -->
 			</Criteria>
+			<IncludeArea> <!-- Yes / No attribute to define whether an Area field should be included. Ignored for points. -->
+				<value>Yes</value>
+			</IncludeArea>
 			<IncludeDistance>
 				<value>Yes</value><!-- Yes / No -->
 			</IncludeDistance>
@@ -1021,6 +1089,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>No</value>
 			</KeepLayer>
+			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
+				<value>Yes</value>
+			</ClipOutput>
 			<LoadWarning>
 				<value>No</value>
 			</LoadWarning>
@@ -1084,6 +1155,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<Criteria>
 				<value></value><!-- example: Name = 'myName' OR area_ha > 5 -->
 			</Criteria>
+			<IncludeArea> <!-- Yes / No attribute to define whether an Area field should be included. Ignored for points. -->
+				<value>Yes</value>
+			</IncludeArea>
 			<IncludeDistance>
 				<value>No</value><!-- Yes / No -->
 			</IncludeDistance>
@@ -1099,6 +1173,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>No</value>
 			</KeepLayer>
+			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
+				<value>Yes</value>
+			</ClipOutput>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>

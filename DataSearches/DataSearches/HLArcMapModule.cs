@@ -193,6 +193,36 @@ namespace HLArcMapModule
 
         #endregion
 
+        public string GetFeatureClassType(IFeatureClass aFeatureClass, bool Messages = false)
+        {
+            // Sub returns a simplified list of FC types: point, line, polygon.
+
+            IFeatureCursor pFC = aFeatureClass.Search(null, false); // Get all the objects.
+            IFeature pFeature = pFC.NextFeature();
+            string strReturnValue = "other";
+            if (!(pFeature == null))
+            {
+                IGeometry pGeom = pFeature.Shape;
+                if (pGeom.GeometryType == esriGeometryType.esriGeometryMultipoint || pGeom.GeometryType == esriGeometryType.esriGeometryPoint)
+                {
+                    strReturnValue = "point";
+                }
+                else if (pGeom.GeometryType == esriGeometryType.esriGeometryRing || pGeom.GeometryType == esriGeometryType.esriGeometryPolygon)
+                {
+                    strReturnValue = "polygon";
+                }
+                else if (pGeom.GeometryType == esriGeometryType.esriGeometryLine || pGeom.GeometryType == esriGeometryType.esriGeometryPolyline ||
+                    pGeom.GeometryType == esriGeometryType.esriGeometryCircularArc || pGeom.GeometryType == esriGeometryType.esriGeometryEllipticArc ||
+                    pGeom.GeometryType == esriGeometryType.esriGeometryBezier3Curve || pGeom.GeometryType == esriGeometryType.esriGeometryPath)
+                {
+                    strReturnValue = "line";
+                }
+
+            }
+
+            return strReturnValue;
+        }
+
         #region GetFeatureClass
         public IFeatureClass GetFeatureClass(string aFilePath, string aDatasetName, bool Messages = false)
         // This is incredibly quick.
@@ -240,6 +270,25 @@ namespace HLArcMapModule
             string aDatasetName = myFileFuncs.GetFileName(aFullPath);
             IFeatureClass pFC = GetFeatureClass(aFilePath, aDatasetName, Messages);
             return pFC;
+        }
+
+        public IFeatureClass GetFeatureClassFromLayerName(string aLayerName, bool Messages = false)
+        {
+            // Returns the feature class associated with a layer name if a. the layer exists and b. it's a feature layer, otherwise returns null.
+            ILayer pLayer = GetLayer(aLayerName);
+            if (pLayer == null)
+                return null;
+
+            IFeatureLayer pFL = null;
+            try
+            {
+                pFL = (IFeatureLayer)pLayer;
+            }
+            catch
+            {
+                return null; // It is not a feature layer.
+            }
+            return pFL.FeatureClass;
         }
 
         #endregion
@@ -1221,6 +1270,66 @@ namespace HLArcMapModule
             string outFeatureClass = OutWorkspace + @"\" + OutDatasetName;
             return CopyFeatures(inFeatureClass, outFeatureClass, Messages);
         }
+        #endregion
+
+        #region ClipFeatures
+        public bool ClipFeatures(string InFeatureClassOrLayer, string ClipFeatureClassOrLayer, string OutFeatureClass, bool Messages = false)
+        {
+            ESRI.ArcGIS.Geoprocessor.Geoprocessor gp = new ESRI.ArcGIS.Geoprocessor.Geoprocessor();
+            gp.OverwriteOutput = true;
+            IGeoProcessorResult myresult = new GeoProcessorResultClass();
+            object sev = null;
+
+            // Create a variant array to hold the parameter values.
+            IVariantArray parameters = new VarArrayClass();
+
+            // Populate the variant array with parameter values.
+            parameters.Add(InFeatureClassOrLayer);
+            parameters.Add(ClipFeatureClassOrLayer);
+            parameters.Add(OutFeatureClass);
+
+            // Execute the tool.
+            try
+            {
+                myresult = (IGeoProcessorResult)gp.Execute("Clip_analysis", parameters, null);
+                // Wait until the execution completes.
+                while (myresult.Status == esriJobStatus.esriJobExecuting)
+                    Thread.Sleep(1000);
+                // Wait for 1 second.
+                if (Messages)
+                {
+                    MessageBox.Show("Process complete");
+                }
+                gp = null;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if (Messages)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(gp.GetMessages(ref sev));
+                }
+                gp = null;
+                return false;
+            }
+        }
+
+        public bool ClipFeatures(string InWorkspace, string InDatasetName, string ClipWorkspace, string ClipDatasetName, string OutFeatureClass, bool Messages = false)
+        {
+            string inFeatureClass = InWorkspace + @"\" + InDatasetName;
+            string ClipFeatureClass = ClipWorkspace + @"\" + ClipDatasetName;
+            return ClipFeatures(inFeatureClass, ClipFeatureClass, OutFeatureClass, Messages);
+        }
+
+        public bool ClipFeatures(string InWorkspace, string InDatasetName, string ClipWorkspace, string ClipDatasetName, string OutWorkspace, string OutDatasetName, bool Messages = false)
+        {
+            string inFeatureClass = InWorkspace + @"\" + InDatasetName;
+            string clipFeatureClass = ClipWorkspace + @"\" + ClipDatasetName;
+            string outFeatureClass = OutWorkspace + @"\" + OutDatasetName;
+            return ClipFeatures(inFeatureClass, clipFeatureClass, outFeatureClass, Messages);
+        }
+
         #endregion
 
         public bool CopyTable(string InTable, string OutTable, bool Messages = false)
@@ -2234,7 +2343,7 @@ namespace HLArcMapModule
         }
 
         public bool ExportSelectionToShapefile(string aLayerName, string anOutShapefile, string OutputColumns, string TempShapeFile, string GroupColumns = "",
-            string StatisticsColumns = "", bool IncludeDistance = false, string aRadius = "None", string aTargetLayer = null, bool Overwrite = true, bool CheckForSelection = false, bool RenameColumns = false, bool Messages = false)
+            string StatisticsColumns = "", bool IncludeArea = false, string AreaMeasurementUnit = "ha", bool IncludeDistance = false, string aRadius = "None", string aTargetLayer = null, bool Overwrite = true, bool CheckForSelection = false, bool RenameColumns = false, bool Messages = false)
         {
             // Some sanity tests.
             if (!LayerExists(aLayerName))
@@ -2304,6 +2413,48 @@ namespace HLArcMapModule
             gp.OverwriteOutput = Overwrite;
 
             IGeoProcessorResult myresult = new GeoProcessorResultClass();
+
+            // Check if the FC is a point FC.
+            string strFCType = GetFeatureClassType(pFC);
+            // Calculate the area field if required.
+            if (IncludeArea && strFCType == "polygon")
+            {
+                string strCalc="";
+                if (AreaMeasurementUnit.ToLower() == "ha")
+                    strCalc = "!SHAPE.AREA@HECTARES!";
+                else if (AreaMeasurementUnit.ToLower() == "m2")
+                    strCalc = "!SHAPE.AREA@SQUAREMETERS!";
+                else if (AreaMeasurementUnit.ToLower() == "km2")
+                    strCalc = "!SHAPE.AREA@SQUAREKILOMETERS!";
+
+                // Does the area field already exist? If not, add it.
+                if (!FieldExists(pFC, "Area"))
+                {
+                    AddField(pFC, "Area", esriFieldType.esriFieldTypeDouble, 20);
+                }
+                // Calculate the field.
+                IVariantArray AreaCalcParams = new VarArrayClass();
+                AreaCalcParams.Add(aLayerName);
+                AreaCalcParams.Add("AREA");
+                AreaCalcParams.Add(strCalc);
+                AreaCalcParams.Add("PYTHON_9.3");
+
+                try
+                {
+                    myresult = (IGeoProcessorResult)gp.Execute("CalculateField_management", AreaCalcParams, null);
+                    // Wait until the execution completes.
+                    while (myresult.Status == esriJobStatus.esriJobExecuting)
+                        Thread.Sleep(1000);
+                }
+                catch (COMException ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    gp = null;
+                    return false;
+                }
+            }
+
+
 
             // If we are including distance, the process is slighly different.
             if ((GroupColumns != null && GroupColumns != "") || StatisticsColumns != "") // include group columns OR statistics columns.

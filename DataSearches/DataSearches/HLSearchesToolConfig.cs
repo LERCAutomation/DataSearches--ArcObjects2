@@ -46,6 +46,7 @@ namespace HLSearchesToolConfig
         string GroupLayerName;
         List<string> OverwriteLabelOptions = new List<string>();
         int DefaultOverwriteLabels;
+        string AreaMeasurementUnit;
         List<string> CombinedSitesTableOptions = new List<string>();
         int DefaultCombinedSitesTable; // -1, 0, 1, 2 (not filled in, none, append, overwrite)
         string CombinedSitesTableName;
@@ -62,11 +63,13 @@ namespace HLSearchesToolConfig
         List<string> MapGroupColumns = new List<string>();
         List<string> MapStatsColumns = new List<string>();
         List<string> MapOrderColumns = new List<string>();
+        List<bool> MapIncludeAreas = new List<bool>();
         List<bool> MapIncludeDistances = new List<bool>();
         List<bool> MapIncludeRadii = new List<bool>();
         List<string> MapKeyColumns = new List<string>();
         List<string> MapFormats = new List<string>();
         List<bool> MapKeeps = new List<bool>();
+        List<bool> MapClipLayers = new List<bool>();
         List<bool> MapLoadWarnings = new List<bool>();
         List<bool> MapPreselectLayers = new List<bool>();
         List<bool> MapDisplayLabels = new List<bool>();
@@ -561,6 +564,26 @@ namespace HLSearchesToolConfig
 
                 try
                 {
+                    AreaMeasurementUnit = xmlDataSearch["AreaMeasurementUnit"].InnerText;
+                    if (AreaMeasurementUnit == "")
+                        AreaMeasurementUnit = "ha";
+                    if (AreaMeasurementUnit.ToLower() != "ha" && AreaMeasurementUnit.ToLower() != "m2" && AreaMeasurementUnit.ToLower() != "km2")
+                    {
+                        MessageBox.Show("The area measurement unit '" + AreaMeasurementUnit + "' is not valid. Please amend this entry.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        LoadedXML = false;
+                        return;
+                    }
+
+                }
+                catch
+                {
+                    MessageBox.Show("Could not locate the item 'AreaMeasurementUnit' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoadedXML = false;
+                    return;
+                }
+
+                try
+                {
                     strRawText = xmlDataSearch["CombinedSitesTableOptions"].InnerText;
                 }
                 catch
@@ -769,6 +792,22 @@ namespace HLSearchesToolConfig
 
                     try
                     {
+                        bool blIncludeArea = false;
+                        string strIncludeArea = aNode["IncludeArea"].InnerText;
+                        if (strIncludeArea.ToLower() == "yes")
+                            blIncludeArea = true;
+                        MapIncludeAreas.Add(blIncludeArea);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Could not locate the item 'IncludeArea' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        LoadedXML = false;
+                        return;
+                    }
+
+
+                    try
+                    {
                         bool blIncludDistance = false;
                         string strIncludeDistance = aNode["IncludeDistance"].InnerText;
                         if (strIncludeDistance.ToLower() == "yes")
@@ -831,6 +870,22 @@ namespace HLSearchesToolConfig
                     catch
                     {
                         MessageBox.Show("Could not locate the item 'KeepLayer' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        LoadedXML = false;
+                        return;
+                    }
+
+                    try
+                    {
+                        string strMapClip = aNode["ClipOutput"].InnerText;
+                        bool blClipOutput = false;
+                        if (strMapClip.ToLower() == "yes")
+                            blClipOutput = true;
+
+                        MapClipLayers.Add(blClipOutput);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Could not locate the item 'ClipOutput' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         LoadedXML = false;
                         return;
                     }
@@ -1188,6 +1243,11 @@ namespace HLSearchesToolConfig
             return DefaultOverwriteLabels;
         }
 
+        public string getAreaMeasurementUnit()
+        {
+            return AreaMeasurementUnit;
+        }
+
         public List<string> GetCombinedSitesTableOptions()
         {
             return CombinedSitesTableOptions;
@@ -1266,6 +1326,11 @@ namespace HLSearchesToolConfig
             return MapCriteria;
         }
 
+        public List<bool> getMapIncludeAreas()
+        {
+            return MapIncludeAreas;
+        }
+
         public List<bool> getMapIncludeDistances()
         {
             return MapIncludeDistances;
@@ -1289,6 +1354,11 @@ namespace HLSearchesToolConfig
         public List<bool> GetMapKeepLayers()
         {
             return MapKeeps;
+        }
+
+        public List<bool> GetMapClipOutputs()
+        {
+            return MapClipLayers;
         }
 
         public List<bool> GetMapLoadWarnings()
