@@ -2565,7 +2565,7 @@ namespace HLArcMapModule
             }
 
             
-            if (GroupColumns == null && !IncludeDistance) 
+            if (GroupColumns == "" && !IncludeDistance) 
                 // Only run a straight copy if neither a group nor a distance has been requested
                 // Because the data won't have been processed yet.
             {

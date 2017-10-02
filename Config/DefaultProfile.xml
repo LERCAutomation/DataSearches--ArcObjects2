@@ -275,7 +275,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			</LabelClause>
 			<CombinedSitesColumns> <!-- The columns to be used in the combined sites table. -->
 				<!-- Leave blank if the layer should not be included in the combined sites table -->
-				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
+				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes -->
 				<!-- "SSSI", SSSI_NAME, SSSI_AREA, Map_Label -->
 				<value>"Species","N/A",Distance,Radius</value><!-- Just a proof of concept setting -->
 			</CombinedSitesColumns>
@@ -721,13 +721,14 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>_lnrs</value>
 			</TableOutputName>
 			<Columns>
-				<value>LNR_NAME, Area</value> <!-- Use commas to separate. NOTE case sensitive! -->
+				<value>LNR_NAME, Area, Distance</value> <!-- Use commas to separate. NOTE case sensitive! Area and Distance may be included
+												even if the fields don't exist yet if IncludeArea / IncludeDistance are set to Yes -->
 			</Columns>
 			<GroupColumns>
-				<value>LNR_NAME</value> <!-- Use commas to separate. NOTE case sensitive! -->
+				<value></value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</GroupColumns>
 			<StatisticsColumns>
-				<value>Area;SUM</value><!-- example: area_ha;SUM$Status;FIRST -->
+				<value></value><!-- example: area_ha;SUM$Status;FIRST -->
 			</StatisticsColumns>
 			<OrderColumns> <!-- Overrides GroupColumns -->
 				<value></value>
@@ -739,7 +740,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>Yes</value>
 			</IncludeArea>
 			<IncludeDistance>
-				<value>No</value><!-- Yes / No -->
+				<value>Yes</value><!-- Yes / No -->
 			</IncludeDistance>
 			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
 				<value>No</value>
