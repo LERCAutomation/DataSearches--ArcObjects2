@@ -764,16 +764,16 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>No</value>
 			</PreselectLayer>
 			<DisplayLabels> <!-- switch to decide whether the defined labels should be switched on when displayed. -->
-				<value>No</value>
+				<value>Yes</value>
 			</DisplayLabels>
 			<LayerFileName><!-- Overrides any label settings defined below -->
-				<value>TestLayer.lyr</value>
+				<value>LNRLayer.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
 				<value>No</value>
 			</OverwriteLabels>
 			<LabelColumn>
-				<value>LNR_Name</value>
+				<value>LNR_NAME</value>
 			</LabelColumn>
 			<LabelClause>
 				<!-- format: Font:Arial$Size:10$Red:0$Green:0$Blue:0$Type:NoRestrictions -->

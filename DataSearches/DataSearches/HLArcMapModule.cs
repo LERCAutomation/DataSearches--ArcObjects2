@@ -2370,9 +2370,7 @@ namespace HLArcMapModule
                 }
             }
 
-            ILayer pLayer = GetLayer(aLayerName);
-            IFeatureLayer pFL = (IFeatureLayer)pLayer;
-            IFeatureClass pFC = pFL.FeatureClass;
+            IFeatureClass pFC = GetFeatureClassFromLayerName(aLayerName);
 
             // Check all the requested group by and statistics fields exist.
             // Only pass those that do.
@@ -2417,6 +2415,7 @@ namespace HLArcMapModule
             // Check if the FC is a point FC.
             string strFCType = GetFeatureClassType(pFC);
             // Calculate the area field if required.
+            bool blAreaAdded = false;
             if (IncludeArea && strFCType == "polygon")
             {
                 string strCalc="";
@@ -2431,6 +2430,7 @@ namespace HLArcMapModule
                 if (!FieldExists(pFC, "Area"))
                 {
                     AddField(pFC, "Area", esriFieldType.esriFieldTypeDouble, 20);
+                    blAreaAdded = true;
                 }
                 // Calculate the field.
                 IVariantArray AreaCalcParams = new VarArrayClass();
@@ -2482,13 +2482,16 @@ namespace HLArcMapModule
                     // Wait for 1 second.
                     string strNewLayer = myFileFuncs.ReturnWithoutExtension(myFileFuncs.GetFileName(strOutFile));
 
-                    ILayer pInLayer = GetLayer(aLayerName);
-                    IFeatureLayer pInFLayer = (IFeatureLayer)pInLayer;
-                    IFeatureClass pInFC = pInFLayer.FeatureClass;
+                    IFeatureClass pInFC = GetFeatureClassFromLayerName(aLayerName);
+                    IFeatureClass pOutFC = GetFeatureClassFromLayerName(strNewLayer);
 
-                    ILayer pOutLayer = GetLayer(strNewLayer);
-                    IFeatureLayer pOutFLayer = (IFeatureLayer)pOutLayer;
-                    IFeatureClass pOutFC = pOutFLayer.FeatureClass;
+                    //ILayer pInLayer = GetLayer(aLayerName);
+                    //IFeatureLayer pInFLayer = (IFeatureLayer)pInLayer;
+                    //IFeatureClass pInFC = pInFLayer.FeatureClass;
+
+                    //ILayer pOutLayer = GetLayer(strNewLayer);
+                    //IFeatureLayer pOutFLayer = (IFeatureLayer)pOutLayer;
+                    //IFeatureClass pOutFC = pOutFLayer.FeatureClass;
 
                     // Now rejig the statistics fields if required because they will look like FIRST_SAC which is no use.
                     if (StatisticsColumns != "" && RenameColumns)
@@ -2594,6 +2597,13 @@ namespace HLArcMapModule
                 }
             }
 
+            // If the Area field was added, remove it again now from the original since we've saved our results.
+            if (blAreaAdded)
+            {
+                DeleteField(pFC, "Area");
+            }
+
+
             // Remove all temporary layers.
             bool blFinished = false;
             while (!blFinished)
@@ -2626,17 +2636,17 @@ namespace HLArcMapModule
             }
 
             // Get the output shapefile
-            pFC = GetFeatureClass(anOutShapefile);
+            IFeatureClass pResultFC = GetFeatureClass(anOutShapefile);
 
             // Include radius if requested
             if (aRadius != "none")
             {
-                AddField(pFC, "Radius", esriFieldType.esriFieldTypeString, 25);
+                AddField(pResultFC, "Radius", esriFieldType.esriFieldTypeString, 25);
                 CalculateField(anOutShapefile, "Radius", '"' + aRadius + '"');
             }
 
             // Now drop any fields from the output that we don't want.
-            IFields pFields = pFC.Fields;
+            IFields pFields = pResultFC.Fields;
             List<string> strDeleteFields = new List<string>();
 
             // Make a list of fields to delete.
@@ -2654,10 +2664,13 @@ namespace HLArcMapModule
             //Delete the listed fields.
             foreach (string strField in strDeleteFields)
             {
-                DeleteField(pFC, strField);
+                DeleteField(pResultFC, strField);
             }
             
+            pResultFC = null;
             pFC = null;
+            pFields = null;
+            //pFL = null;
             gp = null;
 
             UpdateTOC();
