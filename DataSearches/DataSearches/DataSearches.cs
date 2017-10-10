@@ -14,7 +14,8 @@ namespace DataSearches
         protected override void OnClick()
         {
             frmDataSearches myForm = new frmDataSearches();
-            myForm.Show();
+            //myForm.Show();
+            myForm.ShowDialog();
             ArcMap.Application.CurrentTool = null;
         }
         protected override void OnUpdate()

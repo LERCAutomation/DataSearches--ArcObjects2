@@ -552,7 +552,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>%shortref%_sssis</value>
 			</TableOutputName>
 			<Columns>
-				<value>SSSI_NAME, SUM_AREA, FIRST_STAT</value> <!-- Use commas to separate. NOTE case sensitive! -->
+				<value>SSSI_NAME, SUM_ArEA, FIRST_STAT</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</Columns>
 			<GroupColumns>
 				<value>SSSI_NAME</value> <!-- Use commas to separate. NOTE case sensitive! -->
@@ -634,7 +634,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>NNRs</value>
 			</GISOutputName>
 			<TableOutputName>
-				<value>_nnrs</value>
+				<value>%shortref%_nnrs</value>
 			</TableOutputName>
 			<Columns>
 				<value>NNR_NAME, theBla</value> <!-- Use commas to separate. NOTE case sensitive! -->
@@ -721,7 +721,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>_lnrs</value>
 			</TableOutputName>
 			<Columns>
-				<value>LNR_NAME, Area, Distance</value> <!-- Use commas to separate. NOTE case sensitive! Area and Distance may be included
+				<value></value> <!-- Use commas to separate. NOTE case sensitive! Area and Distance may be included
 												even if the fields don't exist yet if IncludeArea / IncludeDistance are set to Yes -->
 			</Columns>
 			<GroupColumns>
@@ -783,13 +783,13 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			</LabelClause>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
-				<value>"LNR", LNR_NAME, LNR_AREA, LNR_NAME</value>
+				<value>"LNR", LNR_NAME, SUM_AREA, LNR_NAME</value>
 			</CombinedSitesColumns>
 			<CombinedSitesGroupColumns>
-				<value>LNR_NAME, LNR_AREA</value>
+				<value>LNR_NAME</value>
 			</CombinedSitesGroupColumns>
 			<CombinedSitesStatisticsColumns>
-				<value></value>
+				<value>area;SUM</value>
 			</CombinedSitesStatisticsColumns>
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
@@ -803,7 +803,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>LWS</value>
 			</GISOutputName>
 			<TableOutputName>
-				<value>_lws</value>
+				<value>%shortname%_lws</value>
 			</TableOutputName>
 			<Columns>
 				<value>siteid</value> <!-- Use commas to separate. NOTE case sensitive! -->

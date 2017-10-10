@@ -45,7 +45,9 @@ namespace HLFileFunctions
 
             // split at the last \
             int LastIndex = aFullPath.LastIndexOf(@"\");
-            string aPath = aFullPath.Substring(0, LastIndex);
+            string aPath = aFullPath;
+            if (LastIndex > -1)
+                aPath = aFullPath.Substring(0, LastIndex);
             return aPath;
         }
 
@@ -88,7 +90,9 @@ namespace HLFileFunctions
 
             // split at the last \
             int LastIndex = aFullPath.LastIndexOf(@"\");
-            string aFile = aFullPath.Substring(LastIndex + 1, aFullPath.Length - (LastIndex + 1));
+            string aFile = aFullPath;
+            if (LastIndex > -1)
+                aFile = aFullPath.Substring(LastIndex + 1, aFullPath.Length - (LastIndex + 1));
             return aFile;
         }
 

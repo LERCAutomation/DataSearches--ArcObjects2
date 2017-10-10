@@ -51,7 +51,6 @@ namespace HLSearchesToolConfig
         int DefaultCombinedSitesTable; // -1, 0, 1, 2 (not filled in, none, append, overwrite)
         string CombinedSitesTableName;
         string CombinedSitesTableColumns;
-        string CombinedSitesTableSuffix;
         string CombinedSitesTableFormat;
 
         List<string> MapLayers = new List<string>();

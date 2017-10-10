@@ -178,10 +178,10 @@ namespace HLStringFunctions
                 if (strFieldNameTr.Substring(0, 1) != "\"")
                 {
                     // Is it in the group columns?
-                    if (GroupColumns.IndexOf(strFieldNameTr) == -1)
+                    if (GroupColumns.IndexOf(strFieldNameTr, StringComparison.CurrentCultureIgnoreCase) == -1)
                     {
                         // Is it in the stats columns?
-                        if (StatsColumns.IndexOf(strFieldNameTr) == -1)
+                        if (StatsColumns.IndexOf(strFieldNameTr, StringComparison.CurrentCultureIgnoreCase) == -1)
                         {
                             // It is in neither - add it.
                             if (StatsColumns != "")
@@ -227,6 +227,18 @@ namespace HLStringFunctions
                 return ""; // No group name.
         }
 
+        public string ReplaceSearchStrings(string RawName, string Reference, string SiteName, string ShortRef, string Subref)
+        {
+            string CleanName = RawName;
+            CleanName = CleanName.Replace("%ref%", Reference);
+            CleanName = CleanName.Replace("%shortref%", ShortRef);
+            CleanName = CleanName.Replace("%subref%", Subref);
+            CleanName = CleanName.Replace("%sitename%", SiteName);
+            // Take account of the occurrence of dangling underscores (if no site name was given).
+            if (CleanName.Substring(CleanName.Length - 1, 1) == "_")
+                CleanName = CleanName.Substring(0, CleanName.Length - 1);
+            return CleanName;
+        }
     }
 
 
