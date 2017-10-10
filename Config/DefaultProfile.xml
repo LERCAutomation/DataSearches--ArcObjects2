@@ -203,6 +203,91 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 	<!-- map layer attributes -->
 	<!-- The names, local names, suffixes, SQL clauses and formats of the map tables -->
 	<MapLayers>
+		<Sites_-_Ramsar>
+			<LayerName> <!-- The name of the layer in the display -->
+				<value>Ramsar</value>
+			</LayerName>
+			<GISOutputName> <!-- The name used for any GIS data extracts -->
+				<value>Ramsar</value>
+			</GISOutputName>
+			<TableOutputName> <!-- The name used for any tabular extracts -->
+				<value>ramsars</value>
+			</TableOutputName>
+			<Columns> <!-- The columns to be used in the tabular extracts -->
+				<value>SUM_AREA</value> <!-- Use commas to separate. NOTE case sensitive! -->
+			</Columns>
+			<GroupColumns> <!-- The columns that should be used for grouping results -->
+				<value></value> <!-- Use commas to separate. NOTE case sensitive! -->
+			</GroupColumns>
+			<StatisticsColumns> <!-- If grouping is used, any statistics that should be generated. -->
+				<value>AREA;SUM</value><!-- example: area_ha;SUM$Status;FIRST -->
+			</StatisticsColumns>
+			<OrderColumns> <!-- Overrides GroupColumns. Any columns by which the results should be ordered -->
+				<value></value> <!-- Use commas to separate. NOTE case sensitive! -->
+			</OrderColumns>
+			<Criteria> <!-- Any criteria that should be applied to this layer before extracts are saved -->
+				<value></value> <!-- example: Name = 'myName' OR area_ha > 5 -->
+			</Criteria>
+			<IncludeArea> <!-- Yes / No attribute to define whether an Area field should be included. Ignored for points. -->
+				<value>Yes</value>
+			</IncludeArea>
+			<IncludeDistance> <!-- Yes / No attribute to define whether a Distance field should be included -->
+				<value>No</value>
+			</IncludeDistance>
+			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
+				<value>No</value>
+			</IncludeRadius>
+			<KeyColumn> <!-- The column in this layer that contains the unique identifier -->
+				<value></value>
+			</KeyColumn>
+			<Format> <!-- The format that any tabular data will be saved as -->
+				<value>csv</value>
+			</Format>
+			<KeepLayer> <!-- A Yes/No attribute to define whether a GIS extract should be saved -->
+				<value>No</value>
+			</KeepLayer>
+			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
+				<value>Yes</value>
+			</ClipOutput>
+			<LoadWarning>
+				<value>Yes</value>
+			</LoadWarning>
+			<PreselectLayer>
+				<value>Yes</value>
+			</PreselectLayer>
+			<DisplayLabels> <!-- switch to decide whether the defined labels should be switched on when displayed. -->
+				<value>No</value>
+			</DisplayLabels>
+			<LayerFileName> <!-- The name of a layer file (*.lyr) that should be used to symbolise the extract -->
+				<value></value> <!-- Overrides any label settings defined below -->
+			</LayerFileName>
+			<OverwriteLabels> <!-- A Yes/No attribute to define whether labels may be overwritten -->
+				<value>No</value>
+			</OverwriteLabels>
+			<LabelColumn> <!-- The name of the label column in this layer (if any) -->
+				<value></value>
+			</LabelColumn>
+			<LabelClause> <!-- The definition of the labels for this layer (if any) -->
+				<!-- format: Font:Arial$Size:10$Red:0$Green:0$Blue:0$Type:NoRestrictions -->
+				<!-- Types: NoRestrictions / OnePerName / OnePerPart / OnePerShape -->
+				<!-- If no clause is filled in the above settings are applied -->
+				<value></value>
+			</LabelClause>
+			<CombinedSitesColumns> <!-- The columns to be used in the combined sites table. -->
+				<!-- Leave blank if the layer should not be included in the combined sites table -->
+				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
+				<value>"Sites", "Ramsar", SUM_AREA</value>
+			</CombinedSitesColumns>
+			<CombinedSitesGroupColumns> <!-- Columns that should be used to group data before inclusion in the combined sites table, if any -->
+				<value></value>
+			</CombinedSitesGroupColumns>
+			<CombinedSitesStatisticsColumns> <!-- Statistics columns and their required stats to be used for the combined sites table if CombinedSitesGroupColumns has been specified -->
+				<value>AREA;SUM</value> <!-- Must include the remaining columns -->
+			</CombinedSitesStatisticsColumns>
+			<CombinedSitesOrderByColumns> <!-- Columns by which results should be ordered in the Combined Sites table -->
+				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
+			</CombinedSitesOrderByColumns>
+		</Sites_-_Ramsar>
 		<Points_-_ExampleSpeciesPoints>
 			<LayerName> <!-- The name of the layer in the display -->
 				<value>ExampleSpeciesPoints</value>
