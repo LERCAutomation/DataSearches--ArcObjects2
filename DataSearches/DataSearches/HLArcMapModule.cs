@@ -1523,6 +1523,95 @@ namespace HLArcMapModule
 
         #endregion
 
+        #region IntersectFeatures
+        public bool IntersectFeatures(string InFeatureClassOrLayer, string IntersectFeatureClassOrLayer, string OutFeatureClass, bool Overwrite = true, string aLogFile = "", bool Messages = false)
+        {
+            // check the input
+            if (!FeatureclassExists(InFeatureClassOrLayer) && !LayerExists(InFeatureClassOrLayer, aLogFile, Messages))
+            {
+                if (Messages) MessageBox.Show("The input layer or feature class " + InFeatureClassOrLayer + " doesn't exist", "Intersect Features");
+                if (aLogFile != "")
+                    myFileFuncs.WriteLine(aLogFile, "The function IntersectFeatures returned the following error: The input layer or feature class " + InFeatureClassOrLayer + " doesn't exist");
+                return false;
+            }
+
+            if (!FeatureclassExists(IntersectFeatureClassOrLayer) && !LayerExists(IntersectFeatureClassOrLayer, aLogFile, Messages))
+            {
+                if (Messages) MessageBox.Show("The Intersect layer or feature class " + IntersectFeatureClassOrLayer + " doesn't exist", "Intersect Features");
+                if (aLogFile != "")
+                    myFileFuncs.WriteLine(aLogFile, "The function IntersectFeatures returned the following error: The intersect layer or feature class " + IntersectFeatureClassOrLayer + " doesn't exist");
+                return false;
+            }
+
+            if (!Overwrite && FeatureclassExists(OutFeatureClass))
+            {
+                if (Messages) MessageBox.Show("The output feature class " + OutFeatureClass + " already exists. Can't overwrite", "Intersect Features");
+                if (aLogFile != "")
+                    myFileFuncs.WriteLine(aLogFile, "The function IntersectFeatures returned the following error: The output feature class " + OutFeatureClass + " already exists. Can't overwrite");
+            }
+
+            ESRI.ArcGIS.Geoprocessor.Geoprocessor gp = new ESRI.ArcGIS.Geoprocessor.Geoprocessor();
+            gp.OverwriteOutput = true;
+            IGeoProcessorResult myresult = new GeoProcessorResultClass();
+            object sev = null;
+
+            // Create a variant array to hold the parameter values.
+            IVariantArray parameters = new VarArrayClass();
+
+            // Populate the variant array with parameter values.
+            parameters.Add(String.Concat('"', InFeatureClassOrLayer, '"', ";", '"', IntersectFeatureClassOrLayer, '"'));
+            parameters.Add(OutFeatureClass);
+            parameters.Add("ALL");
+
+            // Execute the tool.
+            try
+            {
+                myresult = (IGeoProcessorResult)gp.Execute("Intersect_analysis", parameters, null);
+                // Wait until the execution completes.
+                while (myresult.Status == esriJobStatus.esriJobExecuting)
+                    Thread.Sleep(1000);
+                // Wait for 1 second.
+                if (Messages)
+                {
+                    MessageBox.Show("Process complete");
+                }
+                gp = null;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if (Messages)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(gp.GetMessages(ref sev));
+                }
+                if (aLogFile != "")
+                {
+                    myFileFuncs.WriteLine(aLogFile, "Function IntersectFeatures returned the following errors: " + ex.Message);
+                    myFileFuncs.WriteLine(aLogFile, "Geoprocessor error: " + gp.GetMessages(ref sev));
+                }
+                gp = null;
+                return false;
+            }
+        }
+
+        public bool IntersectFeatures(string InWorkspace, string InDatasetName, string IntersectWorkspace, string IntersectDatasetName, string OutFeatureClass, bool Overwrite = true, string aLogFile = "", bool Messages = false)
+        {
+            string inFeatureClass = InWorkspace + @"\" + InDatasetName;
+            string IntersectFeatureClass = IntersectWorkspace + @"\" + IntersectDatasetName;
+            return IntersectFeatures(inFeatureClass, IntersectFeatureClass, OutFeatureClass, Overwrite, aLogFile, Messages);
+        }
+
+        public bool IntersectFeatures(string InWorkspace, string InDatasetName, string IntersectWorkspace, string IntersectDatasetName, string OutWorkspace, string OutDatasetName, bool Overwrite = true, string aLogFile = "", bool Messages = false)
+        {
+            string inFeatureClass = InWorkspace + @"\" + InDatasetName;
+            string intersectFeatureClass = IntersectWorkspace + @"\" + IntersectDatasetName;
+            string outFeatureClass = OutWorkspace + @"\" + OutDatasetName;
+            return IntersectFeatures(inFeatureClass, intersectFeatureClass, outFeatureClass, Overwrite, aLogFile, Messages);
+        }
+
+        #endregion
+
         public bool CopyTable(string InTable, string OutTable, bool Overwrite = true, string aLogFile = "", bool Messages = false)
         {
             // This works absolutely fine for dbf and geodatabase but does not export to CSV.
@@ -2274,18 +2363,30 @@ namespace HLArcMapModule
                 }
                 return null;
             }
-            else if (aCount > 1)
+            
+            // Allow multiple features to be used
+            if (aCount > 1)
             {
-                if (Messages)
-                    MessageBox.Show("There were " + aCount.ToString() + " features found matching those criteria");
-                if (aLogFile != "")
+                // Ask the user if they want to continue
+                DialogResult dlResult = MessageBox.Show("There were " + aCount.ToString() + " features found matching those criteria. Do you wish to continue?", "Data Searches", MessageBoxButtons.YesNo);
+                if (dlResult == System.Windows.Forms.DialogResult.Yes)
                 {
-                    myFileFuncs.WriteLine(aLogFile, "Function GetFeatureFromLayer returned the following message: There were " + aCount.ToString() + " features found matching those criteria");
+                    if (aLogFile != "")
+                    {
+                        myFileFuncs.WriteLine(aLogFile, "There were " + aCount.ToString() + " features found matching those criteria");
+                    }
                 }
-                return null;
+                else
+                {
+                    if (aLogFile != "")
+                    {
+                        myFileFuncs.WriteLine(aLogFile, "Function GetFeatureFromLayer returned the following message: There were " + aCount.ToString() + " features found matching those criteria");
+                    }
+                    return null;
+                }
             }
-            else
-                return pResult;
+
+            return pResult;
 
         }
 
@@ -2841,6 +2942,8 @@ namespace HLArcMapModule
 
                 try
                 {
+                    //// Try using statistics instead of dissolve
+                    //myresult = (IGeoProcessorResult)gp.Execute("Statistics_analysis", DissolveParams, null);
                     myresult = (IGeoProcessorResult)gp.Execute("Dissolve_management", DissolveParams, null);
 
                     // Wait until the execution completes.

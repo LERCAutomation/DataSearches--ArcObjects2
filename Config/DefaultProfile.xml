@@ -246,9 +246,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer> <!-- A Yes/No attribute to define whether a GIS extract should be saved -->
 				<value>No</value>
 			</KeepLayer>
-			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
-				<value>Yes</value>
-			</ClipOutput>
+			<OutputType><!-- Whether the layer that is kept should be copied, clipped, overlaid with or intersected with the search area -->
+				<value>Clip</value> <!-- Must be "Copy" (default), "Clip", "Overlay" or "Intersect" -->
+			</OutputType>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -331,9 +331,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer> <!-- A Yes/No attribute to define whether a GIS extract should be saved -->
 				<value>Yes</value>
 			</KeepLayer>
-			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
-				<value>Yes</value>
-			</ClipOutput>
+			<OutputType><!-- Whether the layer that is kept should be copied, clipped, overlaid with or intersected with the search area -->
+				<value>Clip</value> <!-- Must be "Copy" (default), "Clip", "Overlay" or "Intersect" -->
+			</OutputType>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -417,9 +417,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
-			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
-				<value>Yes</value>
-			</ClipOutput>
+			<OutputType><!-- Whether the layer that is kept should be copied, clipped, overlaid with or intersected with the search area -->
+				<value>Clip</value> <!-- Must be "Copy" (default), "Clip", "Overlay" or "Intersect" -->
+			</OutputType>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -501,9 +501,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
-			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
-				<value>Yes</value>
-			</ClipOutput>
+			<OutputType><!-- Whether the layer that is kept should be copied, clipped, overlaid with or intersected with the search area -->
+				<value>Clip</value> <!-- Must be "Copy" (default), "Clip", "Overlay" or "Intersect" -->
+			</OutputType>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -585,9 +585,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
-			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
-				<value>Yes</value>
-			</ClipOutput>
+			<OutputType><!-- Whether the layer that is kept should be copied, clipped, overlaid with or intersected with the search area -->
+				<value>Clip</value> <!-- Must be "Copy" (default), "Clip", "Overlay" or "Intersect" -->
+			</OutputType>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -669,9 +669,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
-			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
-				<value>Yes</value>
-			</ClipOutput>
+			<OutputType><!-- Whether the layer that is kept should be copied, clipped, overlaid with or intersected with the search area -->
+				<value>Clip</value> <!-- Must be "Copy" (default), "Clip", "Overlay" or "Intersect" -->
+			</OutputType>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -754,9 +754,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
-			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
-				<value>Yes</value>
-			</ClipOutput>
+			<OutputType><!-- Whether the layer that is kept should be copied, clipped, overlaid with or intersected with the search area -->
+				<value>Clip</value> <!-- Must be "Copy" (default), "Clip", "Overlay" or "Intersect" -->
+			</OutputType>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -839,9 +839,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
-			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
-				<value>Yes</value>
-			</ClipOutput>
+			<OutputType><!-- Whether the layer that is kept should be copied, clipped, overlaid with or intersected with the search area -->
+				<value>Clip</value> <!-- Must be "Copy" (default), "Clip", "Overlay" or "Intersect" -->
+			</OutputType>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -923,9 +923,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
-			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
-				<value>Yes</value>
-			</ClipOutput>
+			<OutputType><!-- Whether the layer that is kept should be copied, clipped, overlaid with or intersected with the search area -->
+				<value>Clip</value> <!-- Must be "Copy" (default), "Clip", "Overlay" or "Intersect" -->
+			</OutputType>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -1007,9 +1007,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>Yes</value>
 			</KeepLayer>
-			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
-				<value>Yes</value>
-			</ClipOutput>
+			<OutputType><!-- Whether the layer that is kept should be copied, clipped, overlaid with or intersected with the search area -->
+				<value>Clip</value> <!-- Must be "Copy" (default), "Clip", "Overlay" or "Intersect" -->
+			</OutputType>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -1091,9 +1091,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>No</value>
 			</KeepLayer>
-			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
-				<value>Yes</value>
-			</ClipOutput>
+			<OutputType><!-- Whether the layer that is kept should be copied, clipped, overlaid with or intersected with the search area -->
+				<value>Clip</value> <!-- Must be "Copy" (default), "Clip", "Overlay" or "Intersect" -->
+			</OutputType>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>
@@ -1175,9 +1175,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>No</value>
 			</KeepLayer>
-			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
-				<value>Yes</value>
-			</ClipOutput>
+			<OutputType><!-- Whether the layer that is kept should be copied, clipped, overlaid with or intersected with the search area -->
+				<value>Clip</value> <!-- Must be "Copy" (default), "Clip", "Overlay" or "Intersect" -->
+			</OutputType>
 			<LoadWarning>
 				<value>No</value>
 			</LoadWarning>
@@ -1259,9 +1259,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<KeepLayer>
 				<value>No</value>
 			</KeepLayer>
-			<ClipOutput><!-- A Yes/No attribute to define whether the layer that is kept should be clipped to the search area -->
-				<value>Yes</value>
-			</ClipOutput>
+			<OutputType><!-- Whether the layer that is kept should be copied, clipped, overlaid with or intersected with the search area -->
+				<value>Clip</value> <!-- Must be "Copy" (default), "Clip", "Overlay" or "Intersect" -->
+			</OutputType>
 			<LoadWarning>
 				<value>Yes</value>
 			</LoadWarning>

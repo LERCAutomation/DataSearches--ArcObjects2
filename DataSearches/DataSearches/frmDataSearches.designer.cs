@@ -249,7 +249,7 @@
             this.MinimizeBox = false;
             this.Name = "frmDataSearches";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Data Searches 2.1";
+            this.Text = "Data Searches 2.2";
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -68,7 +68,8 @@ namespace HLSearchesToolConfig
         List<string> MapKeyColumns = new List<string>();
         List<string> MapFormats = new List<string>();
         List<bool> MapKeeps = new List<bool>();
-        List<bool> MapClipLayers = new List<bool>();
+        List<string> MapOutputTypes = new List<string>();
+        List<bool> MapIntersectLayers = new List<bool>();
         List<bool> MapLoadWarnings = new List<bool>();
         List<bool> MapPreselectLayers = new List<bool>();
         List<bool> MapDisplayLabels = new List<bool>();
@@ -875,16 +876,22 @@ namespace HLSearchesToolConfig
 
                     try
                     {
-                        string strMapClip = aNode["ClipOutput"].InnerText;
-                        bool blClipOutput = false;
-                        if (strMapClip.ToLower() == "yes")
-                            blClipOutput = true;
+                        string strMapOutput = aNode["OutputType"].InnerText;
+                        string strOutputType = "COPY";
+                        if (strMapOutput.ToLower() == "copy")
+                            strOutputType = "COPY";
+                        if (strMapOutput.ToLower() == "clip")
+                            strOutputType = "CLIP";
+                        if (strMapOutput.ToLower() == "overlay")
+                            strOutputType = "OVERLAY";
+                        if (strMapOutput.ToLower() == "intersect")
+                            strOutputType = "INTERSECT";
 
-                        MapClipLayers.Add(blClipOutput);
+                        MapOutputTypes.Add(strOutputType);
                     }
                     catch
                     {
-                        MessageBox.Show("Could not locate the item 'ClipOutput' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Could not locate the item 'OutputType' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         LoadedXML = false;
                         return;
                     }
@@ -1355,9 +1362,14 @@ namespace HLSearchesToolConfig
             return MapKeeps;
         }
 
-        public List<bool> GetMapClipOutputs()
+        public List<string> GetMapOutputTypes()
         {
-            return MapClipLayers;
+            return MapOutputTypes;
+        }
+
+        public List<bool> GetMapIntersectOutputs()
+        {
+            return MapIntersectLayers;
         }
 
         public List<bool> GetMapLoadWarnings()

@@ -650,7 +650,7 @@ namespace DataSearches
                     // apply layer symbology
                     myArcMapFuncs.ChangeLegend(strFeatureOutputName, strLayerDir + "\\" + strSearchSymbology, aLogFile:strLogFile);
                     // Move it to the group layer
-                    myArcMapFuncs.MoveToSubGroupLayer(strShortRef, strSubGroupLayerName, myArcMapFuncs.GetLayer(strFeatureOutputName), strLogFile);
+                    myArcMapFuncs.MoveToSubGroupLayer(strGroupLayerName, strSubGroupLayerName, myArcMapFuncs.GetLayer(strFeatureOutputName), strLogFile);
                 }
                 else
                 {
@@ -670,7 +670,7 @@ namespace DataSearches
             // Add the buffer to the group layer. Zoom to the buffer.
             if (strAddSelected.ToLower() != "no")
             {
-                myArcMapFuncs.MoveToSubGroupLayer(strShortRef, strSubGroupLayerName, myArcMapFuncs.GetLayer(strLayerName), strLogFile);
+                myArcMapFuncs.MoveToSubGroupLayer(strGroupLayerName, strSubGroupLayerName, myArcMapFuncs.GetLayer(strLayerName), strLogFile);
                 // Change the symbology of the buffer.
                 string strLayerFile = strLayerDir + @"\" + myConfig.GetBufferLayer();
                 myArcMapFuncs.ChangeLegend(strLayerName, strLayerFile, aLogFile:strLogFile);
@@ -694,7 +694,7 @@ namespace DataSearches
             List<string> strKeyColumns = myConfig.GetMapKeyColumns();
             List<string> strFormats = myConfig.GetMapFormats();
             List<bool> blKeepLayers = myConfig.GetMapKeepLayers();
-            List<bool> blClipLayers = myConfig.GetMapClipOutputs();
+            List<string> strOutputTypes = myConfig.GetMapOutputTypes();
             List<bool> blDisplayLabels = myConfig.GetMapDisplayLabels();
             List<string> strDisplayLayerFiles = myConfig.GetMapLayerFiles();
             List<bool> blOverwriteLabelDefaults = myConfig.GetMapOverwriteLabels();
@@ -769,7 +769,7 @@ namespace DataSearches
                 string strKeyColumn = strKeyColumns[intIndex];
                 string strFormat = strFormats[intIndex];
                 bool blKeepLayer = blKeepLayers[intIndex];
-                bool blClipLayer = blClipLayers[intIndex];
+                string strOutputType = strOutputTypes[intIndex];
                 bool blDisplayLabel = blDisplayLabels[intIndex];
                 string strDisplayLayer = strDisplayLayerFiles[intIndex];
                 bool blOverwriteLabelDefault = blOverwriteLabelDefaults[intIndex];
@@ -820,7 +820,7 @@ namespace DataSearches
                     }
                     myFileFuncs.WriteLine(strLogFile, "Selection on " + strDisplayName + " refined");
                 }
-
+               
                 // Write out the results - to shapefile first. Include distance if required.
                 // Function takes account of output, group by and statistics fields.
 
@@ -830,16 +830,86 @@ namespace DataSearches
                     // Firstly take a copy of the full selection in a temporary file; This will be used to do the summaries on.
                     string strTempMaster = "TempMaster" + strUserID;
                     string strTempMasterOutput = strTempFolder + @"\" + strTempMaster + ".shp";
-                    // If the output layer should be clipped, do so now. Otherwise do a straight copy.
-                    if (blClipLayer)
+
+                    // Get the input FC type.
+                    IFeatureClass pFC = myArcMapFuncs.GetFeatureClassFromLayerName(strDisplayName, strLogFile, false);
+                    string strInFCType = myArcMapFuncs.GetFeatureClassType(pFC);
+
+                    // Get the buffer FC type.
+                    pFC = myArcMapFuncs.GetFeatureClassFromLayerName(strLayerName, strLogFile, false);
+                    string strBufferFCType = myArcMapFuncs.GetFeatureClassType(pFC);
+
+                    // If the input layer should be clipped to the buffer layer, do so now.
+                    if (strOutputType == "CLIP")
                     {
-                        // Clip
-                        blResult = myArcMapFuncs.ClipFeatures(strDisplayName, strOutputFile, strTempMasterOutput, aLogFile: strLogFile); // Selected features in input, buffer FC, output.
+
+                        if ((strInFCType == "polygon" & strBufferFCType == "polygon") ||
+                            (strInFCType == "line" & (strBufferFCType == "line" || strBufferFCType == "polygon")))
+                        {
+                            // Clip
+                            blResult = myArcMapFuncs.ClipFeatures(strDisplayName, strOutputFile, strTempMasterOutput, aLogFile: strLogFile); // Selected features in input, buffer FC, output.
+                        }
+                        else
+                        {
+                            // Copy
+                            blResult = myArcMapFuncs.CopyFeatures(strDisplayName, strTempMasterOutput, aLogFile: strLogFile);
+                        }
                     }
+                    // If the buffer layer should be clipped to the input layer, do so now.
+                    else if (strOutputType == "OVERLAY")
+                    {
+
+                        if ((strBufferFCType == "polygon" & strInFCType == "polygon") ||
+                            (strBufferFCType == "line" & (strInFCType == "line" || strInFCType == "polygon")))
+                        {
+                            // Clip
+                            blResult = myArcMapFuncs.ClipFeatures(strOutputFile, strDisplayName, strTempMasterOutput, aLogFile: strLogFile); // Selected features in input, buffer FC, output.
+                        }
+                        else
+                        {
+                            // Select from the buffer layer.
+                            myFileFuncs.WriteLine(strLogFile, "Selecting features on layer " + strLayerName + " using selected feature(s) in layer " + strDisplayName);
+                            myArcMapFuncs.SelectLayerByLocation(strLayerName, strDisplayName, aLogFile: strLogFile);
+
+                            if (myArcMapFuncs.CountSelectedLayerFeatures(strLayerName, strLogFile) > 0)
+                            {
+                                myFileFuncs.WriteLine(strLogFile, myArcMapFuncs.CountSelectedLayerFeatures(strLayerName).ToString() + " feature(s) found for " + strLayerName + ". Processing");
+
+                                // Copy the selection from the buffer layer.
+                                blResult = myArcMapFuncs.CopyFeatures(strLayerName, strTempMasterOutput, aLogFile: strLogFile);
+                            }
+                            else
+                            {
+                                myFileFuncs.WriteLine(strLogFile, "No features selected for " + strLayerName);
+                            }
+
+                            // Clear the buffer layer selection.
+                            myArcMapFuncs.ClearSelectedMapFeatures(strLayerName, strLogFile);
+                        }
+                    }
+                    // If the input layer should be intersected with the buffer layer, do so now.
+                    else if (strOutputType == "INTERSECT")
+                        {
+
+                            if ((strInFCType == "polygon" & strBufferFCType == "polygon") ||
+                                (strInFCType == "line" & strBufferFCType == "line"))
+                            {
+                                // Intersect
+                                blResult = myArcMapFuncs.IntersectFeatures(strDisplayName, strOutputFile, strTempMasterOutput, aLogFile: strLogFile); // Selected features in input, buffer FC, output.
+                            }
+                            else
+                            {
+                                // Copy
+                                blResult = myArcMapFuncs.CopyFeatures(strDisplayName, strTempMasterOutput, aLogFile: strLogFile);
+                            }
+                        }
+                    // Otherwise do a straight copy of the input layer.
                     else
                     {
+                        // Copy
                         blResult = myArcMapFuncs.CopyFeatures(strDisplayName, strTempMasterOutput, aLogFile: strLogFile);
                     }
+
                     if (!blResult)
                     {
                         MessageBox.Show("Cannot copy selection from " + strDisplayName + " to " + strTempMasterOutput + ". Please ensure this file is not open elsewhere");
@@ -927,7 +997,7 @@ namespace DataSearches
                         myArcMapFuncs.CopyFeatures(strTempMaster, strShapeOutputName, aLogFile:strLogFile);
                         if (strAddSelected.ToLower() != "no")
                         {
-                            myArcMapFuncs.MoveToSubGroupLayer(strShortRef, strSubGroupLayerName, myArcMapFuncs.GetLayer(strShapeLayerName, strLogFile), strLogFile);
+                            myArcMapFuncs.MoveToSubGroupLayer(strGroupLayerName, strSubGroupLayerName, myArcMapFuncs.GetLayer(strShapeLayerName, strLogFile), strLogFile);
                             if (strDisplayLayer != "")
                             {
                                 string strDisplayLayerFile = strLayerDir + @"\" + strDisplayLayer;

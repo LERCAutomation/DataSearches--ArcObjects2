@@ -16,3 +16,13 @@ H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\bin\De
 H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\bin\Debug\DataSearches.pdb
 H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Debug\DataSearches.pdb
 H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\bin\Debug\DataSearches.esriAddIn
+D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\bin\Debug\DataSearches.dll.config
+D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\bin\Debug\DataSearches.dll
+D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\bin\Debug\DataSearches.pdb
+D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Debug\DataSearches.csprojResolveAssemblyReference.cache
+D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Debug\DataSearches.frmChooseConfig.resources
+D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Debug\DataSearches.frmDataSearches.resources
+D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Debug\DataSearches.csproj.GenerateResource.Cache
+D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Debug\DataSearches.dll
+D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Debug\DataSearches.pdb
+D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\bin\Debug\DataSearches.esriAddIn
