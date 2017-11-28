@@ -970,23 +970,28 @@ namespace DataSearches
 
                     string strTempOutput = "TempOutput" + strUserID;
                     string strTempShapeOutput = strTempFolder + @"\" + strTempOutput + ".shp";
+                    string strTempDBFOutput = strTempFolder + @"\" + strTempOutput + "DBF.dbf";
                     string strRadius = "none";
                     if (blIncludeRadius) strRadius = strBufferSize + " " + strBufferUnitText; // Only include radius if requested.
                     // Only export if the user has specified columns.
                     int intLineCount = -999;
                     if (strColumns != "")
                     {
-                        myFileFuncs.WriteLine(strLogFile, "Extracting summary information from " + strDisplayName);
-                        myArcMapFuncs.ExportSelectionToShapefile(strTempMaster, strTempShapeOutput, strColumns, strTempFile, strGroupColumns,
-                            strStatsColumns, blIncludeArea, strAreaMeasureUnit, blIncludeDistance, strRadius, strTargetLayer, strLogFile);
-
                         // Write out the results to table as appropriate.
                         bool blIncHeaders = false;
                         if (strFormat.ToLower() == "csv") blIncHeaders = true;
 
-                        myFileFuncs.WriteLine(strLogFile, "Writing summary information for " + strDisplayName + " to " + strTableOutputName);
+                        myFileFuncs.WriteLine(strLogFile, "Extracting summary information from " + strDisplayName);
+                        //myArcMapFuncs.ExportSelectionToShapefile(strTempMaster, strTempShapeOutput, strColumns, strTempFile, strGroupColumns,
+                        //    strStatsColumns, blIncludeArea, strAreaMeasureUnit, blIncludeDistance, strRadius, strTargetLayer, strLogFile);
+                        intLineCount = myArcMapFuncs.ExportSelectionToCSV(strTempMaster, strTableOutputName, strColumns, blIncHeaders, strTempFile, strTempDBFOutput,
+                            strGroupColumns, strStatsColumns, strOrderColumns, blIncludeArea, strAreaMeasureUnit, blIncludeDistance, strRadius, strTargetLayer, strLogFile);
+
+                        
+
+                        // myFileFuncs.WriteLine(strLogFile, "Writing summary information for " + strDisplayName + " to " + strTableOutputName);
                         // 29/11/2016 note no longer includes strCriteria in the export as taken care of above. 
-                        intLineCount = myArcMapFuncs.CopyToCSV(strTempShapeOutput, strTableOutputName, strColumns, strOrderColumns, true, false, !blIncHeaders);
+                        //intLineCount = myArcMapFuncs.CopyToCSV(strTempShapeOutput, strTableOutputName, strColumns, strOrderColumns, true, false, !blIncHeaders, strLogFile);
                         myFileFuncs.WriteLine(strLogFile, intLineCount.ToString() + " line(s) written for " + strDisplayName);
                     }
                     // Copy to permanent layer as appropriate
@@ -1046,16 +1051,20 @@ namespace DataSearches
                     if (strCombinedSitesColumns != "" && blCombinedTable)
                     {
                         myFileFuncs.WriteLine(strLogFile, "Extracting summary output for combined sites table");
-                        myArcMapFuncs.ExportSelectionToShapefile(strTempMaster, strTempShapeOutput, strCombinedSitesColumns, strTempFile,
-                            strCombinedSitesGroupColumns, strCombinedSitesStatsColumns, blIncludeArea, strAreaMeasureUnit, blIncludeDistance, strRadius, strTargetLayer, strLogFile);
+                        //myArcMapFuncs.ExportSelectionToShapefile(strTempMaster, strTempShapeOutput, strCombinedSitesColumns, strTempFile,
+                        //    strCombinedSitesGroupColumns, strCombinedSitesStatsColumns, blIncludeArea, strAreaMeasureUnit, blIncludeDistance, strRadius, strTargetLayer, strLogFile);
+
+                        intLineCount = myArcMapFuncs.ExportSelectionToCSV(strTempMaster, strCombinedTable, strCombinedSitesColumns, false, strTempShapeOutput, strTempDBFOutput, strCombinedSitesGroupColumns,
+                            strCombinedSitesStatsColumns, strCombinedSitesOrderColumns, blIncludeArea, strAreaMeasureUnit, blIncludeDistance, strRadius, strTargetLayer, strLogFile);
+
 
                         // This needs changing to take account of the 'tag' field. Will need a new function that takes account
                         // of the combined sites header columns.
-                        myFileFuncs.WriteLine(strLogFile, "Writing summary output to combined sites table " + strCombinedTable);
-                        intLineCount = myArcMapFuncs.CopyToCSV(strTempShapeOutput, strCombinedTable, strCombinedSitesColumns, strCombinedSitesOrderColumns, true, true, aLogFile:strLogFile);
+                        //myFileFuncs.WriteLine(strLogFile, "Writing summary output to combined sites table " + strCombinedTable);
+                        //intLineCount = myArcMapFuncs.CopyToCSV(strTempShapeOutput, strCombinedTable, strCombinedSitesColumns, strCombinedSitesOrderColumns, true, true, aLogFile:strLogFile);
                         myFileFuncs.WriteLine(strLogFile, "Summary output written. " + intLineCount.ToString() + " row(s) added for " + strDisplayName);
                         myArcMapFuncs.RemoveLayer(strTempOutput, strLogFile);
-                        myArcMapFuncs.DeleteFeatureclass(strTempShapeOutput, strLogFile);
+                        if (myArcMapFuncs.FeatureclassExists(strTempShapeOutput)) myArcMapFuncs.DeleteFeatureclass(strTempShapeOutput, strLogFile);
               
 
                     }
@@ -1102,6 +1111,7 @@ namespace DataSearches
 
             myArcMapFuncs.ToggleTOC();
             myArcMapFuncs.ToggleDrawing(true);
+            myArcMapFuncs.SetContentsView();
             if (strBufferSize != "0")
                 myArcMapFuncs.ZoomToLayer(strLayerName, strLogFile);
 

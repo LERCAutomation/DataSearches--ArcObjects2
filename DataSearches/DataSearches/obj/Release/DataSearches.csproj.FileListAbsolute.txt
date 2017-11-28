@@ -15,7 +15,6 @@ H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Re
 H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Release\DataSearches.dll
 H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Release\DataSearches.pdb
 H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Release\DataSearches.frmChooseConfig.resources
-H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\bin\Release\DataSearches.esriAddIn
 D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\bin\Release\DataSearches.dll.config
 D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\bin\Release\DataSearches.dll
 D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\bin\Release\DataSearches.pdb
@@ -26,3 +25,5 @@ D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Release\DataSe
 D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Release\DataSearches.pdb
 D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Release\DataSearches.csprojResolveAssemblyReference.cache
 D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\bin\Release\DataSearches.esriAddIn
+H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Release\DataSearches.csprojResolveAssemblyReference.cache
+H:\Dev\LERCAutomation\DataSearches--ArcObjects2\DataSearches\DataSearches\bin\Release\DataSearches.esriAddIn

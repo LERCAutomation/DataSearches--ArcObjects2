@@ -203,91 +203,6 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 	<!-- map layer attributes -->
 	<!-- The names, local names, suffixes, SQL clauses and formats of the map tables -->
 	<MapLayers>
-		<Sites_-_Ramsar>
-			<LayerName> <!-- The name of the layer in the display -->
-				<value>Ramsar</value>
-			</LayerName>
-			<GISOutputName> <!-- The name used for any GIS data extracts -->
-				<value>Ramsar</value>
-			</GISOutputName>
-			<TableOutputName> <!-- The name used for any tabular extracts -->
-				<value>ramsars</value>
-			</TableOutputName>
-			<Columns> <!-- The columns to be used in the tabular extracts -->
-				<value>SUM_AREA</value> <!-- Use commas to separate. NOTE case sensitive! -->
-			</Columns>
-			<GroupColumns> <!-- The columns that should be used for grouping results -->
-				<value></value> <!-- Use commas to separate. NOTE case sensitive! -->
-			</GroupColumns>
-			<StatisticsColumns> <!-- If grouping is used, any statistics that should be generated. -->
-				<value>AREA;SUM</value><!-- example: area_ha;SUM$Status;FIRST -->
-			</StatisticsColumns>
-			<OrderColumns> <!-- Overrides GroupColumns. Any columns by which the results should be ordered -->
-				<value></value> <!-- Use commas to separate. NOTE case sensitive! -->
-			</OrderColumns>
-			<Criteria> <!-- Any criteria that should be applied to this layer before extracts are saved -->
-				<value></value> <!-- example: Name = 'myName' OR area_ha > 5 -->
-			</Criteria>
-			<IncludeArea> <!-- Yes / No attribute to define whether an Area field should be included. Ignored for points. -->
-				<value>Yes</value>
-			</IncludeArea>
-			<IncludeDistance> <!-- Yes / No attribute to define whether a Distance field should be included -->
-				<value>No</value>
-			</IncludeDistance>
-			<IncludeRadius> <!-- Yes / No attribute to define whether a Radius field should be included -->
-				<value>No</value>
-			</IncludeRadius>
-			<KeyColumn> <!-- The column in this layer that contains the unique identifier -->
-				<value></value>
-			</KeyColumn>
-			<Format> <!-- The format that any tabular data will be saved as -->
-				<value>csv</value>
-			</Format>
-			<KeepLayer> <!-- A Yes/No attribute to define whether a GIS extract should be saved -->
-				<value>No</value>
-			</KeepLayer>
-			<OutputType><!-- Whether the layer that is kept should be copied, clipped, overlaid with or intersected with the search area -->
-				<value>Clip</value> <!-- Must be "Copy" (default), "Clip", "Overlay" or "Intersect" -->
-			</OutputType>
-			<LoadWarning>
-				<value>Yes</value>
-			</LoadWarning>
-			<PreselectLayer>
-				<value>Yes</value>
-			</PreselectLayer>
-			<DisplayLabels> <!-- switch to decide whether the defined labels should be switched on when displayed. -->
-				<value>No</value>
-			</DisplayLabels>
-			<LayerFileName> <!-- The name of a layer file (*.lyr) that should be used to symbolise the extract -->
-				<value></value> <!-- Overrides any label settings defined below -->
-			</LayerFileName>
-			<OverwriteLabels> <!-- A Yes/No attribute to define whether labels may be overwritten -->
-				<value>No</value>
-			</OverwriteLabels>
-			<LabelColumn> <!-- The name of the label column in this layer (if any) -->
-				<value></value>
-			</LabelColumn>
-			<LabelClause> <!-- The definition of the labels for this layer (if any) -->
-				<!-- format: Font:Arial$Size:10$Red:0$Green:0$Blue:0$Type:NoRestrictions -->
-				<!-- Types: NoRestrictions / OnePerName / OnePerPart / OnePerShape -->
-				<!-- If no clause is filled in the above settings are applied -->
-				<value></value>
-			</LabelClause>
-			<CombinedSitesColumns> <!-- The columns to be used in the combined sites table. -->
-				<!-- Leave blank if the layer should not be included in the combined sites table -->
-				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
-				<value>"Sites", "Ramsar", SUM_AREA</value>
-			</CombinedSitesColumns>
-			<CombinedSitesGroupColumns> <!-- Columns that should be used to group data before inclusion in the combined sites table, if any -->
-				<value></value>
-			</CombinedSitesGroupColumns>
-			<CombinedSitesStatisticsColumns> <!-- Statistics columns and their required stats to be used for the combined sites table if CombinedSitesGroupColumns has been specified -->
-				<value>AREA;SUM</value> <!-- Must include the remaining columns -->
-			</CombinedSitesStatisticsColumns>
-			<CombinedSitesOrderByColumns> <!-- Columns by which results should be ordered in the Combined Sites table -->
-				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
-			</CombinedSitesOrderByColumns>
-		</Sites_-_Ramsar>
 		<Points_-_ExampleSpeciesPoints>
 			<LayerName> <!-- The name of the layer in the display -->
 				<value>ExampleSpeciesPoints</value>
@@ -299,13 +214,13 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>%shortref%_spptable</value><!-- The name used for any tabular extracts -->
 			</TableOutputName>
 			<Columns> <!-- The columns to be used in the tabular extracts -->
-				<value>Species, Year, COUNT_Spec, MIN_DISTAN</value> <!-- Use commas to separate. NOTE case sensitive! -->
+				<value>Species, Year, COUNT_Spec</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</Columns>
 			<GroupColumns> <!-- The columns that should be used for grouping results -->
 				<value>Species, Year</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</GroupColumns>
 			<StatisticsColumns> <!-- If grouping is used, any statistics that should be generated. -->
-				<value>Species;COUNT$Distance;MIN</value><!-- example: area_ha;SUM$Status;FIRST -->
+				<value>Species;COUNT</value><!-- example: area_ha;SUM$Status;FIRST -->
 			</StatisticsColumns>
 			<OrderColumns> <!-- Overrides GroupColumns. Any columns by which the results should be ordered -->
 				<value></value>
@@ -344,7 +259,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>No</value>
 			</DisplayLabels>
 			<LayerFileName> <!-- The name of a layer file (*.lyr) that should be used to symbolise the extract -->
-				<value></value><!-- Overrides any label settings defined below -->
+				<value>Species.lyr</value><!-- Overrides any label settings defined below -->
 			</LayerFileName>
 			<OverwriteLabels> <!-- A Yes/No attribute to define whether labels may be overwritten -->
 				<value>Yes</value>
@@ -376,7 +291,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		</Points_-_ExampleSpeciesPoints> 
 		<Polys_-_SACs>
 			<LayerName>
-				<value>Sussex_SACs</value>
+				<value>SACs</value>
 			</LayerName>
 			<GISOutputName>
 				<value>%shortref%_SACs</value>
@@ -460,7 +375,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		</Polys_-_SACs>
 		<Polys_-_SPAs>
 			<LayerName>
-				<value>Sussex_SPAs</value>
+				<value>SPAs</value>
 			</LayerName>
 			<GISOutputName>
 				<value>SPAs</value>
@@ -544,7 +459,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		</Polys_-_SPAs>
 		<Polys_-_Ramsars>
 			<LayerName>
-				<value>Sussex_Ramsars</value>
+				<value>Ramsars</value>
 			</LayerName>
 			<GISOutputName>
 				<value>Ramsars</value>
@@ -626,9 +541,9 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
 		</Polys_-_Ramsars>
-		<Polys1_-_SSSIs>
+		<Polys_-_SSSIs>
 			<LayerName>
-				<value>Sussex SSSIs</value>
+				<value>SSSIs</value>
 			</LayerName>
 			<GISOutputName>
 				<value>%subref%_SSSIs</value>
@@ -637,7 +552,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>%shortref%_sssis</value>
 			</TableOutputName>
 			<Columns>
-				<value>SSSI_NAME, SUM_ArEA, FIRST_STAT, MIN_DISTAN</value> <!-- Use commas to separate. NOTE case sensitive! -->
+				<value>SSSI_NAME, SUM_ArEA, FIRST_STAT</value> <!-- Use commas to separate. NOTE case sensitive! -->
 			</Columns>
 			<GroupColumns>
 				<value>SSSI_NAME</value> <!-- Use commas to separate. NOTE case sensitive! -->
@@ -679,10 +594,10 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>Yes</value>
 			</PreselectLayer>
 			<DisplayLabels> <!-- switch to decide whether the defined labels should be switched on when displayed. -->
-				<value>No</value>
+				<value>Yes</value>
 			</DisplayLabels>
 			<LayerFileName><!-- Overrides any label settings defined below -->
-				<value>TestLayer.lyr</value>
+				<value>SSSIs.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
 				<value>Yes</value>
@@ -710,10 +625,10 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</Polys1_-_SSSIs>
-		<Polys1_-_NNRs>
+		</Polys_-_SSSIs>
+		<Polys_-_NNRs>
 			<LayerName>
-				<value>Sussex_NNRs</value>
+				<value>NNRs</value>
 			</LayerName>
 			<GISOutputName>
 				<value>NNRs</value>
@@ -794,10 +709,10 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</Polys1_-_NNRs>
-		<Polys1_-_LNRs>
+		</Polys_-_NNRs>
+		<Polys_-_LNRs>
 			<LayerName>
-				<value>Sussex_LNR</value>
+				<value>LNRs</value>
 			</LayerName>
 			<GISOutputName>
 				<value>LNRs</value>
@@ -806,7 +721,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>_lnrs</value>
 			</TableOutputName>
 			<Columns>
-				<value>LNR_Name,Area</value> <!-- Use commas to separate. NOTE case sensitive! Area and Distance may be included
+				<value></value> <!-- Use commas to separate. NOTE case sensitive! Area and Distance may be included
 												even if the fields don't exist yet if IncludeArea / IncludeDistance are set to Yes -->
 			</Columns>
 			<GroupColumns>
@@ -879,16 +794,16 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</Polys1_-_LNRs>
-		<Polys2_-_LWS>
+		</Polys_-_LNRs>
+		<Polys_-_LWS>
 			<LayerName>
-				<value>LWS_Sussex</value>
+				<value>LWSs</value>
 			</LayerName>
 			<GISOutputName>
-				<value>LWS</value>
+				<value>%subref%_LWS</value>
 			</GISOutputName>
 			<TableOutputName>
-				<value>%shortname%_lws</value>
+				<value>%shortref%_lws</value>
 			</TableOutputName>
 			<Columns>
 				<value>siteid</value> <!-- Use commas to separate. NOTE case sensitive! -->
@@ -933,16 +848,16 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>No</value>
 			</PreselectLayer>
 			<DisplayLabels> <!-- switch to decide whether the defined labels should be switched on when displayed. -->
-				<value>No</value>
+				<value>Yes</value>
 			</DisplayLabels>
 			<LayerFileName><!-- Overrides any label settings defined below -->
-				<value>TestLayer.lyr</value>
+				<value>LWS.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
 				<value>Yes</value>
 			</OverwriteLabels>
 			<LabelColumn>
-				<value>Map_Label</value>
+				<value>Map_label</value>
 			</LabelColumn>
 			<LabelClause>
 				<!-- format: Font:Arial$Size:10$Red:0$Green:0$Blue:0$Type:NoRestrictions -->
@@ -952,10 +867,10 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			</LabelClause>
 			<CombinedSitesColumns>
 				<!-- Distance may be included as a keyword if IncludeDistance is set to Yes-->
-				<value>"LWS", siteid, area_ha, Map_Label</value>
+				<value>"LWS", siteid, area_ha, Map_label</value>
 			</CombinedSitesColumns>
 			<CombinedSitesGroupColumns>
-				<value>siteid, area_ha, Map_Label</value>
+				<value>siteid, area_ha, Map_label</value>
 			</CombinedSitesGroupColumns>
 			<CombinedSitesStatisticsColumns>
 				<value></value>
@@ -963,16 +878,16 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</Polys2_-_LWS>
-		<Polys2_-_AONBs>
+		</Polys_-_LWS>
+		<Polys_-_AONBs>
 			<LayerName>
-				<value>Sussex_AONBs</value>
+				<value>AONBs</value>
 			</LayerName>
 			<GISOutputName>
-				<value>AONBs</value>
+				<value>%subref%_AONBs</value>
 			</GISOutputName>
 			<TableOutputName>
-				<value>_aonbs</value>
+				<value>%shortref%_aonbs</value>
 			</TableOutputName>
 			<Columns>
 				<value>NAME</value> <!-- Use commas to separate. NOTE case sensitive! -->
@@ -1014,13 +929,13 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 				<value>Yes</value>
 			</LoadWarning>
 			<PreselectLayer>
-				<value>No</value>
+				<value>Yes</value>
 			</PreselectLayer>
 			<DisplayLabels> <!-- switch to decide whether the defined labels should be switched on when displayed. -->
-				<value>No</value>
+				<value>Yes</value>
 			</DisplayLabels>
 			<LayerFileName><!-- Overrides any label settings defined below -->
-				<value>TestLayer.lyr</value>
+				<value>AONBs.lyr</value>
 			</LayerFileName>
 			<OverwriteLabels>
 				<value>Yes</value>
@@ -1047,10 +962,10 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 			<CombinedSitesOrderByColumns>
 				<value></value> <!-- Overrides CombinedSitesGroupColumns -->
 			</CombinedSitesOrderByColumns>
-		</Polys2_-_AONBs>
+		</Polys_-_AONBs>
 		<Polys_-_CountryParks> <!-- This is an experiment with a layer that will not be added or have its labels ovewritten -->
 			<LayerName>
-				<value>Sussex_Country_Parks</value>
+				<value>CountryParks</value>
 			</LayerName>
 			<GISOutputName>
 				<value>CountryPks</value>

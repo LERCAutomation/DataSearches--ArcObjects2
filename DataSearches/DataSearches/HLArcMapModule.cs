@@ -448,14 +448,25 @@ namespace HLArcMapModule
         public bool FieldExists(IFeatureClass aFeatureClass, string aFieldName, string aLogFile = "", bool Messages = false)
         {
 
-            int aTest;
+            //int aTest;
             IFields theFields = aFeatureClass.Fields;
+            return FieldExists(theFields, aFieldName, aLogFile, Messages);
+            //aTest = theFields.FindField(aFieldName);
+            //if (aTest == -1)
+            //{
+            //    aTest = theFields.FindFieldByAliasName(aFieldName);
+            //}
+
+            //if (aTest == -1) return false;
+            //return true;
+        }
+
+        public bool FieldExists(IFields theFields, string aFieldName, string aLogFile = "", bool Messages = false)
+        {
+            int aTest;
             aTest = theFields.FindField(aFieldName);
             if (aTest == -1)
-            {
                 aTest = theFields.FindFieldByAliasName(aFieldName);
-            }
-
             if (aTest == -1) return false;
             return true;
         }
@@ -1821,6 +1832,7 @@ namespace HLArcMapModule
             // selecting features and refining this selection.
 
             // Check the input.
+            
             if (!TableExists(InTable))
             {
                 if (Messages) MessageBox.Show("The input table " + InTable + " doesn't exist", "Copy To CSV");
@@ -1828,6 +1840,7 @@ namespace HLArcMapModule
                     myFileFuncs.WriteLine(aLogFile, "Function AppendTable returned the following error: The input table " + InTable + " doesn't exist");
                 return -1;
             }
+            
 
             string aFilePath = myFileFuncs.GetDirectoryName(InTable);
             string aTabName = myFileFuncs.GetFileName(InTable);
@@ -1864,6 +1877,7 @@ namespace HLArcMapModule
 
             // Align the columns with what actually exists in the layer.
             // Return if there are no columns left.
+            
             if (Columns != "")
             {
                 List<string> strColumns = Columns.Split(',').ToList();
@@ -1871,7 +1885,7 @@ namespace HLArcMapModule
                 foreach (string strCol in strColumns)
                 {
                     string aColNameTr = strCol.Trim();
-                    if ((aColNameTr.Substring(0, 1) == "\"") || (FieldExists(InTable, aColNameTr)))
+                    if ((aColNameTr.Substring(0, 1) == "\"") || (FieldExists(fldsFields, aColNameTr)))
                         Columns = Columns + aColNameTr + ",";
                 }
                 if (Columns != "")
@@ -1888,7 +1902,7 @@ namespace HLArcMapModule
                 OrderByColumns = "";
                 foreach (string strCol in strOrderColumns)
                 {
-                    if (FieldExists(InTable, strCol.Trim()))
+                    if (FieldExists(fldsFields, strCol.Trim()))
                         OrderByColumns = OrderByColumns + strCol.Trim() + ",";
                 }
                 if (OrderByColumns != "")
@@ -1931,6 +1945,7 @@ namespace HLArcMapModule
                     if (aColNameTr.Substring(0, 1) != "\"")
                     {
                         int i = fldsFields.FindField(aColNameTr);
+                        if (i == -1) i = fldsFields.FindFieldByAliasName(aColNameTr);
                         var theValue = aRow.get_Value(i);
                         // Wrap value if quotes if it is a string that contains a comma
                         if ((theValue is string) &&
@@ -2923,6 +2938,8 @@ namespace HLArcMapModule
                     StatisticsColumns = StatisticsColumns.Substring(0, StatisticsColumns.Length - 1);
             }
 
+            // New process: 1. calculate distance, 2. summary statistics to dbf or csv. use min_radius and sum_area.
+
 
             // If we are including distance, the process is slighly different.
             if ((GroupColumns != null && GroupColumns != "") || StatisticsColumns != "") // include group columns OR statistics columns.
@@ -3157,6 +3174,467 @@ namespace HLArcMapModule
             return true;
         }
 
+        public int ExportSelectionToCSV(string aLayerName, string anOutTable, string OutputColumns, bool IncludeHeaders, string TempShapeFile, string TempDBF, string GroupColumns = "",
+    string StatisticsColumns = "", string OrderColumns = "", bool IncludeArea = false, string AreaMeasurementUnit = "ha", bool IncludeDistance = false, string aRadius = "None", string aTargetLayer = null, string aLogFile = "", bool Overwrite = true, bool CheckForSelection = false, bool RenameColumns = false, bool Messages = false)
+        {
+            int intResult = -1;
+            // Some sanity tests.
+            if (!LayerExists(aLayerName, aLogFile, Messages))
+            {
+                if (Messages)
+                    MessageBox.Show("The layer " + aLayerName + " does not exist in the map");
+                if (aLogFile != "")
+                    myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: The layer " + aLayerName + " does not exist in the map");
+                return -1;
+            }
+            if (CountSelectedLayerFeatures(aLayerName, aLogFile, Messages) <= 0 && CheckForSelection)
+            {
+                if (Messages)
+                    MessageBox.Show("The layer " + aLayerName + " does not have a selection");
+                if (aLogFile != "")
+                    myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: The layer " + aLayerName + " does not have a selection");
+                return -1;
+            }
+
+            // Does the output file exist?
+            if (myFileFuncs.FileExists(anOutTable))
+            {
+                if (!Overwrite)
+                {
+                    if (Messages)
+                        MessageBox.Show("The output table " + anOutTable + " already exists. Cannot overwrite");
+                    if (aLogFile != "")
+                        myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: The output table " + anOutTable + " already exists. Cannot overwrite");
+                    return -1;
+                }
+            }
+
+            IFeatureClass pFC = GetFeatureClassFromLayerName(aLayerName, aLogFile, Messages);
+
+            // Add the area field if required.
+            string strTempLayer = myFileFuncs.ReturnWithoutExtension(myFileFuncs.GetFileName(TempShapeFile)); // Temporary layer.
+
+            ESRI.ArcGIS.Geoprocessor.Geoprocessor gp = new ESRI.ArcGIS.Geoprocessor.Geoprocessor();
+            gp.OverwriteOutput = Overwrite;
+
+            IGeoProcessorResult myresult = new GeoProcessorResultClass();
+
+            // Check if the FC is a point FC.
+            string strFCType = GetFeatureClassType(pFC);
+            // Calculate the area field if required.
+            bool blAreaAdded = false;
+            if (IncludeArea && strFCType == "polygon")
+            {
+                string strCalc = "";
+                if (AreaMeasurementUnit.ToLower() == "ha")
+                    strCalc = "!SHAPE.AREA@HECTARES!";
+                else if (AreaMeasurementUnit.ToLower() == "m2")
+                    strCalc = "!SHAPE.AREA@SQUAREMETERS!";
+                else if (AreaMeasurementUnit.ToLower() == "km2")
+                    strCalc = "!SHAPE.AREA@SQUAREKILOMETERS!";
+
+                // Does the area field already exist? If not, add it.
+                if (!FieldExists(pFC, "Area", aLogFile, Messages))
+                {
+                    AddField(pFC, "Area", esriFieldType.esriFieldTypeDouble, 20, aLogFile, Messages);
+                    blAreaAdded = true;
+                }
+                // Calculate the field.
+                IVariantArray AreaCalcParams = new VarArrayClass();
+                AreaCalcParams.Add(aLayerName);
+                AreaCalcParams.Add("AREA");
+                AreaCalcParams.Add(strCalc);
+                AreaCalcParams.Add("PYTHON_9.3");
+
+                try
+                {
+                    myresult = (IGeoProcessorResult)gp.Execute("CalculateField_management", AreaCalcParams, null);
+                    // Wait until the execution completes.
+                    while (myresult.Status == esriJobStatus.esriJobExecuting)
+                        Thread.Sleep(1000);
+                }
+                catch (COMException ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (aLogFile != "")
+                        myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: " + ex.Message);
+                    gp = null;
+                    return -1;
+                }
+            }
+
+            // New process: 1. calculate distance, 2. summary statistics to dbf or csv. use min_radius and sum_area.
+
+            // Calculate the radius as required.
+            if (IncludeDistance)
+            {
+                // Now add the distance field by joining if required. This will take all fields.
+
+                IVariantArray params1 = new VarArrayClass();
+                params1.Add(aLayerName);
+                params1.Add(aTargetLayer);
+                params1.Add(TempShapeFile);
+                params1.Add("JOIN_ONE_TO_ONE");
+                params1.Add("KEEP_ALL");
+                params1.Add("");
+                params1.Add("CLOSEST");
+                params1.Add("0");
+                params1.Add("Distance");
+
+                try
+                {
+                    myresult = (IGeoProcessorResult)gp.Execute("SpatialJoin_analysis", params1, null);
+
+                    // Wait until the execution completes.
+                    while (myresult.Status == esriJobStatus.esriJobExecuting)
+                        Thread.Sleep(1000);
+                    // Wait for 1 second.
+
+                }
+                catch (COMException ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (aLogFile != "")
+                        myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: " + ex.Message);
+                    gp = null;
+                    return -1;
+                }
+
+                // After this the input to the remainder of the function should be from TempShapefile.
+                //string strNewLayer = strTempLayer;
+                aLayerName = strTempLayer;
+                pFC = GetFeatureClassFromLayerName(aLayerName);
+            }
+
+            // Check all the requested group by and statistics fields exist.
+            // Only pass those that do.
+            if (GroupColumns != "")
+            {
+                List<string> strColumns = GroupColumns.Split(';').ToList();
+                GroupColumns = "";
+                foreach (string strCol in strColumns)
+                {
+                    if (FieldExists(pFC, strCol.Trim()))
+                        GroupColumns = GroupColumns + strCol.Trim() + ";";
+                }
+                if (GroupColumns != "")
+                    GroupColumns = GroupColumns.Substring(0, GroupColumns.Length - 1);
+
+            }
+
+            if (StatisticsColumns != "")
+            {
+                List<string> strStatsColumns = StatisticsColumns.Split(';').ToList();
+                StatisticsColumns = "";
+                foreach (string strColDef in strStatsColumns)
+                {
+                    List<string> strComponents = strColDef.Split(' ').ToList();
+                    string strField = strComponents[0]; // The field name.
+                    if (FieldExists(pFC, strField.Trim()))
+                        StatisticsColumns = StatisticsColumns + strColDef + ";";
+                }
+                if (StatisticsColumns != "")
+                    StatisticsColumns = StatisticsColumns.Substring(0, StatisticsColumns.Length - 1);
+            }
+
+            // If we have group columns but no statistics columns, add a dummy column.
+            if (StatisticsColumns == "" && GroupColumns != "")
+            {
+                string strDummyField = GroupColumns.Split(';').ToList()[0];
+                StatisticsColumns = strDummyField + " FIRST";
+            }
+
+            ///// Now do the summary statistics as required, or export the layer to table if not.
+            if ((GroupColumns != null && GroupColumns != "") || StatisticsColumns != "")
+            {
+                // Do summary statistics
+                IVariantArray StatsParams = new VarArrayClass();
+                StatsParams.Add(aLayerName);
+                StatsParams.Add(TempDBF);
+
+                if (StatisticsColumns != "") StatsParams.Add(StatisticsColumns);
+
+                if (GroupColumns != "") StatsParams.Add(GroupColumns);
+
+                try
+                {
+                    myresult = (IGeoProcessorResult)gp.Execute("Statistics_analysis", StatsParams, null);
+                }
+                catch (COMException ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (aLogFile != "")
+                        myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: " + ex.Message);
+                    gp = null;
+                    return -1;
+                }
+
+                // Now export this output table to CSV and delete the temporary file.
+                intResult = CopyToCSV(TempDBF, anOutTable, OutputColumns, OrderColumns, false, false, !IncludeHeaders, aLogFile);
+            }
+            else
+            {
+                // Do straight copy to dbf.
+                intResult = CopyToCSV(TempShapeFile, anOutTable, OutputColumns, OrderColumns, true, false, !IncludeHeaders, aLogFile);
+            }
+
+
+            //// If we are including distance, the process is slighly different.
+            //if ((GroupColumns != null && GroupColumns != "") || StatisticsColumns != "") // include group columns OR statistics columns.
+            //{
+            //    string strOutFile = TempShapeFile;
+            //    if (!IncludeDistance)
+            //        // We are ONLY performing a group by. Go straight to final shapefile.
+            //        strOutFile = anOutTable;
+
+
+            //    // Do the dissolve as requested.
+            //    IVariantArray DissolveParams = new VarArrayClass();
+            //    DissolveParams.Add(aLayerName);
+            //    DissolveParams.Add(strOutFile);
+            //    DissolveParams.Add(GroupColumns);
+            //    DissolveParams.Add(StatisticsColumns); // These should be set up to be as required beforehand.
+
+            //    try
+            //    {
+            //        //// Try using statistics instead of dissolve
+            //        //myresult = (IGeoProcessorResult)gp.Execute("Statistics_analysis", DissolveParams, null);
+            //        myresult = (IGeoProcessorResult)gp.Execute("Dissolve_management", DissolveParams, null);
+
+            //        // Wait until the execution completes.
+            //        while (myresult.Status == esriJobStatus.esriJobExecuting)
+            //            Thread.Sleep(1000);
+            //        // Wait for 1 second.
+            //        string strNewLayer = myFileFuncs.ReturnWithoutExtension(myFileFuncs.GetFileName(strOutFile));
+
+            //        IFeatureClass pInFC = GetFeatureClassFromLayerName(aLayerName, aLogFile, Messages);
+            //        IFeatureClass pOutFC = GetFeatureClassFromLayerName(strNewLayer, aLogFile, Messages);
+
+            //        //ILayer pInLayer = GetLayer(aLayerName);
+            //        //IFeatureLayer pInFLayer = (IFeatureLayer)pInLayer;
+            //        //IFeatureClass pInFC = pInFLayer.FeatureClass;
+
+            //        //ILayer pOutLayer = GetLayer(strNewLayer);
+            //        //IFeatureLayer pOutFLayer = (IFeatureLayer)pOutLayer;
+            //        //IFeatureClass pOutFC = pOutFLayer.FeatureClass;
+
+            //        // Now rejig the statistics fields if required because they will look like FIRST_SAC which is no use.
+            //        if (StatisticsColumns != "" && RenameColumns)
+            //        {
+            //            List<string> strFieldNames = StatisticsColumns.Split(';').ToList();
+            //            int intIndexCount = 0;
+            //            foreach (string strField in strFieldNames)
+            //            {
+            //                List<string> strFieldComponents = strField.Split(' ').ToList();
+            //                // Let's find out what the new field is called - could be anything.
+            //                int intNewIndex = 2; // FID = 1; Shape = 2.
+            //                intNewIndex = intNewIndex + GroupColumns.Split(';').ToList().Count + intIndexCount; // Add the number of columns uses for grouping
+            //                IField pNewField = pOutFC.Fields.get_Field(intNewIndex);
+            //                string strInputField = pNewField.Name;
+            //                // Note index stays the same, since we're deleting the fields. 
+
+            //                string strNewField = strFieldComponents[0]; // The original name of the field.
+            //                // Get the definition of the original field from the original feature class.
+            //                int intIndex = pInFC.Fields.FindField(strNewField);
+            //                IField pField = pInFC.Fields.get_Field(intIndex);
+
+            //                // Add the field to the new FC.
+            //                AddLayerField(strNewLayer, strNewField, pField.Type, pField.Length, aLogFile, Messages);
+            //                // Calculate the new field.
+            //                string strCalc = "[" + strInputField + "]";
+            //                CalculateField(strNewLayer, strNewField, strCalc, aLogFile, Messages);
+            //                DeleteLayerField(strNewLayer, strInputField, aLogFile, Messages);
+            //            }
+
+            //        }
+
+            //        aLayerName = strNewLayer;
+
+            //    }
+            //    catch (COMException ex)
+            //    {
+            //        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //        if (aLogFile != "")
+            //            myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: " + ex.Message);
+            //        gp = null;
+            //        return false;
+            //    }
+
+            //}
+            //if (IncludeDistance)
+            //{
+            //    // Now add the distance field by joining if required. This will take all fields.
+
+            //    IVariantArray params1 = new VarArrayClass();
+            //    params1.Add(aLayerName);
+            //    params1.Add(aTargetLayer);
+            //    params1.Add(anOutTable);
+            //    params1.Add("JOIN_ONE_TO_ONE");
+            //    params1.Add("KEEP_ALL");
+            //    params1.Add("");
+            //    params1.Add("CLOSEST");
+            //    params1.Add("0");
+            //    params1.Add("Distance");
+
+            //    try
+            //    {
+            //        myresult = (IGeoProcessorResult)gp.Execute("SpatialJoin_analysis", params1, null);
+
+            //        // Wait until the execution completes.
+            //        while (myresult.Status == esriJobStatus.esriJobExecuting)
+            //            Thread.Sleep(1000);
+            //        // Wait for 1 second.
+
+            //    }
+            //    catch (COMException ex)
+            //    {
+            //        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //        if (aLogFile != "")
+            //            myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: " + ex.Message);
+            //        gp = null;
+            //        return false;
+            //    }
+            //}
+
+
+            //if (GroupColumns == "" && !IncludeDistance && StatisticsColumns == "")
+            //// Only run a straight copy if neither a group/dissolve nor a distance has been requested
+            //// Because the data won't have been processed yet.
+            //{
+
+            //    // Create a variant array to hold the parameter values.
+            //    IVariantArray parameters = new VarArrayClass();
+
+            //    // Populate the variant array with parameter values.
+            //    parameters.Add(aLayerName);
+            //    parameters.Add(anOutTable);
+
+            //    try
+            //    {
+            //        myresult = (IGeoProcessorResult)gp.Execute("CopyFeatures_management", parameters, null);
+
+            //        // Wait until the execution completes.
+            //        while (myresult.Status == esriJobStatus.esriJobExecuting)
+            //            Thread.Sleep(1000);
+            //        // Wait for 1 second.
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //        if (aLogFile != "")
+            //            myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: " + ex.Message);
+            //        gp = null;
+            //        return false;
+            //    }
+            //}
+
+            // If the Area field was added, remove it again now from the original since we've saved our results.
+            if (blAreaAdded)
+            {
+                DeleteField(pFC, "Area", aLogFile, Messages);
+            }
+
+
+            // Remove all temporary layers.
+            bool blFinished = false;
+            while (!blFinished)
+            {
+                if (LayerExists(strTempLayer, aLogFile, Messages))
+                    RemoveLayer(strTempLayer, aLogFile, Messages);
+                else
+                    blFinished = true;
+            }
+
+            if (FeatureclassExists(TempShapeFile))
+            {
+                IVariantArray DelParams = new VarArrayClass();
+                DelParams.Add(TempShapeFile);
+                try
+                {
+
+                    myresult = (IGeoProcessorResult)gp.Execute("Delete_management", DelParams, null);
+
+                    // Wait until the execution completes.
+                    while (myresult.Status == esriJobStatus.esriJobExecuting)
+                        Thread.Sleep(1000);
+                    // Wait for 1 second.
+                }
+                catch (Exception ex)
+                {
+                    if (Messages)
+                        MessageBox.Show("Cannot delete temporary layer " + TempShapeFile + ". System error: " + ex.Message);
+                    if (aLogFile != "")
+                        myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: " + ex.Message);
+                }
+            }
+
+            if (TableExists(TempDBF))
+            {
+                IVariantArray DelParams = new VarArrayClass();
+                DelParams.Add(TempDBF);
+                try
+                {
+
+                    myresult = (IGeoProcessorResult)gp.Execute("Delete_management", DelParams, null);
+
+                    // Wait until the execution completes.
+                    while (myresult.Status == esriJobStatus.esriJobExecuting)
+                        Thread.Sleep(1000);
+                    // Wait for 1 second.
+                }
+                catch (Exception ex)
+                {
+                    if (Messages)
+                        MessageBox.Show("Cannot delete temporary DBF file " + TempDBF + ". System error: " + ex.Message);
+                    if (aLogFile != "")
+                        myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: " + ex.Message);
+                }
+            }
+
+            // Get the output shapefile
+            //IFeatureClass pResultFC = GetFeatureClass(anOutTable, aLogFile, Messages);
+
+            // Include radius if requested
+            //if (aRadius != "none")
+            //{
+            //    AddField(pResultFC, "Radius", esriFieldType.esriFieldTypeString, 25, aLogFile, Messages);
+            //    CalculateField(anOutTable, "Radius", '"' + aRadius + '"', aLogFile, Messages);
+            //}
+
+            // Now drop any fields from the output that we don't want.
+            //IFields pFields = pResultFC.Fields;
+            //List<string> strDeleteFields = new List<string>();
+
+            //// Make a list of fields to delete.
+            //for (int i = 0; i < pFields.FieldCount; i++)
+            //{
+            //    IField pField = pFields.get_Field(i);
+            //    if (OutputColumns.IndexOf(pField.Name, StringComparison.CurrentCultureIgnoreCase) == -1 && !pField.Required)
+            //    // Does it exist in the 'keep' list or is it required?
+            //    {
+            //        // If not, add to te delete list.
+            //        strDeleteFields.Add(pField.Name);
+            //    }
+            //}
+
+            ////Delete the listed fields.
+            //foreach (string strField in strDeleteFields)
+            //{
+            //    DeleteField(pResultFC, strField, aLogFile, Messages);
+            //}
+
+            //pResultFC = null;
+            pFC = null;
+            //pFields = null;
+            //pFL = null;
+            gp = null;
+
+            UpdateTOC();
+            GC.Collect(); // Just in case it's hanging onto anything.
+
+            return intResult;
+        }
+
 
         public void AnnotateLayer(string thisLayer, String LabelExpression, string aFont = "Arial",double aSize = 10, int Red = 0, int Green = 0, int Blue = 0, string OverlapOption = "OnePerShape", bool annotationsOn = true, bool showMapTips = false, string aLogFile = "", bool Messages = false)
         {
@@ -3378,9 +3856,18 @@ namespace HLArcMapModule
                 pTOC.Show(false); 
             else pTOC.Show(true);
 
-           
+            
             IActiveView activeView = GetActiveView();
             activeView.Refresh();
+
+        }
+
+        public void SetContentsView()
+        {
+            IApplication m_app = thisApplication;
+            IMxDocument mxDoc = (IMxDocument) m_app.Document;
+            IContentsView pCV = mxDoc.get_ContentsView(0);
+            mxDoc.CurrentContentsView = pCV;
 
         }
 
