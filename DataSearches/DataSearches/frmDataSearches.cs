@@ -1055,7 +1055,7 @@ namespace DataSearches
                         //    strCombinedSitesGroupColumns, strCombinedSitesStatsColumns, blIncludeArea, strAreaMeasureUnit, blIncludeDistance, strRadius, strTargetLayer, strLogFile);
 
                         intLineCount = myArcMapFuncs.ExportSelectionToCSV(strTempMaster, strCombinedTable, strCombinedSitesColumns, false, strTempShapeOutput, strTempDBFOutput, strCombinedSitesGroupColumns,
-                            strCombinedSitesStatsColumns, strCombinedSitesOrderColumns, blIncludeArea, strAreaMeasureUnit, blIncludeDistance, strRadius, strTargetLayer, strLogFile);
+                            strCombinedSitesStatsColumns, strCombinedSitesOrderColumns, blIncludeArea, strAreaMeasureUnit, blIncludeDistance, strRadius, strTargetLayer, strLogFile, false);
 
 
                         // This needs changing to take account of the 'tag' field. Will need a new function that takes account

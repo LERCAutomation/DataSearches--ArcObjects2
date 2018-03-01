@@ -3175,7 +3175,8 @@ namespace HLArcMapModule
         }
 
         public int ExportSelectionToCSV(string aLayerName, string anOutTable, string OutputColumns, bool IncludeHeaders, string TempShapeFile, string TempDBF, string GroupColumns = "",
-    string StatisticsColumns = "", string OrderColumns = "", bool IncludeArea = false, string AreaMeasurementUnit = "ha", bool IncludeDistance = false, string aRadius = "None", string aTargetLayer = null, string aLogFile = "", bool Overwrite = true, bool CheckForSelection = false, bool RenameColumns = false, bool Messages = false)
+            string StatisticsColumns = "", string OrderColumns = "", bool IncludeArea = false, string AreaMeasurementUnit = "ha", bool IncludeDistance = false, string aRadius = "None",
+            string aTargetLayer = null, string aLogFile = "", bool Overwrite = true, bool CheckForSelection = false, bool RenameColumns = false, bool Messages = false)
         {
             int intResult = -1;
             // Some sanity tests.
@@ -3199,12 +3200,23 @@ namespace HLArcMapModule
             // Does the output file exist?
             if (myFileFuncs.FileExists(anOutTable))
             {
-                if (!Overwrite)
+                if (Overwrite)
                 {
                     if (Messages)
                         MessageBox.Show("The output table " + anOutTable + " already exists. Cannot overwrite");
                     if (aLogFile != "")
                         myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: The output table " + anOutTable + " already exists. Cannot overwrite");
+                    return -1;
+                }
+            }
+            else
+            {
+                if (!Overwrite)
+                {
+                    if (Messages)
+                        MessageBox.Show("The output table " + anOutTable + " does not exists. Cannot append");
+                    if (aLogFile != "")
+                        myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: The output table " + anOutTable + " does not exists. Cannot append");
                     return -1;
                 }
             }
@@ -3215,7 +3227,7 @@ namespace HLArcMapModule
             string strTempLayer = myFileFuncs.ReturnWithoutExtension(myFileFuncs.GetFileName(TempShapeFile)); // Temporary layer.
 
             ESRI.ArcGIS.Geoprocessor.Geoprocessor gp = new ESRI.ArcGIS.Geoprocessor.Geoprocessor();
-            gp.OverwriteOutput = Overwrite;
+            gp.OverwriteOutput = true;
 
             IGeoProcessorResult myresult = new GeoProcessorResultClass();
 
@@ -3370,12 +3382,12 @@ namespace HLArcMapModule
                 }
 
                 // Now export this output table to CSV and delete the temporary file.
-                intResult = CopyToCSV(TempDBF, anOutTable, OutputColumns, OrderColumns, false, false, !IncludeHeaders, aLogFile);
+                intResult = CopyToCSV(TempDBF, anOutTable, OutputColumns, OrderColumns, false, !Overwrite, !IncludeHeaders, aLogFile);
             }
             else
             {
                 // Do straight copy to dbf.
-                intResult = CopyToCSV(TempShapeFile, anOutTable, OutputColumns, OrderColumns, true, false, !IncludeHeaders, aLogFile);
+                intResult = CopyToCSV(TempShapeFile, anOutTable, OutputColumns, OrderColumns, true, !Overwrite, !IncludeHeaders, aLogFile);
             }
 
 
