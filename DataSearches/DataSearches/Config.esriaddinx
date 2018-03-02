@@ -1,24 +1,24 @@
 ﻿<ESRI.Configuration xmlns="http://schemas.esri.com/Desktop/AddIns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>Data Searches</Name>
   <AddInID>{87d1fee3-43bc-478c-95d2-75f114def3ef}</AddInID>
-  <Description>Data searches tool for biodiversity data. (c) 2016 Sussex Biodiversity Record Centre. </Description>
-  <Version>1.2</Version>
+  <Description>Data Searches tool. (c) 2016-2018 SxBRC, 2017-2018 TVERC.</Description>
+  <Version>2.3</Version>
   <Image>Images\DataSearches_1.png</Image>
   <Author>Hester Lyons</Author>
   <Company>Hester Lyons Consulting</Company>
-  <Date>09/03/2016</Date>
+  <Date>02/03/2018</Date>
   <Targets>
-    <Target name="Desktop" version="10.2" />
+    <Target name="Desktop" version="10.1" />
   </Targets>
   <AddIn language="CLR" library="DataSearches.dll" namespace="DataSearches">
     <ArcMap>
       <Commands>
         <Button id="Hester_Lyons_Consulting_DataSearches_DataSearches" 
                 class="DataSearches" 
-                message="Data Searches tool. Select designated areas and protected species data within a 
+                message="Select designated sites, habitats and species data within a 
                 user-defined radius of a given point, line or polygon. Output is written as tables and feature classes as required." 
                 caption="Data Searches" 
-                tip="Launch Data Searches tool." 
+                tip="Data Searches tool" 
                 category="Add-In Controls" image="Images\DataSearches.png" />
       </Commands>
     </ArcMap>

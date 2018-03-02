@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("DataSearches")]
-[assembly: AssemblyCopyright("Copyright ©  2016-2017")]
+[assembly: AssemblyCopyright("Copyright © 2016-2018 SxBRC, 2017-2018 TVERC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

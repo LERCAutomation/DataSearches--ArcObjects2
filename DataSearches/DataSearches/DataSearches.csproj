@@ -43,8 +43,9 @@
     </Reference>
     <Reference Include="ESRI.ArcGIS.ArcMapUI, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ESRI.ArcGIS.ArcMapUI.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="ESRI.ArcGIS.Carto, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ESRI.ArcGIS.Carto.dll</HintPath>
@@ -82,6 +83,7 @@
     </Reference>
     <Reference Include="ESRI.ArcGIS.Desktop.AddIns, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ESRI.ArcGIS.Desktop.AddIns.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
     <Reference Include="ESRI.ArcGIS.Display, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
@@ -91,8 +93,9 @@
     </Reference>
     <Reference Include="ESRI.ArcGIS.Framework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ESRI.ArcGIS.Framework.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="ESRI.ArcGIS.Geodatabase, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ESRI.ArcGIS.Geodatabase.dll</HintPath>
@@ -120,8 +123,9 @@
     </Reference>
     <Reference Include="ESRI.ArcGIS.System, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ESRI.ArcGIS.System.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <SpecificVersion>False</SpecificVersion>
@@ -191,6 +195,7 @@
   <ItemGroup>
     <EmbeddedResource Include="frmChooseConfig.resx">
       <DependentUpon>frmChooseConfig.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmDataSearches.resx">
       <DependentUpon>frmDataSearches.cs</DependentUpon>
