@@ -117,7 +117,7 @@ namespace HLSearchesToolConfig
                     return;
                 }
                 string strRawText;
-                XmlNode currNode = xmlConfig.DocumentElement.FirstChild; // This gets us the DataSelector.
+                XmlNode currNode = xmlConfig.DocumentElement.FirstChild; // This gets us the DataSearches.
                 xmlDataSearch = (XmlElement)currNode;
 
                 // Get all of the detail into the object
@@ -241,8 +241,8 @@ namespace HLSearchesToolConfig
                 try
                 {
                     DefaultClearLogFile = false;
-                    string strDefaultClearLogFile = xmlDataSearch["DefaultClearLogFile"].InnerText;
-                    if (strDefaultClearLogFile == "Yes")
+                    strRawText = xmlDataSearch["DefaultClearLogFile"].InnerText;
+                    if (strRawText.ToLower() == "yes" || strRawText.ToLower() == "y")
                         DefaultClearLogFile = true;
                 }
                 catch

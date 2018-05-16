@@ -13,6 +13,9 @@ namespace DataSearches
 
         protected override void OnClick()
         {
+            //
+            //  Click simply launches the Data Searches Tool
+            //
             frmDataSearches myForm = new frmDataSearches();
             //myForm.Show();
             myForm.ShowDialog();

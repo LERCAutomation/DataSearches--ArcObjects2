@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("DataSearches")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("DataSearches is an ArcGIS add-in used to extract biodiversity and conservation area information from ArcGIS based on a radius around a feature.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Hester Lyons Consulting")]
 [assembly: AssemblyProduct("DataSearches")]
 [assembly: AssemblyCopyright("Copyright © 2016-2018 SxBRC, 2017-2018 TVERC")]
 [assembly: AssemblyTrademark("")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.3.0")]
-[assembly: AssemblyFileVersion("2.3.0")]
+[assembly: AssemblyVersion("2.4.0")]
+[assembly: AssemblyFileVersion("2.4.0")]

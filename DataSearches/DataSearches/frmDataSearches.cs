@@ -1,4 +1,25 @@
-﻿using System;
+﻿// DataSearches is an ArcGIS add-in used to extract biodiversity
+// and conservation area information from ArcGIS based on a radius around a feature.
+//
+// Copyright © 2016-2017 SxBRC, 2017-2018 TVERC
+//
+// This file is part of DataSearches.
+//
+// DataSearches is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// DataSearches is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with DataSearches.  If not, see <http://www.gnu.org/licenses/>.
+
+
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -142,7 +163,8 @@ namespace DataSearches
             }
 
             // Delete any temporary shapefile
-            strUserID = Environment.UserName;
+            // fix any illegal characters in the user name string
+            strUserID = myStringFuncs.StripIllegals(Environment.UserName, "_", false);
             string strSaveRootDir = myConfig.GetSaveRootDir();
             string strTempFolder = strSaveRootDir + @"\Temp";
             if (!Directory.Exists(strTempFolder)) // Create new, hidden directory.
@@ -417,7 +439,6 @@ namespace DataSearches
             string strFeatureOutputName = myConfig.GetSearchFeatureName();
             string strGroupLayerName = myConfig.GetGroupLayerName();
 
-            string strUserID = Environment.UserName;
             string strTempFolder = strSaveRootDir + @"\Temp";
             string strTempFile = strTempFolder + @"\TempShapes_" + strUserID + ".shp";
 
@@ -1137,8 +1158,18 @@ namespace DataSearches
                 // Do we have a database name? If so, look up the reference.
                 if (myConfig.GetDatabase() != "")
                 {
-
-                    string strAccessConn = "Provider='Microsoft.Jet.OLEDB.4.0';data source='" + myConfig.GetDatabase() + "'";
+                    //-------------------------------------------------------------
+                    // Use connection string for .accdb or .mdb as appropriate
+                    //-------------------------------------------------------------
+                    string strAccessConn;
+                    if (myFileFuncs.GetExtension(myConfig.GetDatabase()).ToLower() == "accdb")
+                    {
+                        strAccessConn = "Provider='Microsoft.ACE.OLEDB.12.0';data source='" + myConfig.GetDatabase() + "'";
+                    }
+                    else
+                    {
+                        strAccessConn = "Provider='Microsoft.Jet.OLEDB.4.0';data source='" + myConfig.GetDatabase() + "'";
+                    }
                     string strQuery = "SELECT " + myConfig.GetSiteColumn() + " from Enquiries WHERE LCASE(" + myConfig.GetRefColumn() + ") = " + '"' + txtSearch.Text.ToLower() + '"';
                     string strLocation = "";
                     OleDbConnection myAccessConn = null;
@@ -1165,7 +1196,7 @@ namespace DataSearches
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Error: Failed to retrieve the required data from the database. System error:" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Error: Failed to retrieve the required data from the database. System error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                     finally

@@ -2,18 +2,18 @@
   <Name>Data Searches</Name>
   <AddInID>{87d1fee3-43bc-478c-95d2-75f114def3ef}</AddInID>
   <Description>Data Searches tool. (c) 2016-2018 SxBRC, 2017-2018 TVERC.</Description>
-  <Version>2.3</Version>
+  <Version>2.4</Version>
   <Image>Images\DataSearches_1.png</Image>
   <Author>Hester Lyons</Author>
   <Company>Hester Lyons Consulting</Company>
-  <Date>02/03/2018</Date>
+  <Date>04/03/2018</Date>
   <Targets>
     <Target name="Desktop" version="10.1" />
   </Targets>
   <AddIn language="CLR" library="DataSearches.dll" namespace="DataSearches">
     <ArcMap>
       <Commands>
-        <Button id="Hester_Lyons_Consulting_DataSearches_DataSearches" 
+        <Button id="Hester_Lyons_Consulting_DataSearches" 
                 class="DataSearches" 
                 message="Select designated sites, habitats and species data within a 
                 user-defined radius of a given point, line or polygon. Output is written as tables and feature classes as required." 
