@@ -18,7 +18,6 @@
 // You should have received a copy of the GNU General Public License
 // along with DataSearches.  If not, see <http://www.gnu.org/licenses/>.
 
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -1837,7 +1836,7 @@ namespace HLArcMapModule
             {
                 if (Messages) MessageBox.Show("The input table " + InTable + " doesn't exist", "Copy To CSV");
                 if (aLogFile != "")
-                    myFileFuncs.WriteLine(aLogFile, "Function AppendTable returned the following error: The input table " + InTable + " doesn't exist");
+                    myFileFuncs.WriteLine(aLogFile, "Function CopyToCSV returned the following error: The input table " + InTable + " doesn't exist");
                 return -1;
             }
             
@@ -1871,7 +1870,7 @@ namespace HLArcMapModule
                     MessageBox.Show("Cannot open table " + InTable);
                 }
                 if (aLogFile != "")
-                    myFileFuncs.WriteLine(aLogFile, "Function AppendTable returned the following error: Cannot open table " + InTable);
+                    myFileFuncs.WriteLine(aLogFile, "Function CopyToCSV returned the following error: Cannot open table " + InTable);
                 return -1;
             }
 
@@ -3200,14 +3199,14 @@ namespace HLArcMapModule
             // Does the output file exist?
             if (myFileFuncs.FileExists(anOutTable))
             {
-                if (Overwrite)
-                {
-                    if (Messages)
-                        MessageBox.Show("The output table " + anOutTable + " already exists. Cannot overwrite");
-                    if (aLogFile != "")
-                        myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: The output table " + anOutTable + " already exists. Cannot overwrite");
-                    return -1;
-                }
+                //if (!Overwrite)
+                //{
+                //    if (Messages)
+                //        MessageBox.Show("The output table " + anOutTable + " already exists. Cannot overwrite");
+                //    if (aLogFile != "")
+                //        myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: The output table " + anOutTable + " already exists. Cannot overwrite");
+                //    return -1;
+                //}
             }
             else
             {
@@ -3282,7 +3281,10 @@ namespace HLArcMapModule
             {
                 // Now add the distance field by joining if required. This will take all fields.
 
+                // Create a variant array to hold the parameter values.
                 IVariantArray params1 = new VarArrayClass();
+
+                // Populate the variant array with parameter values.
                 params1.Add(aLayerName);
                 params1.Add(aTargetLayer);
                 params1.Add(TempShapeFile);
@@ -3311,11 +3313,45 @@ namespace HLArcMapModule
                     gp = null;
                     return -1;
                 }
+            }
+            else
+            {
+                // Create a variant array to hold the parameter values.
+                IVariantArray params1 = new VarArrayClass();
 
-                // After this the input to the remainder of the function should be from TempShapefile.
-                //string strNewLayer = strTempLayer;
-                aLayerName = strTempLayer;
-                pFC = GetFeatureClassFromLayerName(aLayerName);
+                // Populate the variant array with parameter values.
+                params1.Add(aLayerName);
+                params1.Add(TempShapeFile);
+
+                try
+                {
+                    myresult = (IGeoProcessorResult)gp.Execute("CopyFeatures_management", params1, null);
+
+                    // Wait until the execution completes.
+                    while (myresult.Status == esriJobStatus.esriJobExecuting)
+                        Thread.Sleep(1000);
+                    // Wait for 1 second.
+                }
+                catch (COMException ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (aLogFile != "")
+                        myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: " + ex.Message);
+                    gp = null;
+                    return -1;
+                }
+            }
+
+            // After this the input to the remainder of the function should be from TempShapefile.
+            //string strNewLayer = strTempLayer;
+            aLayerName = strTempLayer;
+            pFC = GetFeatureClassFromLayerName(aLayerName);
+
+            // Include radius if requested
+            if (aRadius != "none")
+            {
+                AddField(pFC, "Radius", esriFieldType.esriFieldTypeString, 25, aLogFile, Messages);
+                CalculateField(aLayerName, "Radius", '"' + aRadius + '"', aLogFile, Messages);
             }
 
             // Check all the requested group by and statistics fields exist.
@@ -3545,7 +3581,6 @@ namespace HLArcMapModule
             {
                 DeleteField(pFC, "Area", aLogFile, Messages);
             }
-
 
             // Remove all temporary layers.
             bool blFinished = false;

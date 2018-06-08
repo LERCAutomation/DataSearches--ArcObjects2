@@ -1,4 +1,24 @@
-﻿using System;
+﻿// DataSearches is an ArcGIS add-in used to extract biodiversity
+// and conservation area information from ArcGIS based on a radius around a feature.
+//
+// Copyright © 2016-2017 SxBRC, 2017-2018 TVERC
+//
+// This file is part of DataSearches.
+//
+// DataSearches is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// DataSearches is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with DataSearches.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -77,6 +97,7 @@ namespace HLSearchesToolConfig
         List<bool> MapOverwriteLabels = new List<bool>();
         List<string> MapLabelColumns = new List<string>();
         List<string> MapLabelClauses = new List<string>();
+        List<string> MapMacroNames = new List<string>();
         List<string> MapCombinedSiteColumns = new List<string>();
         //List<string> MapCombinedSiteCriteria = new List<string>();
         List<string> MapCombinedSiteGroupColumns = new List<string>();
@@ -994,6 +1015,16 @@ namespace HLSearchesToolConfig
 
                     try
                     {
+                        MapMacroNames.Add(aNode["MacroName"].InnerText);
+                    }
+                    catch
+                    {
+                        // This is an optional node
+                        MapMacroNames.Add("");
+                    }
+
+                    try
+                    {
                         MapCombinedSiteColumns.Add(aNode["CombinedSitesColumns"].InnerText);
                     }
                     catch
@@ -1405,6 +1436,11 @@ namespace HLSearchesToolConfig
         public List<string> GetMapLabelClauses()
         {
             return MapLabelClauses;
+        }
+
+        public List<string> GetMapMacroNames()
+        {
+            return MapMacroNames;
         }
 
         public List<string> GetMapCombinedSitesColumns()

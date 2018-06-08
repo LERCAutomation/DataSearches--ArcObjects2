@@ -422,10 +422,12 @@ namespace DataSearches
             // fix any illegal characters in the site name string
             strSiteName = myStringFuncs.StripIllegals(strSiteName,strReplaceChar);
 
-            // Create the shortref from the search reference.
-            string strShortRef = strReference.Replace("/", strReplaceChar);
-            // Get rid of any characters in the shortref.
-            strShortRef = myStringFuncs.KeepNumbersAndSpaces(strShortRef, strReplaceChar);
+            // Create the ref string from the search reference.
+            string strRef = strReference.Replace("/", strReplaceChar);
+
+            // Create the shortref from the search reference by
+            // getting rid of any characters.
+            string strShortRef = myStringFuncs.KeepNumbersAndSpaces(strRef, strReplaceChar);
             // Find the subref part of this reference.
             string strSubref = myStringFuncs.GetSubref(strShortRef, strReplaceChar);         
 
@@ -442,13 +444,13 @@ namespace DataSearches
             string strTempFolder = strSaveRootDir + @"\Temp";
             string strTempFile = strTempFolder + @"\TempShapes_" + strUserID + ".shp";
 
-            strSaveFolder = myStringFuncs.ReplaceSearchStrings(strSaveFolder, strReference, strSiteName, strShortRef, strSubref);
-            strGISFolder = myStringFuncs.ReplaceSearchStrings(strGISFolder, strReference, strSiteName, strShortRef, strSubref);
-            strLogFileName = myStringFuncs.ReplaceSearchStrings(strLogFileName, strReference, strSiteName, strShortRef, strSubref);
-            strCombinedSitesName = myStringFuncs.ReplaceSearchStrings(strCombinedSitesName, strReference, strSiteName, strShortRef, strSubref);
-            strBufferOutputName = myStringFuncs.ReplaceSearchStrings(strBufferOutputName, strReference, strSiteName, strShortRef, strSubref);
-            strFeatureOutputName = myStringFuncs.ReplaceSearchStrings(strFeatureOutputName, strReference, strSiteName, strShortRef, strSubref);
-            strGroupLayerName = myStringFuncs.ReplaceSearchStrings(strGroupLayerName, strReference, strSiteName, strShortRef, strSubref);
+            strSaveFolder = myStringFuncs.ReplaceSearchStrings(strSaveFolder, strRef, strSiteName, strShortRef, strSubref);
+            strGISFolder = myStringFuncs.ReplaceSearchStrings(strGISFolder, strRef, strSiteName, strShortRef, strSubref);
+            strLogFileName = myStringFuncs.ReplaceSearchStrings(strLogFileName, strRef, strSiteName, strShortRef, strSubref);
+            strCombinedSitesName = myStringFuncs.ReplaceSearchStrings(strCombinedSitesName, strRef, strSiteName, strShortRef, strSubref);
+            strBufferOutputName = myStringFuncs.ReplaceSearchStrings(strBufferOutputName, strRef, strSiteName, strShortRef, strSubref);
+            strFeatureOutputName = myStringFuncs.ReplaceSearchStrings(strFeatureOutputName, strRef, strSiteName, strShortRef, strSubref);
+            strGroupLayerName = myStringFuncs.ReplaceSearchStrings(strGroupLayerName, strRef, strSiteName, strShortRef, strSubref);
             
 
             // Remove any illegal characters from the names.
@@ -721,6 +723,7 @@ namespace DataSearches
             List<bool> blOverwriteLabelDefaults = myConfig.GetMapOverwriteLabels();
             List<string> strLabelColumns = myConfig.GetMapLabelColumns();
             List<string> strLabelClauses = myConfig.GetMapLabelClauses();
+            List<string> strMacroNames = myConfig.GetMapMacroNames();
             List<string> strCombinedSitesColumnList = myConfig.GetMapCombinedSitesColumns();
             List<string> strCombinedSitesGroupColumnList = myConfig.GetMapCombinedSitesGroupByColumns();
             List<string> strCombinedSitesStatsColumnList = myConfig.GetMapCombinedSitesStatsColumns();
@@ -796,6 +799,7 @@ namespace DataSearches
                 bool blOverwriteLabelDefault = blOverwriteLabelDefaults[intIndex];
                 string strLabelColumn = strLabelColumns[intIndex];
                 string strLabelClause = strLabelClauses[intIndex];
+                string strMacroName = strMacroNames[intIndex];
                 string strCombinedSitesColumns = strCombinedSitesColumnList[intIndex];
                 string strCombinedSitesGroupColumns = strCombinedSitesGroupColumnList[intIndex];
                 string strCombinedSitesStatsColumns = strCombinedSitesStatsColumnList[intIndex];
@@ -803,8 +807,8 @@ namespace DataSearches
                 //string strCombinedSitesCriteria = strCombinedSitesCriteriaList[intIndex];
 
                 // Deal with wildcards in the output names.
-                strGISOutName = myStringFuncs.ReplaceSearchStrings(strGISOutName, strReference, strSiteName, strShortRef, strSubref);
-                strTableOutName = myStringFuncs.ReplaceSearchStrings(strTableOutName, strReference, strSiteName, strShortRef, strSubref);
+                strGISOutName = myStringFuncs.ReplaceSearchStrings(strGISOutName, strRef, strSiteName, strShortRef, strSubref);
+                strTableOutName = myStringFuncs.ReplaceSearchStrings(strTableOutName, strRef, strSiteName, strShortRef, strSubref);
 
                 strStatsColumns = myStringFuncs.AlignStatsColumns(strColumns, strStatsColumns, strGroupColumns);
                 //if (blIncludeDistance && !strColumns.Contains("Distance") && !strGroupColumns.Contains("Distance"))
@@ -1101,11 +1105,36 @@ namespace DataSearches
                     myFileFuncs.WriteLine(strLogFile, "No features selected for " + aLayer);
                 }
 
+                // Trigger the macro if one exists
+                if (strMacroName != "") // Only if we have a macro to trigger.
+                {
+                    myFileFuncs.WriteLine(strLogFile, "Executing vbscript macro");
+
+                    Process scriptProc = new Process();
+                    scriptProc.StartInfo.FileName = @"cscript";
+                    scriptProc.StartInfo.WorkingDirectory = myFileFuncs.GetDirectoryName(strMacroName); //<---very important
+                    scriptProc.StartInfo.Arguments = string.Format(@"//B //Nologo {0} {1} {2}", strMacroName, "\"" + strGISFolder +"\"", strMacroName);
+                    scriptProc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden; //prevent console window from popping up
+
+                    try
+                    {
+                        scriptProc.Start();
+                        scriptProc.WaitForExit(); // <-- Optional if you want program running until your script exit
+
+                        int exitcode = scriptProc.ExitCode;
+                        scriptProc.Close();
+
+                        myFileFuncs.WriteLine(strLogFile, "Completed vbscript macro. Exit code " + exitcode);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Error executing vbscript macro.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
 
             }
 
             // Do we want to keep the buffer layer? If not, remove it.
-            
             if (!blKeepBuffer)
             {
                 try
