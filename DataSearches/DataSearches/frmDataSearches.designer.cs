@@ -68,6 +68,7 @@ namespace DataSearches
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.cmbCombinedSites = new System.Windows.Forms.ComboBox();
+            this.txtOrganisation = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -93,7 +94,7 @@ namespace DataSearches
             this.txtLocation.Enabled = false;
             this.txtLocation.Location = new System.Drawing.Point(12, 71);
             this.txtLocation.Name = "txtLocation";
-            this.txtLocation.Size = new System.Drawing.Size(357, 20);
+            this.txtLocation.Size = new System.Drawing.Size(393, 20);
             this.txtLocation.TabIndex = 3;
             // 
             // lstLayers
@@ -118,7 +119,7 @@ namespace DataSearches
             // 
             this.txtBufferSize.Location = new System.Drawing.Point(217, 136);
             this.txtBufferSize.Name = "txtBufferSize";
-            this.txtBufferSize.Size = new System.Drawing.Size(191, 20);
+            this.txtBufferSize.Size = new System.Drawing.Size(188, 20);
             this.txtBufferSize.TabIndex = 6;
             // 
             // label4
@@ -135,7 +136,7 @@ namespace DataSearches
             this.cmbUnits.FormattingEnabled = true;
             this.cmbUnits.Location = new System.Drawing.Point(217, 180);
             this.cmbUnits.Name = "cmbUnits";
-            this.cmbUnits.Size = new System.Drawing.Size(191, 21);
+            this.cmbUnits.Size = new System.Drawing.Size(188, 21);
             this.cmbUnits.TabIndex = 8;
             // 
             // label6
@@ -173,7 +174,7 @@ namespace DataSearches
             this.cmbAddLayers.FormattingEnabled = true;
             this.cmbAddLayers.Location = new System.Drawing.Point(217, 237);
             this.cmbAddLayers.Name = "cmbAddLayers";
-            this.cmbAddLayers.Size = new System.Drawing.Size(191, 21);
+            this.cmbAddLayers.Size = new System.Drawing.Size(188, 21);
             this.cmbAddLayers.TabIndex = 13;
             this.cmbAddLayers.SelectedIndexChanged += new System.EventHandler(this.cmbAddLayers_SelectedIndexChanged);
             // 
@@ -192,7 +193,7 @@ namespace DataSearches
             this.cmbLabels.FormattingEnabled = true;
             this.cmbLabels.Location = new System.Drawing.Point(217, 277);
             this.cmbLabels.Name = "cmbLabels";
-            this.cmbLabels.Size = new System.Drawing.Size(191, 21);
+            this.cmbLabels.Size = new System.Drawing.Size(188, 21);
             this.cmbLabels.TabIndex = 15;
             // 
             // btnCancel
@@ -240,11 +241,20 @@ namespace DataSearches
             this.cmbCombinedSites.Size = new System.Drawing.Size(191, 21);
             this.cmbCombinedSites.TabIndex = 20;
             // 
+            // txtOrganisation
+            // 
+            this.txtOrganisation.Enabled = false;
+            this.txtOrganisation.Location = new System.Drawing.Point(301, 47);
+            this.txtOrganisation.Name = "txtOrganisation";
+            this.txtOrganisation.Size = new System.Drawing.Size(104, 20);
+            this.txtOrganisation.TabIndex = 21;
+            // 
             // frmDataSearches
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(420, 430);
+            this.Controls.Add(this.txtOrganisation);
             this.Controls.Add(this.cmbCombinedSites);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.txtSearch);
@@ -296,5 +306,6 @@ namespace DataSearches
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox cmbCombinedSites;
+        private System.Windows.Forms.TextBox txtOrganisation;
     }
 }

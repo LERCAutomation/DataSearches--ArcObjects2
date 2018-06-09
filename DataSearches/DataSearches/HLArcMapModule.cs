@@ -2303,7 +2303,7 @@ namespace HLArcMapModule
 
         }
 
-        public IFeature GetFeatureFromLayer(string aFeatureLayer, string aQuery, string aLogFile = "", bool Messages = false)
+        public int GetFeatureFromLayer(string aFeatureLayer, string aQuery, string aLogFile = "", bool Messages = false)
         {
             // This function returns a feature from the FeatureLayer. If there is more than one feature, it returns the LAST one.
             // Check if the layer exists.
@@ -2313,7 +2313,7 @@ namespace HLArcMapModule
                     MessageBox.Show("Cannot find feature layer " + aFeatureLayer);
                 if (aLogFile != "")
                     myFileFuncs.WriteLine(aLogFile, "Function GetFeatureFromLayer returned the following error: Cannot find feature layer " + aFeatureLayer);
-                return null;
+                return 0;
             }
 
             ILayer pLayer = GetLayer(aFeatureLayer, aLogFile, Messages);
@@ -2330,7 +2330,7 @@ namespace HLArcMapModule
                 {
                     myFileFuncs.WriteLine(aLogFile, "Function GetFeatureFromLayer returned the following error: Layer " + aFeatureLayer + " is not a feature layer.");
                 }
-                return null;
+                return 0;
             }
 
             IFeatureClass pFC = pFL.FeatureClass;
@@ -2340,14 +2340,12 @@ namespace HLArcMapModule
 
             int aCount = 0;
             IFeature feature = null;
-            IFeature pResult = null;
             int nameFieldIndex = pFC.FindField("Shape");
             try
             {
                 while ((feature = pCurs.NextFeature()) != null)
                 {
                     aCount = aCount + 1;
-                    pResult = feature;
                 }
                 
             }
@@ -2361,7 +2359,7 @@ namespace HLArcMapModule
                     myFileFuncs.WriteLine(aLogFile, "Function GetFeatureFromLayer returned the following error: " + comExc.Message);
                 }
                 Marshal.ReleaseComObject(pCurs);
-                return null;
+                return 0;
             }
 
             // Release the cursor.
@@ -2370,37 +2368,37 @@ namespace HLArcMapModule
             if (aCount == 0)
             {
                 if (Messages)
-                    MessageBox.Show("There was no feature found matching those criteria");
+                    MessageBox.Show("There are no features matching those criteria");
                 if (aLogFile != "")
                 {
-                    myFileFuncs.WriteLine(aLogFile, "Function GetFeatureFromLayer returned the following message: There was no feature found matching those criteria");
+                    myFileFuncs.WriteLine(aLogFile, "There are no features matching those criteria");
                 }
-                return null;
+                return 0;
             }
             
             // Allow multiple features to be used
             if (aCount > 1)
             {
                 // Ask the user if they want to continue
-                DialogResult dlResult = MessageBox.Show("There were " + aCount.ToString() + " features found matching those criteria. Do you wish to continue?", "Data Searches", MessageBoxButtons.YesNo);
+                DialogResult dlResult = MessageBox.Show("There are " + aCount.ToString() + " features found in " + aFeatureLayer + " matching those criteria. Do you wish to continue?", "Data Searches", MessageBoxButtons.YesNo);
                 if (dlResult == System.Windows.Forms.DialogResult.Yes)
                 {
                     if (aLogFile != "")
                     {
-                        myFileFuncs.WriteLine(aLogFile, "There were " + aCount.ToString() + " features found matching those criteria");
+                        myFileFuncs.WriteLine(aLogFile, "There are " + aCount.ToString() + " features matching those criteria");
                     }
                 }
                 else
                 {
                     if (aLogFile != "")
                     {
-                        myFileFuncs.WriteLine(aLogFile, "Function GetFeatureFromLayer returned the following message: There were " + aCount.ToString() + " features found matching those criteria");
+                        myFileFuncs.WriteLine(aLogFile, "There were " + aCount.ToString() + " features matching those criteria");
                     }
-                    return null;
+                    return (aCount * -1);
                 }
             }
 
-            return pResult;
+            return aCount;
 
         }
 
@@ -3223,8 +3221,6 @@ namespace HLArcMapModule
             IFeatureClass pFC = GetFeatureClassFromLayerName(aLayerName, aLogFile, Messages);
 
             // Add the area field if required.
-            string strTempLayer = myFileFuncs.ReturnWithoutExtension(myFileFuncs.GetFileName(TempShapeFile)); // Temporary layer.
-
             ESRI.ArcGIS.Geoprocessor.Geoprocessor gp = new ESRI.ArcGIS.Geoprocessor.Geoprocessor();
             gp.OverwriteOutput = true;
 
@@ -3343,7 +3339,7 @@ namespace HLArcMapModule
             }
 
             // After this the input to the remainder of the function should be from TempShapefile.
-            //string strNewLayer = strTempLayer;
+            string strTempLayer = myFileFuncs.ReturnWithoutExtension(myFileFuncs.GetFileName(TempShapeFile)); // Temporary layer.
             aLayerName = strTempLayer;
             pFC = GetFeatureClassFromLayerName(aLayerName);
 

@@ -36,10 +36,12 @@ namespace HLSearchesToolConfig
         // Declare all the variables
         string Database;
         string LayerDir;
-        //string EnquiriesDir;
+        string Table;
         string RefColumn;
         string SiteColumn;
+        string OrgColumn;
         bool RequireSiteName;
+        bool UpdateTable;
         string ReplaceChar;
         string SaveRootDir;
         string SaveFolder;
@@ -165,7 +167,16 @@ namespace HLSearchesToolConfig
                     return;
                 }
 
-
+                try
+                {
+                    Table = xmlDataSearch["Table"].InnerText;
+                }
+                catch
+                {
+                    MessageBox.Show("Could not locate the item 'Table' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoadedXML = false;
+                    return;
+                }
                 
                 try
                 {
@@ -191,6 +202,17 @@ namespace HLSearchesToolConfig
 
                 try
                 {
+                    OrgColumn = xmlDataSearch["OrgColumn"].InnerText;
+                }
+                catch
+                {
+                    MessageBox.Show("Could not locate the item 'OrgColumn' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoadedXML = false;
+                    return;
+                }
+
+                try
+                {
                     RequireSiteName = false;
                     strRawText = xmlDataSearch["RequireSiteName"].InnerText;
                     if (strRawText.ToLower() == "yes" || strRawText.ToLower() == "y")
@@ -199,6 +221,20 @@ namespace HLSearchesToolConfig
                 catch
                 {
                     MessageBox.Show("Could not locate the item 'RequireSiteName' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoadedXML = false;
+                    return;
+                }
+
+                try
+                {
+                    UpdateTable = false;
+                    strRawText = xmlDataSearch["UpdateTable"].InnerText;
+                    if (strRawText.ToLower() == "yes" || strRawText.ToLower() == "y")
+                        UpdateTable = true;
+                }
+                catch
+                {
+                    MessageBox.Show("Could not locate the item 'UpdateTable' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     LoadedXML = false;
                     return;
                 }
@@ -1130,10 +1166,10 @@ namespace HLSearchesToolConfig
             return LayerDir;
         }
 
-        //public string GetEnquiriesDir()
-        //{
-        //    return EnquiriesDir;
-        //}
+        public string GetTable()
+        {
+            return Table;
+        }
 
         public string GetRefColumn()
         {
@@ -1145,9 +1181,19 @@ namespace HLSearchesToolConfig
             return SiteColumn;
         }
 
+        public string GetOrgColumn()
+        {
+            return OrgColumn;
+        }
+
         public bool GetRequireSiteName()
         {
             return RequireSiteName;
+        }
+
+        public bool GetUpdateTable()
+        {
+            return UpdateTable;
         }
 
         public string GetReplaceChar()

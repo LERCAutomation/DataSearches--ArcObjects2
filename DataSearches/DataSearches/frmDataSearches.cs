@@ -301,6 +301,7 @@ namespace DataSearches
             // Obtain all the relevant information.
             string strReference = txtSearch.Text; // Search reference
             string strSiteName = txtLocation.Text; // Associated location
+            string strOrganisation = txtOrganisation.Text; // Associated organisation
 
             // The selected layers
             List<string> SelectedLayers = new List<string>();
@@ -308,7 +309,6 @@ namespace DataSearches
             {
                 SelectedLayers.Add(strSelectedItem);
             }
-
 
             bool blClearLogFile = chkClearLog.Checked; // Clear log file
             string strBufferSize = txtBufferSize.Text; // Buffer size 
@@ -379,6 +379,8 @@ namespace DataSearches
                 this.Cursor = Cursors.Default;
                 return;
             }
+
+            bool blUpdateTable = myConfig.GetUpdateTable();
 
             if (SelectedLayers.Count == 0)
             {
@@ -452,7 +454,6 @@ namespace DataSearches
             strFeatureOutputName = myStringFuncs.ReplaceSearchStrings(strFeatureOutputName, strRef, strSiteName, strShortRef, strSubref);
             strGroupLayerName = myStringFuncs.ReplaceSearchStrings(strGroupLayerName, strRef, strSiteName, strShortRef, strSubref);
             
-
             // Remove any illegal characters from the names.
             strSaveFolder = myStringFuncs.StripIllegals(strSaveFolder, strReplaceChar);
             strGISFolder = myStringFuncs.StripIllegals(strGISFolder, strReplaceChar);
@@ -465,7 +466,6 @@ namespace DataSearches
             // Trim any trailing spaces since directory functions don't deal with them and it causes a crash.
             strSaveFolder = strSaveFolder.Trim();
             
-
             // Create directories as required.
             if (!myFileFuncs.DirExists(strSaveRootDir))
             {
@@ -539,7 +539,6 @@ namespace DataSearches
                     this.Cursor = Cursors.Default;
                     return;
                 }
-                
             }
 
             // Write the first line to the log file.
@@ -591,8 +590,8 @@ namespace DataSearches
 
                     //SearchLayerList.Add(strSearchLayer);
                     myFileFuncs.WriteLine(strLogFile, "Searching layer " + strSearchLayer + " for reference " + strReference);
-                    IFeature pTestFeature = myArcMapFuncs.GetFeatureFromLayer(strSearchLayer, strQuery, strLogFile);
-                    if (pTestFeature != null)
+                    int iFeatureCount = myArcMapFuncs.GetFeatureFromLayer(strSearchLayer, strQuery, strLogFile);
+                    if (iFeatureCount > 0)
                     {
                         if (aCount == 0)
                         {
@@ -607,10 +606,20 @@ namespace DataSearches
                 }
             }
 
+            if (aCount < 0)
+            {
+                aCount = aCount * -1;
+                MessageBox.Show("There were " + aCount.ToString() + " features with reference " + strReference + " found in the search layers; Process aborted by user");
+                myFileFuncs.WriteLine(strLogFile, "There were " + aCount.ToString() + " features with reference " + strReference + " found in the search layers");
+                myFileFuncs.WriteLine(strLogFile, "Process aborted");
+                this.BringToFront();
+                this.Cursor = Cursors.Default;
+                return;
+            }
             if (aCount == 0)
             {
-                MessageBox.Show("The feature with reference " + strReference + " was not found in any of the search layers");
-                myFileFuncs.WriteLine(strLogFile, "Feature with reference " + strReference + " was not found in any of the search layers");
+                MessageBox.Show("No features with reference " + strReference + " were found in any of the search layers");
+                myFileFuncs.WriteLine(strLogFile, "No features with reference " + strReference + " were found in any of the search layers");
                 myFileFuncs.WriteLine(strLogFile, "Process aborted");
                 this.BringToFront();
                 this.Cursor = Cursors.Default;
@@ -618,14 +627,17 @@ namespace DataSearches
             }
             if (aCount > 1)
             {
-                MessageBox.Show("There were " + aCount.ToString() + " features with the same reference " + strReference + " in the search layers; Process aborted");
-                myFileFuncs.WriteLine(strLogFile, "There were " + aCount.ToString() + " features with the same reference " + strReference + " in the search layers");
+                MessageBox.Show("There were " + aCount.ToString() + " features with reference " + strReference + " found in different search layers; Process aborted");
+                myFileFuncs.WriteLine(strLogFile, "There were " + aCount.ToString() + " features with reference " + strReference + " found in different search layers");
                 myFileFuncs.WriteLine(strLogFile, "Process aborted");
                 this.BringToFront();
                 this.Cursor = Cursors.Default;
                 return;
             }
-            
+
+            string strSiteColumn = myConfig.GetSiteColumn();
+            string strOrgColumn = myConfig.GetOrgColumn();
+
             // We have found the feature and are ready to go. Pause drawing.
             myArcMapFuncs.ToggleDrawing(false);
             myArcMapFuncs.ToggleTOC();
@@ -633,15 +645,29 @@ namespace DataSearches
             // Select the feature in the map.
             myArcMapFuncs.SelectLayerByAttributes(strTargetLayer, strQuery, aLogFile:strLogFile);
 
-            // Get the required information for the aggregate columns.
+            // Update the table if required.
+            if (blUpdateTable && (!string.IsNullOrEmpty(strSiteColumn) || !string.IsNullOrEmpty(strOrgColumn)))
+            {
+                myFileFuncs.WriteLine(strLogFile, "Update attributes in " + strTargetLayer);
+
+                if (!string.IsNullOrEmpty(strSiteColumn) && !string.IsNullOrEmpty(strSiteName))
+                {
+                    myFileFuncs.WriteLine(strLogFile, "Updating " + strSiteColumn + " with '" + strSiteName + "'");
+                    myArcMapFuncs.CalculateField(strTargetLayer, strSiteColumn, '"' + strSiteName + '"', strLogFile);
+                }
+
+                if (!string.IsNullOrEmpty(strOrgColumn) && !string.IsNullOrEmpty(strOrganisation))
+                {
+                    myFileFuncs.WriteLine(strLogFile, "Updating " + strSiteColumn + " with '" + strSiteName + "'");
+                    myArcMapFuncs.CalculateField(strTargetLayer, strOrgColumn, '"' + strOrganisation + '"', strLogFile);
+                }
+            }
 
             // Create a buffer around the feature and save into a new file.
             // convert to the correct unit.
-           
             string strBufferString = strBufferSize + " " + strBufferUnitProcess;
             if (strBufferSize == "0") strBufferString = "0.01 Meters";  // Safeguard for zero buffer size; Select a tiny buffer to allow
                                                                        // correct legending (expects a polygon).
-
 
             myFileFuncs.WriteLine(strLogFile, "Buffering feature from " + strTargetLayer + " with a distance of " + strBufferSize + " " + strBufferUnitText);
             bool blResult = myArcMapFuncs.BufferFeature(strTargetLayer, strOutputFile, strBufferString, strBufferFields, strLogFile);
@@ -946,7 +972,6 @@ namespace DataSearches
                         return;
                     }
                     
-
                     // Check if the map label field exists. Create if necessary. 
                     string strGroupName = myStringFuncs.GetGroupName(aLayer);
                     bool blNewLabelField = false;
@@ -998,6 +1023,7 @@ namespace DataSearches
                     string strTempDBFOutput = strTempFolder + @"\" + strTempOutput + "DBF.dbf";
                     string strRadius = "none";
                     if (blIncludeRadius) strRadius = strBufferSize + " " + strBufferUnitText; // Only include radius if requested.
+                    
                     // Only export if the user has specified columns.
                     int intLineCount = -999;
                     if (strColumns != "")
@@ -1019,6 +1045,7 @@ namespace DataSearches
                         //intLineCount = myArcMapFuncs.CopyToCSV(strTempShapeOutput, strTableOutputName, strColumns, strOrderColumns, true, false, !blIncHeaders, strLogFile);
                         myFileFuncs.WriteLine(strLogFile, intLineCount.ToString() + " line(s) written for " + strDisplayName);
                     }
+                    
                     // Copy to permanent layer as appropriate
                     if (blKeepLayer)
                     {
@@ -1111,9 +1138,13 @@ namespace DataSearches
                     myFileFuncs.WriteLine(strLogFile, "Executing vbscript macro");
 
                     Process scriptProc = new Process();
-                    scriptProc.StartInfo.FileName = @"cscript";
+                    //scriptProc.StartInfo.FileName = @"C:\Windows\SysWOW64\cscript.exe";
+                    scriptProc.StartInfo.FileName = @"cscript.exe";
                     scriptProc.StartInfo.WorkingDirectory = myFileFuncs.GetDirectoryName(strMacroName); //<---very important
-                    scriptProc.StartInfo.Arguments = string.Format(@"//B //Nologo {0} {1} {2}", strMacroName, "\"" + strGISFolder +"\"", strMacroName);
+                    scriptProc.StartInfo.UseShellExecute = true;
+                    //scriptProc.StartInfo.Arguments = string.Format(@"{0}", "\"" + strMacroName + "\"");
+                    scriptProc.StartInfo.Arguments = string.Format(@"//B //Nologo {0} {1} {2} {3}", "\"" + strMacroName + "\"", "\"" + strGISFolder + "\"", "\"" + strTableOutName + "." + strFormat.ToLower() + "\"", "\"" + strTableOutName + ".xlsx" + "\"");
+                    //scriptProc.StartInfo.Arguments = string.Format(@"{0} {1} {2} {3}", "\"" + strMacroName + "\"", "\"" + strGISFolder + "\"", "\"" + strTableOutName + "." + strFormat.ToLower() + "\"", "\"" + strTableOutName + ".xlsx" + "\"");
                     scriptProc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden; //prevent console window from popping up
 
                     try
@@ -1122,14 +1153,48 @@ namespace DataSearches
                         scriptProc.WaitForExit(); // <-- Optional if you want program running until your script exit
 
                         int exitcode = scriptProc.ExitCode;
-                        scriptProc.Close();
 
-                        myFileFuncs.WriteLine(strLogFile, "Completed vbscript macro. Exit code " + exitcode);
+                        myFileFuncs.WriteLine(strLogFile, "Completed vbscript macro. Exit code : " + exitcode);
+                        //myFileFuncs.WriteLine(strLogFile, "Completed vbscript macro. Standard Output : " + scriptProc.StandardOutput.ReadToEnd());
+
+                        scriptProc.Close();
                     }
                     catch
                     {
                         MessageBox.Show("Error executing vbscript macro.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+
+
+
+
+
+                    //myFileFuncs.WriteLine(strLogFile, "Executing vbscript macro");
+
+                    //scriptProc = new Process();
+                    //scriptProc.StartInfo.FileName = string.Format(@"{0}", strMacroName);
+                    //scriptProc.StartInfo.WorkingDirectory = myFileFuncs.GetDirectoryName(strMacroName); //<---very important
+                    //scriptProc.StartInfo.UseShellExecute = true;
+                    //scriptProc.StartInfo.Arguments = string.Format(@"Test1 Test2 Test3");
+
+                    ////scriptProc.StartInfo.Arguments = string.Format(@"//B //Nologo {0} {1} {2}", strMacroName, "\"" + strGISFolder + "\"", strMacroName);
+                    //scriptProc.StartInfo.WindowStyle = ProcessWindowStyle.Normal; //Hidden = prevent console window from popping up
+
+                    //try
+                    //{
+                    //    scriptProc.Start();
+                    //    scriptProc.WaitForExit(); // <-- Optional if you want program running until your script exit
+
+                    //    int exitcode = scriptProc.ExitCode;
+
+                    //    myFileFuncs.WriteLine(strLogFile, "Completed vbscript macro. Exit code : " + exitcode);
+
+                    //    scriptProc.Close();
+                    //}
+                    //catch
+                    //{
+                    //    MessageBox.Show("Error executing vbscript macro.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //}                
+                
                 }
 
             }
@@ -1155,16 +1220,15 @@ namespace DataSearches
             }
 
             // All done, bring to front etc. 
-            myFileFuncs.WriteLine(strLogFile, "---------------------------------------------------------------------------");
-            myFileFuncs.WriteLine(strLogFile, "Process complete");
-            myFileFuncs.WriteLine(strLogFile, "---------------------------------------------------------------------------");
-
             myArcMapFuncs.ToggleTOC();
             myArcMapFuncs.ToggleDrawing(true);
             myArcMapFuncs.SetContentsView();
-            if (strBufferSize != "0")
+            if (strBufferSize != "0" && blKeepBuffer)
                 myArcMapFuncs.ZoomToLayer(strLayerName, strLogFile);
 
+            myFileFuncs.WriteLine(strLogFile, "---------------------------------------------------------------------------");
+            myFileFuncs.WriteLine(strLogFile, "Process complete");
+            myFileFuncs.WriteLine(strLogFile, "---------------------------------------------------------------------------");
 
             this.Cursor = Cursors.Default;
             DialogResult dlResult = MessageBox.Show("Process complete. Do you wish to close the form?", "Data Searches", MessageBoxButtons.YesNo);
@@ -1199,8 +1263,26 @@ namespace DataSearches
                     {
                         strAccessConn = "Provider='Microsoft.Jet.OLEDB.4.0';data source='" + myConfig.GetDatabase() + "'";
                     }
-                    string strQuery = "SELECT " + myConfig.GetSiteColumn() + " from Enquiries WHERE LCASE(" + myConfig.GetRefColumn() + ") = " + '"' + txtSearch.Text.ToLower() + '"';
+
+                    string strSiteColumn = myConfig.GetSiteColumn();
+                    string strOrgColumn = myConfig.GetOrgColumn();
+                    string strTable = myConfig.GetTable();
+                    if (string.IsNullOrEmpty(strTable))
+                        strTable = "Enquiries";
+
+                    string strColumns = strSiteColumn;
+                    if (!string.IsNullOrEmpty(strOrgColumn))
+                    {
+                        if (!string.IsNullOrEmpty(strColumns))
+                            strColumns = strColumns + "," + strOrgColumn;
+                        else
+                            strColumns = strOrgColumn;
+                    }
+
+                    string strQuery = "SELECT " + strSiteColumn + " from " + strTable + " WHERE LCASE(" + myConfig.GetRefColumn() + ") = " + '"' + txtSearch.Text.ToLower() + '"';
                     string strLocation = "";
+                    string strOrganisation = "";
+
                     OleDbConnection myAccessConn = null;
                     try
                     {
@@ -1220,7 +1302,7 @@ namespace DataSearches
                         OleDbDataAdapter myDataAdapter = new OleDbDataAdapter(myAccessCommand);
 
                         myAccessConn.Open();
-                        myDataAdapter.Fill(myDataSet, "Enquiries");
+                        myDataAdapter.Fill(myDataSet, strTable);
 
                     }
                     catch (Exception ex)
@@ -1233,11 +1315,13 @@ namespace DataSearches
                         myAccessConn.Close();
                     }
 
-                    DataRowCollection myRS = myDataSet.Tables["Enquiries"].Rows;
+                    DataRowCollection myRS = myDataSet.Tables[strTable].Rows;
                     foreach (DataRow aRow in myRS) // Really there should only be one. We can check for this.
                     {
-                        // Get the location name
+                        // Get the location and organisation names
                         strLocation = aRow[0].ToString();
+                        if (!string.IsNullOrEmpty(strOrgColumn))
+                            strOrganisation = aRow[1].ToString();
                     }
 
                     if (strLocation != "")
@@ -1254,6 +1338,8 @@ namespace DataSearches
                         // Should we allow an update??
                     }
 
+                    txtOrganisation.Text = strOrganisation;
+
                 }
                 else
                 {
@@ -1265,6 +1351,7 @@ namespace DataSearches
                 // There is no search reference. Disable the Location text box.
                 txtLocation.Text = "";
                 txtLocation.Enabled = false;
+                txtOrganisation.Text = "";
             }
         }
 

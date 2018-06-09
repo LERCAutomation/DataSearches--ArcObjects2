@@ -229,13 +229,17 @@ namespace HLStringFunctions
         public string ReplaceSearchStrings(string RawName, string Reference, string SiteName, string ShortRef, string Subref)
         {
             string CleanName = RawName;
-            CleanName = CleanName.Replace("%ref%", Reference);
-            CleanName = CleanName.Replace("%shortref%", ShortRef);
-            CleanName = CleanName.Replace("%subref%", Subref);
-            CleanName = CleanName.Replace("%sitename%", SiteName);
-            // Take account of the occurrence of dangling underscores (if no site name was given).
-            if (CleanName.Substring(CleanName.Length - 1, 1) == "_")
-                CleanName = CleanName.Substring(0, CleanName.Length - 1);
+            // Allow strings to be empty
+            if (String.IsNullOrEmpty(CleanName) == false)
+            {
+                CleanName = CleanName.Replace("%ref%", Reference);
+                CleanName = CleanName.Replace("%shortref%", ShortRef);
+                CleanName = CleanName.Replace("%subref%", Subref);
+                CleanName = CleanName.Replace("%sitename%", SiteName);
+                // Take account of the occurrence of dangling underscores (if no site name was given).
+                if (CleanName.Substring(CleanName.Length - 1, 1) == "_")
+                    CleanName = CleanName.Substring(0, CleanName.Length - 1);
+            }
             return CleanName;
         }
     }
