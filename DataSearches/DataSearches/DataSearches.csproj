@@ -39,6 +39,7 @@
   <ItemGroup>
     <Reference Include="ESRI.ArcGIS.AnalysisTools, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ToolBoxes\ESRI.ArcGIS.AnalysisTools.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
     <Reference Include="ESRI.ArcGIS.ArcMapUI, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
@@ -49,35 +50,42 @@
     </Reference>
     <Reference Include="ESRI.ArcGIS.Carto, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ESRI.ArcGIS.Carto.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="ESRI.ArcGIS.Catalog, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ESRI.ArcGIS.Catalog.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="ESRI.ArcGIS.CatalogUI, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ESRI.ArcGIS.CatalogUI.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="ESRI.ArcGIS.DataManagementTools, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ToolBoxes\ESRI.ArcGIS.DataManagementTools.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
     <Reference Include="ESRI.ArcGIS.DataSourcesFile, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ESRI.ArcGIS.DataSourcesFile.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="ESRI.ArcGIS.DataSourcesGDB, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ESRI.ArcGIS.DataSourcesGDB.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="ESRI.ArcGIS.DataSourcesOleDB, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ESRI.ArcGIS.DataSourcesOleDB.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -88,6 +96,7 @@
     </Reference>
     <Reference Include="ESRI.ArcGIS.Display, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ESRI.ArcGIS.Display.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -99,26 +108,31 @@
     </Reference>
     <Reference Include="ESRI.ArcGIS.Geodatabase, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ESRI.ArcGIS.Geodatabase.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="ESRI.ArcGIS.GeoDatabaseUI, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ESRI.ArcGIS.GeoDatabaseUI.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="ESRI.ArcGIS.Geometry, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ESRI.ArcGIS.Geometry.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="ESRI.ArcGIS.Geoprocessing, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ESRI.ArcGIS.Geoprocessing.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="ESRI.ArcGIS.Geoprocessor, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <HintPath>..\..\..\ArcGIS-Libraries\DeveloperKit10.1\DotNet\ESRI.ArcGIS.Geoprocessor.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
     <Reference Include="ESRI.ArcGIS.System, Version=10.1.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
@@ -177,9 +191,6 @@
     </AddInContent>
   </ItemGroup>
   <ItemGroup>
-    <AddInContent Include="Images\DataSearches_1.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="DataSearches.cs" />
     <AddInContent Include="Images\DataSearches.png" />
   </ItemGroup>
@@ -199,7 +210,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmDataSearches.resx">
       <DependentUpon>frmDataSearches.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\btnDataSearches.png" />
   </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>

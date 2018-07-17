@@ -2,8 +2,8 @@
   <Name>Data Searches</Name>
   <AddInID>{87d1fee3-43bc-478c-95d2-75f114def3ef}</AddInID>
   <Description>Select spatial data within a radius of a given feature.&#13;&#10;(c) 2016-2018 SxBRC, 2017-2018 TVERC.</Description>
-  <Version>2.4.1</Version>
-  <Image>Images\DataSearches_1.png</Image>
+  <Version>2.4.2</Version>
+  <Image>Images\DataSearches.png</Image>
   <Author>Hester Lyons</Author>
   <Company>Hester Lyons Consulting</Company>
   <Date>08/06/2018</Date>
@@ -19,7 +19,7 @@
                 caption="Data Searches" 
                 tip="Data Searches tool" 
                 category="Add-In Controls"
-                image="Images\DataSearches.png" />
+                image="Images\btnDataSearches.png" />
       </Commands>
     </ArcMap>
   </AddIn>

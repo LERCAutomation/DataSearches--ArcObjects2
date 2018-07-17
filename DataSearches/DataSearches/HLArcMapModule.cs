@@ -153,6 +153,24 @@ namespace HLArcMapModule
             return pWSF;
         }
 
+        public bool CreateWorkspace(string aWorkspace, bool Messages = false)
+        {
+            IWorkspaceFactory pWSF = GetWorkspaceFactory(aWorkspace);
+            try
+            {
+                pWSF.Create(myFileFuncs.GetDirectoryName(aWorkspace), myFileFuncs.GetFileName(aWorkspace), null, 0);
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                pWSF = null;
+            }
+            return true;
+        }
+
 
         #region FeatureclassExists
         public bool FeatureclassExists(string aFilePath, string aDatasetName)
@@ -390,8 +408,9 @@ namespace HLArcMapModule
             {
                 if (!(pLayer is ICompositeLayer))
                 {
-                    if (pLayer.Name == aName)
-                    {
+                    // Check if the layer has been found (ignoring case)
+                    if (pLayer.Name.Equals(aName, StringComparison.OrdinalIgnoreCase))
+                        {
                         pTargetLayer = pLayer;
                         blFoundit = true;
                     }
@@ -583,10 +602,64 @@ namespace HLArcMapModule
             return true;
         }
 
+        public bool AddTableField(ITable aTable, string aFieldName, esriFieldType aFieldType, int aLength, string aLogFile = "", bool Messages = false)
+        {
+            // Validate input.
+            if (aTable == null)
+            {
+                if (Messages)
+                {
+                    MessageBox.Show("Please pass a valid table", "Add Field");
+                }
+                if (aLogFile != "")
+                    myFileFuncs.WriteLine(aLogFile, "Function AddTableField returned the following error: Please pass a valid table");
+                return false;
+            }
+            if (aLength <= 0)
+            {
+                if (Messages)
+                {
+                    MessageBox.Show("Please enter a valid field length", "Add Field");
+                }
+                if (aLogFile != "")
+                    myFileFuncs.WriteLine(aLogFile, "Function AddTableField returned the following error: Please pass a valid field length");
+                return false;
+            }
+            IFields pFields = aTable.Fields;
+            int i = pFields.FindField(aFieldName);
+            if (i > -1)
+            {
+                if (Messages)
+                {
+                    MessageBox.Show("This field already exists", "Add Field");
+                }
+                if (aLogFile != "")
+                    myFileFuncs.WriteLine(aLogFile, "Function AddTableField returned the following message: The field " + aFieldName + " already exists");
+                return false;
+            }
+
+            ESRI.ArcGIS.Geodatabase.Field aNewField = new ESRI.ArcGIS.Geodatabase.Field();
+            IFieldEdit anEdit = (IFieldEdit)aNewField;
+
+            anEdit.AliasName_2 = aFieldName;
+            anEdit.Name_2 = aFieldName;
+            anEdit.Type_2 = aFieldType;
+            anEdit.Length_2 = aLength;
+
+            aTable.AddField(aNewField);
+            return true;
+        }
+
         public bool AddField(string aFeatureClass, string aFieldName, esriFieldType aFieldType, int aLength, string aLogFile = "", bool Messages = false)
         {
             IFeatureClass pFC = GetFeatureClass(aFeatureClass, aLogFile, Messages);
             return AddField(pFC, aFieldName, aFieldType, aLength, aLogFile, Messages);
+        }
+
+        public bool AddTableField(string aTable, string aFieldName, esriFieldType aFieldType, int aLength, string aLogFile = "", bool Messages = false)
+        {
+            ITable pFC = GetTable(aTable, aLogFile, Messages);
+            return AddTableField(pFC, aFieldName, aFieldType, aLength, aLogFile, Messages);
         }
 
         public bool AddLayerField(string aLayer, string aFieldName, esriFieldType aFieldType, int aLength, string aLogFile = "", bool Messages = false)
@@ -780,7 +853,7 @@ namespace HLArcMapModule
             {
                 IWorkspaceFactory pWSF = GetWorkspaceFactory(aFilePath);
                 IWorkspace2 pWS = (IWorkspace2)pWSF.OpenFromFile(aFilePath, 0);
-                if (pWS.get_NameExists(ESRI.ArcGIS.Geodatabase.esriDatasetType .esriDTTable, aDatasetName))
+                if (pWS.get_NameExists(ESRI.ArcGIS.Geodatabase.esriDatasetType.esriDTTable, aDatasetName))
                     return true;
                 else
                     return false;
@@ -837,7 +910,7 @@ namespace HLArcMapModule
             return pTable;
         }
 
-        public ITable GetTable(string aTableLayer, string aLogFile = "", bool Messages = false)
+        public ITable GetTable(string aTable, string aLogFile = "", bool Messages = false)
         {
             IMap pMap = GetMap();
             IStandaloneTableCollection pColl = (IStandaloneTableCollection)pMap;
@@ -846,7 +919,8 @@ namespace HLArcMapModule
             for (int I = 0; I < pColl.StandaloneTableCount; I++)
             {
                 pThisTable = pColl.StandaloneTable[I];
-                if (pThisTable.Name == aTableLayer)
+                // Check if the table has been found (ignoring case)
+                if (pThisTable.Name.Equals(aTable, StringComparison.OrdinalIgnoreCase))
                 {
                     ITable myTable = pThisTable.Table;
                     return myTable;
@@ -854,9 +928,9 @@ namespace HLArcMapModule
             }
             if (Messages)
             {
-                MessageBox.Show("The table layer " + aTableLayer + " could not be found in this map");
+                MessageBox.Show("The table " + aTable + " could not be found in this map");
                 if (aLogFile != "")
-                    myFileFuncs.WriteLine(aLogFile, "Function GetTable returned the following error: The table layer " + aTableLayer + " could not be found in this map");
+                    myFileFuncs.WriteLine(aLogFile, "Function GetTable returned the following error: The table " + aTable + " could not be found in this map");
             }
             return null;
         }
@@ -978,7 +1052,8 @@ namespace HLArcMapModule
             for (int I = 0; I < pColl.StandaloneTableCount; I++)
             {
                 pThisTable = pColl.StandaloneTable[I];
-                if (pThisTable.Name == aLayerName)
+                // Check if the table has been found (ignoring case)
+                if (pThisTable.Name.Equals(aLayerName, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
@@ -1013,7 +1088,8 @@ namespace HLArcMapModule
             for (int I = 0; I < pColl.StandaloneTableCount; I++)
             {
                 pThisTable = pColl.StandaloneTable[I];
-                if (pThisTable.Name == aTableName)
+                // Check if the table has been found (ignoring case)
+                if (pThisTable.Name.Equals(aTableName, StringComparison.OrdinalIgnoreCase))
                 {
                     try
                     {
@@ -1063,7 +1139,8 @@ namespace HLArcMapModule
             {
                 if (!(pLayer is IGroupLayer))
                 {
-                    if (pLayer.Name == aLayerName)
+                    // Check if the layer has been found (ignoring case)
+                    if (pLayer.Name.Equals(aLayerName, StringComparison.OrdinalIgnoreCase))
                     {
                         // Check that the data is there
                         if (pLayer.Valid)
@@ -1108,8 +1185,9 @@ namespace HLArcMapModule
             {
                 if (pLayer is IGroupLayer)
                 {
-                    if (pLayer.Name == aGroupLayerName)
-                    {
+                    // Check if the layer has been found (ignoring case)
+                    if (pLayer.Name.Equals(aGroupLayerName, StringComparison.OrdinalIgnoreCase))
+                        {
                         return true;
                     }
 
@@ -1149,8 +1227,9 @@ namespace HLArcMapModule
             {
                 if (pLayer is IGroupLayer)
                 {
-                    if (pLayer.Name == aGroupLayerName)
-                    {
+                    // Check if the layer has been found (ignoring case)
+                    if (pLayer.Name.Equals(aGroupLayerName, StringComparison.OrdinalIgnoreCase))
+                        {
                         return pLayer;
                     }
 
@@ -1269,8 +1348,9 @@ namespace HLArcMapModule
             {
                 if (!(pLayer is IGroupLayer))
                 {
-                    if (pLayer.Name == aLayerName)
-                    {
+                    // Check if the layer has been found (ignoring case)
+                    if (pLayer.Name.Equals(aLayerName, StringComparison.OrdinalIgnoreCase))
+                        {
                         pMap.DeleteLayer(pLayer);
                         return true;
                     }
@@ -1403,10 +1483,14 @@ namespace HLArcMapModule
                 myresult = (IGeoProcessorResult)gp.Execute("CopyFeatures_management", parameters, null);
                 // Wait until the execution completes.
                 while (myresult.Status == esriJobStatus.esriJobExecuting)
-                    Thread.Sleep(1000);
+                {
+                    myFileFuncs.WriteLine(aLogFile, "Waiting ...");
                     // Wait for 1 second.
+                    Thread.Sleep(1000);
+                }
                 if (Messages)
                 {
+                    myFileFuncs.WriteLine(aLogFile, "Copy complete");
                     MessageBox.Show("Process complete");
                 }
                 gp = null;
@@ -1831,8 +1915,8 @@ namespace HLArcMapModule
             // selecting features and refining this selection.
 
             // Check the input.
-            
-            if (!TableExists(InTable))
+
+            if (!TableExists(InTable) && !FeatureclassExists(InTable))
             {
                 if (Messages) MessageBox.Show("The input table " + InTable + " doesn't exist", "Copy To CSV");
                 if (aLogFile != "")
@@ -2303,9 +2387,9 @@ namespace HLArcMapModule
 
         }
 
-        public int GetFeatureFromLayer(string aFeatureLayer, string aQuery, string aLogFile = "", bool Messages = false)
+        public int CountFeaturesInLayer(string aFeatureLayer, string aQuery, string aLogFile = "", bool Messages = false)
         {
-            // This function returns a feature from the FeatureLayer. If there is more than one feature, it returns the LAST one.
+            // This function counts the features in the FeatureLayer.
             // Check if the layer exists.
             if (!LayerExists(aFeatureLayer))
             {
@@ -2375,26 +2459,15 @@ namespace HLArcMapModule
                 }
                 return 0;
             }
-            
+
             // Allow multiple features to be used
-            if (aCount > 1)
+            if (aCount > 0)
             {
-                // Ask the user if they want to continue
-                DialogResult dlResult = MessageBox.Show("There are " + aCount.ToString() + " features found in " + aFeatureLayer + " matching those criteria. Do you wish to continue?", "Data Searches", MessageBoxButtons.YesNo);
-                if (dlResult == System.Windows.Forms.DialogResult.Yes)
+                if (Messages)
+                    MessageBox.Show("There are " + aCount.ToString() + " features matching those criteria");
+                if (aLogFile != "")
                 {
-                    if (aLogFile != "")
-                    {
-                        myFileFuncs.WriteLine(aLogFile, "There are " + aCount.ToString() + " features matching those criteria");
-                    }
-                }
-                else
-                {
-                    if (aLogFile != "")
-                    {
-                        myFileFuncs.WriteLine(aLogFile, "There were " + aCount.ToString() + " features matching those criteria");
-                    }
-                    return (aCount * -1);
+                    myFileFuncs.WriteLine(aLogFile, "There are " + aCount.ToString() + " features matching those criteria");
                 }
             }
 
@@ -2937,7 +3010,6 @@ namespace HLArcMapModule
 
             // New process: 1. calculate distance, 2. summary statistics to dbf or csv. use min_radius and sum_area.
 
-
             // If we are including distance, the process is slighly different.
             if ((GroupColumns != null && GroupColumns != "") || StatisticsColumns != "") // include group columns OR statistics columns.
             {
@@ -2946,7 +3018,6 @@ namespace HLArcMapModule
                     // We are ONLY performing a group by. Go straight to final shapefile.
                     strOutFile = anOutShapefile;
         
-
                 // Do the dissolve as requested.
                 IVariantArray DissolveParams = new VarArrayClass();
                 DissolveParams.Add(aLayerName);
@@ -3171,7 +3242,7 @@ namespace HLArcMapModule
             return true;
         }
 
-        public int ExportSelectionToCSV(string aLayerName, string anOutTable, string OutputColumns, bool IncludeHeaders, string TempShapeFile, string TempDBF, string GroupColumns = "",
+        public int ExportSelectionToCSV(string aLayerName, string anOutTable, string OutputColumns, bool IncludeHeaders, string TempFC, string TempTable, string GroupColumns = "",
             string StatisticsColumns = "", string OrderColumns = "", bool IncludeArea = false, string AreaMeasurementUnit = "ha", bool IncludeDistance = false, string aRadius = "None",
             string aTargetLayer = null, string aLogFile = "", bool Overwrite = true, bool CheckForSelection = false, bool RenameColumns = false, bool Messages = false)
         {
@@ -3226,10 +3297,10 @@ namespace HLArcMapModule
 
             IGeoProcessorResult myresult = new GeoProcessorResultClass();
 
-            // Check if the FC is a point FC.
+            // Check if the FC is a polygon FC.
             string strFCType = GetFeatureClassType(pFC);
             // Calculate the area field if required.
-            bool blAreaAdded = false;
+            //bool blAreaAdded = false;
             if (IncludeArea && strFCType == "polygon")
             {
                 string strCalc = "";
@@ -3244,7 +3315,7 @@ namespace HLArcMapModule
                 if (!FieldExists(pFC, "Area", aLogFile, Messages))
                 {
                     AddField(pFC, "Area", esriFieldType.esriFieldTypeDouble, 20, aLogFile, Messages);
-                    blAreaAdded = true;
+                    //blAreaAdded = true;
                 }
                 // Calculate the field.
                 IVariantArray AreaCalcParams = new VarArrayClass();
@@ -3272,7 +3343,7 @@ namespace HLArcMapModule
 
             // New process: 1. calculate distance, 2. summary statistics to dbf or csv. use min_radius and sum_area.
 
-            // Calculate the radius as required.
+            // Calculate the distance if required.
             if (IncludeDistance)
             {
                 // Now add the distance field by joining if required. This will take all fields.
@@ -3283,7 +3354,7 @@ namespace HLArcMapModule
                 // Populate the variant array with parameter values.
                 params1.Add(aLayerName);
                 params1.Add(aTargetLayer);
-                params1.Add(TempShapeFile);
+                params1.Add(TempFC);
                 params1.Add("JOIN_ONE_TO_ONE");
                 params1.Add("KEEP_ALL");
                 params1.Add("");
@@ -3317,7 +3388,7 @@ namespace HLArcMapModule
 
                 // Populate the variant array with parameter values.
                 params1.Add(aLayerName);
-                params1.Add(TempShapeFile);
+                params1.Add(TempFC);
 
                 try
                 {
@@ -3338,8 +3409,8 @@ namespace HLArcMapModule
                 }
             }
 
-            // After this the input to the remainder of the function should be from TempShapefile.
-            string strTempLayer = myFileFuncs.ReturnWithoutExtension(myFileFuncs.GetFileName(TempShapeFile)); // Temporary layer.
+            // After this the input to the remainder of the function should be from TempFC.
+            string strTempLayer = myFileFuncs.ReturnWithoutExtension(myFileFuncs.GetFileName(TempFC)); // Temporary layer.
             aLayerName = strTempLayer;
             pFC = GetFeatureClassFromLayerName(aLayerName);
 
@@ -3394,7 +3465,7 @@ namespace HLArcMapModule
                 // Do summary statistics
                 IVariantArray StatsParams = new VarArrayClass();
                 StatsParams.Add(aLayerName);
-                StatsParams.Add(TempDBF);
+                StatsParams.Add(TempTable);
 
                 if (StatisticsColumns != "") StatsParams.Add(StatisticsColumns);
 
@@ -3413,170 +3484,54 @@ namespace HLArcMapModule
                     return -1;
                 }
 
+                // Now rejig the statistics fields if required because they will look like FIRST_SAC which is no use.
+                if (StatisticsColumns != "" && RenameColumns)
+                {
+                    string strTempTable = myFileFuncs.ReturnWithoutExtension(myFileFuncs.GetFileName(TempTable)); // Temporary layer.
+                    ITable tpOutTable = GetTable(strTempTable);
+
+                    List<string> strFieldNames = StatisticsColumns.Split(';').ToList();
+                    int intIndexCount = 0;
+                    foreach (string strField in strFieldNames)
+                    {
+                        List<string> strFieldComponents = strField.Split(' ').ToList();
+                        // Let's find out what the new field is called - could be anything.
+                        int intNewIndex = 2; // FID = 1; Shape = 2.
+                        intNewIndex = intNewIndex + GroupColumns.Split(';').ToList().Count + intIndexCount; // Add the number of columns uses for grouping
+                        IField pNewField = tpOutTable.Fields.get_Field(intNewIndex);
+                        string strInputField = pNewField.Name;
+                        // Note index stays the same, since we're deleting the fields. 
+
+                        string strNewField = strFieldComponents[0]; // The original name of the field.
+                        // Get the definition of the original field from the original feature class.
+                        int intIndex = pFC.Fields.FindField(strNewField);
+                        IField pField = pFC.Fields.get_Field(intIndex);
+
+                        // Add the field to the new FC.
+                        AddTableField(strTempTable, strNewField, pField.Type, pField.Length, aLogFile, Messages);
+                        // Calculate the new field.
+                        string strCalc = "[" + strInputField + "]";
+                        CalculateField(TempTable, strNewField, strCalc, aLogFile, Messages);
+                        DeleteField(tpOutTable, strInputField, aLogFile, Messages);
+                    }
+
+                }
+
                 // Now export this output table to CSV and delete the temporary file.
-                intResult = CopyToCSV(TempDBF, anOutTable, OutputColumns, OrderColumns, false, !Overwrite, !IncludeHeaders, aLogFile);
+                intResult = CopyToCSV(TempTable, anOutTable, OutputColumns, OrderColumns, false, !Overwrite, !IncludeHeaders, aLogFile);
             }
             else
             {
                 // Do straight copy to dbf.
-                intResult = CopyToCSV(TempShapeFile, anOutTable, OutputColumns, OrderColumns, true, !Overwrite, !IncludeHeaders, aLogFile);
+                intResult = CopyToCSV(TempFC, anOutTable, OutputColumns, OrderColumns, true, !Overwrite, !IncludeHeaders, aLogFile);
             }
-
-
-            //// If we are including distance, the process is slighly different.
-            //if ((GroupColumns != null && GroupColumns != "") || StatisticsColumns != "") // include group columns OR statistics columns.
-            //{
-            //    string strOutFile = TempShapeFile;
-            //    if (!IncludeDistance)
-            //        // We are ONLY performing a group by. Go straight to final shapefile.
-            //        strOutFile = anOutTable;
-
-
-            //    // Do the dissolve as requested.
-            //    IVariantArray DissolveParams = new VarArrayClass();
-            //    DissolveParams.Add(aLayerName);
-            //    DissolveParams.Add(strOutFile);
-            //    DissolveParams.Add(GroupColumns);
-            //    DissolveParams.Add(StatisticsColumns); // These should be set up to be as required beforehand.
-
-            //    try
-            //    {
-            //        //// Try using statistics instead of dissolve
-            //        //myresult = (IGeoProcessorResult)gp.Execute("Statistics_analysis", DissolveParams, null);
-            //        myresult = (IGeoProcessorResult)gp.Execute("Dissolve_management", DissolveParams, null);
-
-            //        // Wait until the execution completes.
-            //        while (myresult.Status == esriJobStatus.esriJobExecuting)
-            //            Thread.Sleep(1000);
-            //        // Wait for 1 second.
-            //        string strNewLayer = myFileFuncs.ReturnWithoutExtension(myFileFuncs.GetFileName(strOutFile));
-
-            //        IFeatureClass pInFC = GetFeatureClassFromLayerName(aLayerName, aLogFile, Messages);
-            //        IFeatureClass pOutFC = GetFeatureClassFromLayerName(strNewLayer, aLogFile, Messages);
-
-            //        //ILayer pInLayer = GetLayer(aLayerName);
-            //        //IFeatureLayer pInFLayer = (IFeatureLayer)pInLayer;
-            //        //IFeatureClass pInFC = pInFLayer.FeatureClass;
-
-            //        //ILayer pOutLayer = GetLayer(strNewLayer);
-            //        //IFeatureLayer pOutFLayer = (IFeatureLayer)pOutLayer;
-            //        //IFeatureClass pOutFC = pOutFLayer.FeatureClass;
-
-            //        // Now rejig the statistics fields if required because they will look like FIRST_SAC which is no use.
-            //        if (StatisticsColumns != "" && RenameColumns)
-            //        {
-            //            List<string> strFieldNames = StatisticsColumns.Split(';').ToList();
-            //            int intIndexCount = 0;
-            //            foreach (string strField in strFieldNames)
-            //            {
-            //                List<string> strFieldComponents = strField.Split(' ').ToList();
-            //                // Let's find out what the new field is called - could be anything.
-            //                int intNewIndex = 2; // FID = 1; Shape = 2.
-            //                intNewIndex = intNewIndex + GroupColumns.Split(';').ToList().Count + intIndexCount; // Add the number of columns uses for grouping
-            //                IField pNewField = pOutFC.Fields.get_Field(intNewIndex);
-            //                string strInputField = pNewField.Name;
-            //                // Note index stays the same, since we're deleting the fields. 
-
-            //                string strNewField = strFieldComponents[0]; // The original name of the field.
-            //                // Get the definition of the original field from the original feature class.
-            //                int intIndex = pInFC.Fields.FindField(strNewField);
-            //                IField pField = pInFC.Fields.get_Field(intIndex);
-
-            //                // Add the field to the new FC.
-            //                AddLayerField(strNewLayer, strNewField, pField.Type, pField.Length, aLogFile, Messages);
-            //                // Calculate the new field.
-            //                string strCalc = "[" + strInputField + "]";
-            //                CalculateField(strNewLayer, strNewField, strCalc, aLogFile, Messages);
-            //                DeleteLayerField(strNewLayer, strInputField, aLogFile, Messages);
-            //            }
-
-            //        }
-
-            //        aLayerName = strNewLayer;
-
-            //    }
-            //    catch (COMException ex)
-            //    {
-            //        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        if (aLogFile != "")
-            //            myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: " + ex.Message);
-            //        gp = null;
-            //        return false;
-            //    }
-
-            //}
-            //if (IncludeDistance)
-            //{
-            //    // Now add the distance field by joining if required. This will take all fields.
-
-            //    IVariantArray params1 = new VarArrayClass();
-            //    params1.Add(aLayerName);
-            //    params1.Add(aTargetLayer);
-            //    params1.Add(anOutTable);
-            //    params1.Add("JOIN_ONE_TO_ONE");
-            //    params1.Add("KEEP_ALL");
-            //    params1.Add("");
-            //    params1.Add("CLOSEST");
-            //    params1.Add("0");
-            //    params1.Add("Distance");
-
-            //    try
-            //    {
-            //        myresult = (IGeoProcessorResult)gp.Execute("SpatialJoin_analysis", params1, null);
-
-            //        // Wait until the execution completes.
-            //        while (myresult.Status == esriJobStatus.esriJobExecuting)
-            //            Thread.Sleep(1000);
-            //        // Wait for 1 second.
-
-            //    }
-            //    catch (COMException ex)
-            //    {
-            //        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        if (aLogFile != "")
-            //            myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: " + ex.Message);
-            //        gp = null;
-            //        return false;
-            //    }
-            //}
-
-
-            //if (GroupColumns == "" && !IncludeDistance && StatisticsColumns == "")
-            //// Only run a straight copy if neither a group/dissolve nor a distance has been requested
-            //// Because the data won't have been processed yet.
-            //{
-
-            //    // Create a variant array to hold the parameter values.
-            //    IVariantArray parameters = new VarArrayClass();
-
-            //    // Populate the variant array with parameter values.
-            //    parameters.Add(aLayerName);
-            //    parameters.Add(anOutTable);
-
-            //    try
-            //    {
-            //        myresult = (IGeoProcessorResult)gp.Execute("CopyFeatures_management", parameters, null);
-
-            //        // Wait until the execution completes.
-            //        while (myresult.Status == esriJobStatus.esriJobExecuting)
-            //            Thread.Sleep(1000);
-            //        // Wait for 1 second.
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        if (aLogFile != "")
-            //            myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: " + ex.Message);
-            //        gp = null;
-            //        return false;
-            //    }
-            //}
 
             // If the Area field was added, remove it again now from the original since we've saved our results.
-            if (blAreaAdded)
-            {
-                DeleteField(pFC, "Area", aLogFile, Messages);
-            }
+            // No longer needed as table is temporary anyway
+            //if (blAreaAdded)
+            //{
+            //    DeleteField(pFC, "Area", aLogFile, Messages);
+            //}
 
             // Remove all temporary layers.
             bool blFinished = false;
@@ -3588,14 +3543,27 @@ namespace HLArcMapModule
                     blFinished = true;
             }
 
-            if (FeatureclassExists(TempShapeFile))
+            if (LayerExists(TempFC, aLogFile, Messages))
+                RemoveLayer(TempFC, aLogFile, Messages);
+            DeleteFeatureclass(TempFC, aLogFile, Messages);
+
+            blFinished = false;
+            while (!blFinished)
             {
-                IVariantArray DelParams = new VarArrayClass();
-                DelParams.Add(TempShapeFile);
+                if (LayerExists(strTempLayer, aLogFile, Messages))
+                    RemoveLayer(strTempLayer, aLogFile, Messages);
+                else
+                    blFinished = true;
+            }
+
+            if (FeatureclassExists(TempFC))
+            {
+                IVariantArray DelParams1 = new VarArrayClass();
+                DelParams1.Add(TempFC);
                 try
                 {
 
-                    myresult = (IGeoProcessorResult)gp.Execute("Delete_management", DelParams, null);
+                    myresult = (IGeoProcessorResult)gp.Execute("Delete_management", DelParams1, null);
 
                     // Wait until the execution completes.
                     while (myresult.Status == esriJobStatus.esriJobExecuting)
@@ -3605,20 +3573,20 @@ namespace HLArcMapModule
                 catch (Exception ex)
                 {
                     if (Messages)
-                        MessageBox.Show("Cannot delete temporary layer " + TempShapeFile + ". System error: " + ex.Message);
+                        MessageBox.Show("Cannot delete temporary feature class " + TempFC + ". System error: " + ex.Message);
                     if (aLogFile != "")
                         myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: " + ex.Message);
                 }
             }
 
-            if (TableExists(TempDBF))
+            if (TableExists(TempTable))
             {
-                IVariantArray DelParams = new VarArrayClass();
-                DelParams.Add(TempDBF);
+                IVariantArray DelParams2 = new VarArrayClass();
+                DelParams2.Add(TempTable);
                 try
                 {
 
-                    myresult = (IGeoProcessorResult)gp.Execute("Delete_management", DelParams, null);
+                    myresult = (IGeoProcessorResult)gp.Execute("Delete_management", DelParams2, null);
 
                     // Wait until the execution completes.
                     while (myresult.Status == esriJobStatus.esriJobExecuting)
@@ -3628,43 +3596,11 @@ namespace HLArcMapModule
                 catch (Exception ex)
                 {
                     if (Messages)
-                        MessageBox.Show("Cannot delete temporary DBF file " + TempDBF + ". System error: " + ex.Message);
+                        MessageBox.Show("Cannot delete temporary DBF file " + TempTable + ". System error: " + ex.Message);
                     if (aLogFile != "")
                         myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV returned the following error: " + ex.Message);
                 }
             }
-
-            // Get the output shapefile
-            //IFeatureClass pResultFC = GetFeatureClass(anOutTable, aLogFile, Messages);
-
-            // Include radius if requested
-            //if (aRadius != "none")
-            //{
-            //    AddField(pResultFC, "Radius", esriFieldType.esriFieldTypeString, 25, aLogFile, Messages);
-            //    CalculateField(anOutTable, "Radius", '"' + aRadius + '"', aLogFile, Messages);
-            //}
-
-            // Now drop any fields from the output that we don't want.
-            //IFields pFields = pResultFC.Fields;
-            //List<string> strDeleteFields = new List<string>();
-
-            //// Make a list of fields to delete.
-            //for (int i = 0; i < pFields.FieldCount; i++)
-            //{
-            //    IField pField = pFields.get_Field(i);
-            //    if (OutputColumns.IndexOf(pField.Name, StringComparison.CurrentCultureIgnoreCase) == -1 && !pField.Required)
-            //    // Does it exist in the 'keep' list or is it required?
-            //    {
-            //        // If not, add to te delete list.
-            //        strDeleteFields.Add(pField.Name);
-            //    }
-            //}
-
-            ////Delete the listed fields.
-            //foreach (string strField in strDeleteFields)
-            //{
-            //    DeleteField(pResultFC, strField, aLogFile, Messages);
-            //}
 
             //pResultFC = null;
             pFC = null;
@@ -3746,6 +3682,26 @@ namespace HLArcMapModule
             try
             {
                 aFeatureClass.DeleteField(pField);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Cannot delete field " + aFieldName + ". System error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (aLogFile != "")
+                    myFileFuncs.WriteLine(aLogFile, "Function DeleteField returned the following error: Cannot delete field " + aFieldName + ". System error: " + ex.Message);
+                return false;
+            }
+
+        }
+
+        public bool DeleteField(ITable aTable, string aFieldName, string aLogFile = "", bool Messages = false)
+        {
+            // Get the fields collection
+            int intIndex = aTable.Fields.FindField(aFieldName);
+            IField pField = aTable.Fields.get_Field(intIndex);
+            try
+            {
+                aTable.DeleteField(pField);
                 return true;
             }
             catch (Exception ex)

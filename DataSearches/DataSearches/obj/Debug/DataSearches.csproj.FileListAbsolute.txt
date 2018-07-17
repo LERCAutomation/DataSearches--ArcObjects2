@@ -24,4 +24,5 @@ D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Debug\DataSear
 D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Debug\DataSearches.csproj.GenerateResource.Cache
 D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Debug\DataSearches.dll
 D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Debug\DataSearches.pdb
+D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\obj\Debug\DataSearches.csprojResolveAssemblyReference.cache
 D:\GitHub\DataSearches--ArcObjects2\DataSearches\DataSearches\bin\Debug\DataSearches.esriAddIn

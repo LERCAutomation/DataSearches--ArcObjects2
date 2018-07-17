@@ -113,6 +113,7 @@ namespace HLSearchesToolConfig
         FileFunctions myFileFuncs;
         StringFunctions myStringFuncs;
         XmlElement xmlDataSearch;
+
         public SearchesToolConfig(string anXMLProfile)
         {
             // Open xml
@@ -851,15 +852,18 @@ namespace HLSearchesToolConfig
                     {
                         bool blIncludeArea = false;
                         string strIncludeArea = aNode["IncludeArea"].InnerText;
-                        if (strIncludeArea.ToLower() == "yes")
+                        if (strIncludeArea.ToLower() == "yes" || strIncludeArea.ToLower() == "y")
                             blIncludeArea = true;
+
                         MapIncludeAreas.Add(blIncludeArea);
                     }
                     catch
                     {
-                        MessageBox.Show("Could not locate the item 'IncludeArea' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        LoadedXML = false;
-                        return;
+                        // This is an optional node
+                        //MessageBox.Show("Could not locate the item 'IncludeArea' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        //LoadedXML = false;
+                        //return;
+                        MapIncludeAreas.Add(false);
                     }
 
 
@@ -867,30 +871,36 @@ namespace HLSearchesToolConfig
                     {
                         bool blIncludDistance = false;
                         string strIncludeDistance = aNode["IncludeDistance"].InnerText;
-                        if (strIncludeDistance.ToLower() == "yes")
+                        if (strIncludeDistance.ToLower() == "yes" || strIncludeDistance.ToLower() == "y")
                             blIncludDistance = true;
+
                         MapIncludeDistances.Add(blIncludDistance);
                     }
                     catch
                     {
-                        MessageBox.Show("Could not locate the item 'IncludeDistance' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        LoadedXML = false;
-                        return;
+                        // This is an optional node
+                        //MessageBox.Show("Could not locate the item 'IncludeDistance' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        //LoadedXML = false;
+                        //return;
+                        MapIncludeDistances.Add(false);
                     }
 
                     try
                     {
                         bool blIncludeRadius = false;
                         string strIncludeRadius = aNode["IncludeRadius"].InnerText;
-                        if (strIncludeRadius.ToLower() == "yes")
+                        if (strIncludeRadius.ToLower() == "yes" || strIncludeRadius.ToLower() == "y")
                             blIncludeRadius = true;
+
                         MapIncludeRadii.Add(blIncludeRadius);
                     }
                     catch
                     {
-                        MessageBox.Show("Could not locate the item 'IncludeRadius' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        LoadedXML = false;
-                        return;
+                        // This is an optional node
+                        //MessageBox.Show("Could not locate the item 'IncludeRadius' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        //LoadedXML = false;
+                        //return;
+                        MapIncludeRadii.Add(false);
                     }
 
                     try
@@ -919,16 +929,18 @@ namespace HLSearchesToolConfig
                     {
                         string strKeepLayer = aNode["KeepLayer"].InnerText;
                         bool blKeepLayer = false;
-                        if (strKeepLayer.ToLower() == "yes")
+                        if (strKeepLayer.ToLower() == "yes" || strKeepLayer.ToLower() == "y")
                             blKeepLayer = true;
                             
                         MapKeeps.Add(blKeepLayer);
                     }
                     catch
                     {
-                        MessageBox.Show("Could not locate the item 'KeepLayer' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        LoadedXML = false;
-                        return;
+                        // This is an optional node
+                        //MessageBox.Show("Could not locate the item 'KeepLayer' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        //LoadedXML = false;
+                        //return;
+                        MapKeeps.Add(false);
                     }
 
                     try
@@ -957,48 +969,54 @@ namespace HLSearchesToolConfig
                     {
                         string strLoadWarning = aNode["LoadWarning"].InnerText;
                         bool blLoadWarning = false;
-                        if (strLoadWarning.ToLower() == "yes")
+                        if (strLoadWarning.ToLower() == "yes" || strLoadWarning.ToLower() == "y")
                             blLoadWarning = true;
 
                         MapLoadWarnings.Add(blLoadWarning);
                     }
                     catch
                     {
-                        MessageBox.Show("Could not locate the item 'LoadWarning' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        LoadedXML = false;
-                        return;
+                        // This is an optional node
+                        //MessageBox.Show("Could not locate the item 'LoadWarning' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        //LoadedXML = false;
+                        //return;
+                        MapLoadWarnings.Add(false);
                     }
 
                     try
                     {
                         string strPreselectLayer = aNode["PreselectLayer"].InnerText;
                         bool blPreselectLayer = false;
-                        if (strPreselectLayer.ToLower() == "yes")
+                        if (strPreselectLayer.ToLower() == "yes" || strPreselectLayer.ToLower() == "y")
                             blPreselectLayer = true;
 
                         MapPreselectLayers.Add(blPreselectLayer);
                     }
                     catch
                     {
-                        MessageBox.Show("Could not locate the item 'PreselectLayer' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        LoadedXML = false;
-                        return;
+                        // This is an optional node
+                        //MessageBox.Show("Could not locate the item 'PreselectLayer' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        //LoadedXML = false;
+                        //return;
+                        MapPreselectLayers.Add(false);
                     }
 
                     try
                     {
                         string strDisplayLabels = aNode["DisplayLabels"].InnerText;
                         bool blDisplayLabels = false;
-                        if (strDisplayLabels.ToLower() == "yes")
+                        if (strDisplayLabels.ToLower() == "yes" || strDisplayLabels.ToLower() == "y")
                             blDisplayLabels = true;
 
                         MapDisplayLabels.Add(blDisplayLabels);
                     }
                     catch
                     {
-                        MessageBox.Show("Could not locate the item 'DisplayLabels' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        LoadedXML = false;
-                        return;
+                        // This is an optional node
+                        //MessageBox.Show("Could not locate the item 'DisplayLabels' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        //LoadedXML = false;
+                        //return;
+                        MapDisplayLabels.Add(false);
                     }
 
                     try
@@ -1007,24 +1025,29 @@ namespace HLSearchesToolConfig
                     }
                     catch
                     {
-                        MessageBox.Show("Could not locate the item 'LayerFileName' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        LoadedXML = false;
-                        return;
+                        // This is an optional node
+                        //MessageBox.Show("Could not locate the item 'LayerFileName' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        //LoadedXML = false;
+                        //return;
+                        LayerFiles.Add("");
                     }
 
                     try
                     {
                         string strOverwriteLabels = aNode["OverwriteLabels"].InnerText;
                         bool blOverwriteLabels = false;
-                        if (strOverwriteLabels.ToLower() == "yes")
+                        if (strOverwriteLabels.ToLower() == "yes" || strOverwriteLabels.ToLower() == "y")
                             blOverwriteLabels = true;
+
                         MapOverwriteLabels.Add(blOverwriteLabels);
                     }
                     catch
                     {
-                        MessageBox.Show("Could not locate the item 'OverwriteLabels' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        LoadedXML = false;
-                        return;
+                        // This is an optional node
+                        //MessageBox.Show("Could not locate the item 'OverwriteLabels' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        //LoadedXML = false;
+                        //return;
+                        MapOverwriteLabels.Add(false);
                     }
 
                     try
@@ -1033,9 +1056,11 @@ namespace HLSearchesToolConfig
                     }
                     catch
                     {
-                        MessageBox.Show("Could not locate the item 'LabelColumn' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        LoadedXML = false;
-                        return;
+                        // This is an optional node
+                        //MessageBox.Show("Could not locate the item 'LabelColumn' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        //LoadedXML = false;
+                        //return;
+                        MapLabelColumns.Add("");
                     }
 
                     try
@@ -1044,9 +1069,11 @@ namespace HLSearchesToolConfig
                     }
                     catch
                     {
-                        MessageBox.Show("Could not locate the item 'LabelClause' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        LoadedXML = false;
-                        return;
+                        // This is an optional node
+                        //MessageBox.Show("Could not locate the item 'LabelClause' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        //LoadedXML = false;
+                        //return;
+                        MapLabelClauses.Add("");
                     }
 
                     try
@@ -1059,66 +1086,78 @@ namespace HLSearchesToolConfig
                         MapMacroNames.Add("");
                     }
 
+                    bool blCombinedSites = false;
                     try
                     {
-                        MapCombinedSiteColumns.Add(aNode["CombinedSitesColumns"].InnerText);
+                        string strSitesColumns = aNode["CombinedSitesColumns"].InnerText;
+                        if (strSitesColumns != "")
+                            blCombinedSites = true;
+
+                        MapCombinedSiteColumns.Add(strSitesColumns);
                     }
                     catch
                     {
-                        MessageBox.Show("Could not locate the item 'CombinedSitesColumns' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        LoadedXML = false;
-                        return;
+                        // This is an optional node
+                        //MessageBox.Show("Could not locate the item 'CombinedSitesColumns' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        //LoadedXML = false;
+                        //return;
+                        MapCombinedSiteColumns.Add("");
                     }
 
-                    try
+                    // If there are any combined sites columns get the other settings
+                    if (blCombinedSites)
                     {
-                        string strGroupColumns = aNode["CombinedSitesGroupColumns"].InnerText;
-                        // Replace delimiters
-                        strGroupColumns = myStringFuncs.getGroupColumnsFormatted(strGroupColumns);
-                        MapCombinedSiteGroupColumns.Add(strGroupColumns);
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Could not locate the item 'CombinedSitesGroupColumns' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        LoadedXML = false;
-                        return;
-                    }
+                        try
+                        {
+                            string strGroupColumns = aNode["CombinedSitesGroupColumns"].InnerText;
+                            // Replace delimiters
+                            strGroupColumns = myStringFuncs.getGroupColumnsFormatted(strGroupColumns);
+                            MapCombinedSiteGroupColumns.Add(strGroupColumns);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Could not locate the item 'CombinedSitesGroupColumns' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            LoadedXML = false;
+                            return;
+                        }
 
-                    try
-                    {
-                        string strStatsColumns = aNode["CombinedSitesStatisticsColumns"].InnerText;
-                        // Format the string
-                        strStatsColumns = myStringFuncs.getStatsColumnsFormatted(strStatsColumns);
-                        MapCombinedSiteStatsColumns.Add(strStatsColumns);
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Could not locate the item 'CombinedSitesStatisticsColumns' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        LoadedXML = false;
-                        return;
-                    }
+                        try
+                        {
+                            string strStatsColumns = aNode["CombinedSitesStatisticsColumns"].InnerText;
+                            // Format the string
+                            strStatsColumns = myStringFuncs.getStatsColumnsFormatted(strStatsColumns);
+                            MapCombinedSiteStatsColumns.Add(strStatsColumns);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Could not locate the item 'CombinedSitesStatisticsColumns' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            LoadedXML = false;
+                            return;
+                        }
 
-                    try
-                    {
-                        MapCombinedSiteOrderColumns.Add(aNode["CombinedSitesOrderByColumns"].InnerText); // May need to deal.
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Could not locate the item 'CombinedSitesOrderByColumns' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        LoadedXML = false;
-                        return;
-                    }
+                        try
+                        {
+                            MapCombinedSiteOrderColumns.Add(aNode["CombinedSitesOrderByColumns"].InnerText); // May need to deal.
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Could not locate the item 'CombinedSitesOrderByColumns' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            LoadedXML = false;
+                            return;
+                        }
 
-                    //try
-                    //{
-                    //    MapCombinedSiteCriteria.Add(aNode["CombinedSitesCriteria"].InnerText);
-                    //}
-                    //catch
-                    //{
-                    //    MessageBox.Show("Could not locate the item 'CombinedSitesCriteria' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    //    LoadedXML = false;
-                    //    return;
-                    //}
+                        //try
+                        //{
+                        //    MapCombinedSiteCriteria.Add(aNode["CombinedSitesCriteria"].InnerText);
+                        //}
+                        //catch
+                        //{
+                        //    MessageBox.Show("Could not locate the item 'CombinedSitesCriteria' for map layer " + strName + " in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        //    LoadedXML = false;
+                        //    return;
+                        //}
+
+                    }
                 }
 
             }
