@@ -1102,6 +1102,9 @@ namespace HLSearchesToolConfig
                         //LoadedXML = false;
                         //return;
                         MapCombinedSiteColumns.Add("");
+                        MapCombinedSiteGroupColumns.Add("");
+                        MapCombinedSiteStatsColumns.Add("");
+                        MapCombinedSiteOrderColumns.Add("");
                     }
 
                     // If there are any combined sites columns get the other settings

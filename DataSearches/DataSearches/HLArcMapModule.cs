@@ -1960,7 +1960,8 @@ namespace HLArcMapModule
 
             // Align the columns with what actually exists in the layer.
             // Return if there are no columns left.
-            
+
+            string MissingColumns = "";
             if (Columns != "")
             {
                 List<string> strColumns = Columns.Split(',').ToList();
@@ -1970,11 +1971,22 @@ namespace HLArcMapModule
                     string aColNameTr = strCol.Trim();
                     if ((aColNameTr.Substring(0, 1) == "\"") || (FieldExists(fldsFields, aColNameTr)))
                         Columns = Columns + aColNameTr + ",";
+                    else
+                        MissingColumns = MissingColumns + aColNameTr + ", ";
                 }
+
+                // Log any missing columns
+                if (MissingColumns != "" && aLogFile != "")
+                {
+                    MissingColumns = MissingColumns.Substring(0, MissingColumns.Length - 2);
+                    myFileFuncs.WriteLine(aLogFile, "Function CopyToCSV returned the following error: The following columns cannot be found in " + InTable + "; " + MissingColumns);
+                }
+
                 if (Columns != "")
                     Columns = Columns.Substring(0, Columns.Length - 1);
                 else
                     return 0;
+
             }
             else
                 return 0; // Technically we're finished as there is nothing to write.
@@ -3453,10 +3465,12 @@ namespace HLArcMapModule
             }
 
             // If we have group columns but no statistics columns, add a dummy column.
+            bool blDummyAdded = false;
             if (StatisticsColumns == "" && GroupColumns != "")
             {
                 string strDummyField = GroupColumns.Split(';').ToList()[0];
                 StatisticsColumns = strDummyField + " FIRST";
+                blDummyAdded = true;
             }
 
             ///// Now do the summary statistics as required, or export the layer to table if not.
@@ -3485,7 +3499,7 @@ namespace HLArcMapModule
                 }
 
                 // Now rejig the statistics fields if required because they will look like FIRST_SAC which is no use.
-                if (StatisticsColumns != "" && RenameColumns)
+                if (StatisticsColumns != "" && RenameColumns && !blDummyAdded)
                 {
                     string strTempTable = myFileFuncs.ReturnWithoutExtension(myFileFuncs.GetFileName(TempTable)); // Temporary layer.
                     ITable tpOutTable = GetTable(strTempTable);
