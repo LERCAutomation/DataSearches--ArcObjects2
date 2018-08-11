@@ -427,6 +427,9 @@ namespace DataSearches
             // Find the subref part of this reference.
             string strSubref = myStringFuncs.GetSubref(strShortRef, strReplaceChar);
 
+            // Create the radius from the buffer size and units
+            string strRadius = strBufferSize + strBufferUnitShort;
+
             // Now do any replacements that are necessary in the file names.
             string strSaveRootDir = myConfig.GetSaveRootDir();
             string strSaveFolder = myConfig.GetSaveFolder();
@@ -440,13 +443,13 @@ namespace DataSearches
             //string strTempFolder = strSaveRootDir + @"\Temp";
             string strTempFolder = System.IO.Path.GetTempPath();
 
-            strSaveFolder = myStringFuncs.ReplaceSearchStrings(strSaveFolder, strRef, strSiteName, strShortRef, strSubref);
-            strGISFolder = myStringFuncs.ReplaceSearchStrings(strGISFolder, strRef, strSiteName, strShortRef, strSubref);
-            strLogFileName = myStringFuncs.ReplaceSearchStrings(strLogFileName, strRef, strSiteName, strShortRef, strSubref);
-            strCombinedSitesName = myStringFuncs.ReplaceSearchStrings(strCombinedSitesName, strRef, strSiteName, strShortRef, strSubref);
-            strBufferOutputName = myStringFuncs.ReplaceSearchStrings(strBufferOutputName, strRef, strSiteName, strShortRef, strSubref);
-            strFeatureOutputName = myStringFuncs.ReplaceSearchStrings(strFeatureOutputName, strRef, strSiteName, strShortRef, strSubref);
-            strGroupLayerName = myStringFuncs.ReplaceSearchStrings(strGroupLayerName, strRef, strSiteName, strShortRef, strSubref);
+            strSaveFolder = myStringFuncs.ReplaceSearchStrings(strSaveFolder, strRef, strSiteName, strShortRef, strSubref, strRadius);
+            strGISFolder = myStringFuncs.ReplaceSearchStrings(strGISFolder, strRef, strSiteName, strShortRef, strSubref, strRadius);
+            strLogFileName = myStringFuncs.ReplaceSearchStrings(strLogFileName, strRef, strSiteName, strShortRef, strSubref, strRadius);
+            strCombinedSitesName = myStringFuncs.ReplaceSearchStrings(strCombinedSitesName, strRef, strSiteName, strShortRef, strSubref, strRadius);
+            strBufferOutputName = myStringFuncs.ReplaceSearchStrings(strBufferOutputName, strRef, strSiteName, strShortRef, strSubref, strRadius);
+            strFeatureOutputName = myStringFuncs.ReplaceSearchStrings(strFeatureOutputName, strRef, strSiteName, strShortRef, strSubref, strRadius);
+            strGroupLayerName = myStringFuncs.ReplaceSearchStrings(strGroupLayerName, strRef, strSiteName, strShortRef, strSubref, strRadius);
 
             // Remove any illegal characters from the names.
             strSaveFolder = myStringFuncs.StripIllegals(strSaveFolder, strReplaceChar);
@@ -541,7 +544,7 @@ namespace DataSearches
             myFileFuncs.WriteLine(strLogFile, "-----------------------------------------------------------------------");
 
             myFileFuncs.WriteLine(strLogFile, "Parameters are as follows:");
-            myFileFuncs.WriteLine(strLogFile, "Buffer distance: " + strBufferSize + " " + strBufferUnitText);
+            myFileFuncs.WriteLine(strLogFile, "Buffer distance: " + strRadius);
             myFileFuncs.WriteLine(strLogFile, "Output location: " + strSaveFolder);
             string strLayerString = "";
             foreach (string aLayer in SelectedLayers)
@@ -562,7 +565,7 @@ namespace DataSearches
                 strSaveBuffer = strSaveBuffer.Replace('.', '_');
             string strLayerName = strBufferOutputName + "_" + strSaveBuffer + strBufferUnitShort;
             string strOutputFile = strGISFolder + "\\" + strLayerName + ".shp";
-            string strSubGroupLayerName = strGroupLayerName + "_" + strBufferSize + strBufferUnitShort;
+            //string strSubGroupLayerName = strGroupLayerName + "_" + strRadius;
             string strBufferFields = myConfig.GetAggregateColumns();
             bool blKeepBuffer = myConfig.GetKeepBufferArea();
 
@@ -638,6 +641,7 @@ namespace DataSearches
 
             string strSiteColumn = myConfig.GetSiteColumn();
             string strOrgColumn = myConfig.GetOrgColumn();
+            string strRadiusColumn = myConfig.GetRadiusColumn();
 
             // We have found the feature and are ready to go. Pause drawing.
             myArcMapFuncs.ToggleDrawing(false);
@@ -673,7 +677,7 @@ namespace DataSearches
             myArcMapFuncs.SelectLayerByAttributes(strTargetLayer, strQuery, aLogFile: strLogFile);
 
             // Update the table if required.
-            if (blUpdateTable && (!string.IsNullOrEmpty(strSiteColumn) || !string.IsNullOrEmpty(strOrgColumn)))
+            if (blUpdateTable && (!string.IsNullOrEmpty(strSiteColumn) || !string.IsNullOrEmpty(strOrgColumn) || !string.IsNullOrEmpty(strRadiusColumn)))
             {
                 myFileFuncs.WriteLine(strLogFile, "Updating attributes in " + strTargetLayer);
 
@@ -685,8 +689,12 @@ namespace DataSearches
 
                 if (!string.IsNullOrEmpty(strOrgColumn) && !string.IsNullOrEmpty(strOrganisation))
                 {
-                    //myFileFuncs.WriteLine(strLogFile, "Updating " + strSiteColumn + " with '" + strSiteName + "'");
                     myArcMapFuncs.CalculateField(strTargetLayer, strOrgColumn, '"' + strOrganisation + '"', strLogFile);
+                }
+
+                if (!string.IsNullOrEmpty(strRadiusColumn) && !string.IsNullOrEmpty(strRadius))
+                {
+                    myArcMapFuncs.CalculateField(strTargetLayer, strRadiusColumn, '"' + strRadius + '"', strLogFile);
                 }
             }
 
@@ -696,7 +704,7 @@ namespace DataSearches
             if (strBufferSize == "0") strBufferString = "0.01 Meters";  // Safeguard for zero buffer size; Select a tiny buffer to allow
             // correct legending (expects a polygon).
 
-            myFileFuncs.WriteLine(strLogFile, "Buffering feature from " + strTargetLayer + " with a distance of " + strBufferSize + " " + strBufferUnitText);
+            myFileFuncs.WriteLine(strLogFile, "Buffering feature from " + strTargetLayer + " with a distance of " + strRadius);
             blResult = myArcMapFuncs.BufferFeature(strTargetLayer, strOutputFile, strBufferString, strBufferFields, strLogFile);
 
             if (blResult == true)
@@ -726,7 +734,7 @@ namespace DataSearches
                     // apply layer symbology
                     myArcMapFuncs.ChangeLegend(strFeatureOutputName, strLayerDir + "\\" + strSearchSymbology, aLogFile: strLogFile);
                     // Move it to the group layer
-                    myArcMapFuncs.MoveToSubGroupLayer(strGroupLayerName, strSubGroupLayerName, myArcMapFuncs.GetLayer(strFeatureOutputName), strLogFile);
+                    myArcMapFuncs.MoveToSubGroupLayer(strGroupLayerName, myArcMapFuncs.GetLayer(strFeatureOutputName), strLogFile);
                 }
                 else
                 {
@@ -743,7 +751,7 @@ namespace DataSearches
             // Add the buffer to the group layer. Zoom to the buffer.
             if (strAddSelected.ToLower() != "no")
             {
-                myArcMapFuncs.MoveToSubGroupLayer(strGroupLayerName, strSubGroupLayerName, myArcMapFuncs.GetLayer(strLayerName), strLogFile);
+                myArcMapFuncs.MoveToSubGroupLayer(strGroupLayerName, myArcMapFuncs.GetLayer(strLayerName), strLogFile);
                 // Change the symbology of the buffer.
                 string strLayerFile = strLayerDir + @"\" + myConfig.GetBufferLayer();
                 myArcMapFuncs.ChangeLegend(strLayerName, strLayerFile, aLogFile: strLogFile);
@@ -857,8 +865,8 @@ namespace DataSearches
                 //string strCombinedSitesCriteria = strCombinedSitesCriteriaList[intIndex];
 
                 // Deal with wildcards in the output names.
-                strGISOutName = myStringFuncs.ReplaceSearchStrings(strGISOutName, strRef, strSiteName, strShortRef, strSubref);
-                strTableOutName = myStringFuncs.ReplaceSearchStrings(strTableOutName, strRef, strSiteName, strShortRef, strSubref);
+                strGISOutName = myStringFuncs.ReplaceSearchStrings(strGISOutName, strRef, strSiteName, strShortRef, strSubref, strRadius);
+                strTableOutName = myStringFuncs.ReplaceSearchStrings(strTableOutName, strRef, strSiteName, strShortRef, strSubref, strRadius);
 
                 strStatsColumns = myStringFuncs.AlignStatsColumns(strColumns, strStatsColumns, strGroupColumns);
                 //if (blIncludeDistance && !strColumns.Contains("Distance") && !strGroupColumns.Contains("Distance"))
@@ -1059,8 +1067,8 @@ namespace DataSearches
                     //string strTempDBFOutput = strTempFolder + @"\" + strTempOutput + "DBF.dbf";
                     string strTempFCOutput = strTempGDB + @"\" + strTempOutputLayerName;
                     string strTempTableOutput = strTempGDB + @"\" + strTempOutputLayerName + "DBF";
-                    string strRadius = "none";
-                    if (blIncludeRadius) strRadius = strBufferSize + " " + strBufferUnitText; // Only include radius if requested.
+                    string strRadiusText = "none";
+                    if (blIncludeRadius) strRadiusText = strRadius; // Only include radius if requested.
 
                     // Only export if the user has specified columns.
                     int intLineCount = -999;
@@ -1073,7 +1081,7 @@ namespace DataSearches
                         myFileFuncs.WriteLine(strLogFile, "Extracting summary information from " + strDisplayName);
 
                         intLineCount = myArcMapFuncs.ExportSelectionToCSV(strTempMasterLayerName, strTableOutputName, strColumns, blIncHeaders, strTempFCOutput, strTempTableOutput,
-                            strGroupColumns, strStatsColumns, strOrderColumns, blIncludeArea, strAreaMeasureUnit, blIncludeDistance, strRadius, strTargetLayer, strLogFile, RenameColumns: true);
+                            strGroupColumns, strStatsColumns, strOrderColumns, blIncludeArea, strAreaMeasureUnit, blIncludeDistance, strRadiusText, strTargetLayer, strLogFile, RenameColumns: true);
 
                         myFileFuncs.WriteLine(strLogFile, intLineCount.ToString() + " line(s) written for " + strDisplayName);
                     }
@@ -1089,7 +1097,7 @@ namespace DataSearches
                         if (strAddSelected.ToLower() != "no")
                         {
                             // Add the permanent layer to the map (by moving it to the group layer)
-                            myArcMapFuncs.MoveToSubGroupLayer(strGroupLayerName, strSubGroupLayerName, myArcMapFuncs.GetLayer(strShapeLayerName, strLogFile), strLogFile);
+                            myArcMapFuncs.MoveToSubGroupLayer(strGroupLayerName, myArcMapFuncs.GetLayer(strShapeLayerName, strLogFile), strLogFile);
 
                             // If there is a layer file
                             if (strDisplayLayer != "")
@@ -1148,7 +1156,7 @@ namespace DataSearches
                         myFileFuncs.WriteLine(strLogFile, "Extracting summary output for combined sites table");
 
                         intLineCount = myArcMapFuncs.ExportSelectionToCSV(strTempMasterLayerName, strCombinedTable, strCombinedSitesColumns, false, strTempFCOutput, strTempTableOutput, strCombinedSitesGroupColumns,
-                            strCombinedSitesStatsColumns, strCombinedSitesOrderColumns, blIncludeArea, strAreaMeasureUnit, blIncludeDistance, strRadius, strTargetLayer, strLogFile, false, RenameColumns: true);
+                            strCombinedSitesStatsColumns, strCombinedSitesOrderColumns, blIncludeArea, strAreaMeasureUnit, blIncludeDistance, strRadiusText, strTargetLayer, strLogFile, false, RenameColumns: true);
 
                         myFileFuncs.WriteLine(strLogFile, "Summary output written. " + intLineCount.ToString() + " row(s) added for " + strDisplayName);
 

@@ -37,6 +37,16 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 		<value>SiteName</value>
 	</SiteColumn>
 
+	<!-- The field name of the search reference organisation. -->
+	<OrgColumn>
+		<value>Organisation</value>
+	</OrgColumn>
+
+	<!-- The field name of the search reference radius. -->
+	<RadiusColumn>
+		<value>Radius</value>
+	</RadiusColumn>
+
 	<!-- Is a site name required? Yes/No -->
 	<RequireSiteName>
 		<value>No</value>
@@ -92,6 +102,11 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 	<DefaultBufferUnit>
 		<value>3</value>
 	</DefaultBufferUnit>
+
+	<!-- Whether the search table should be updated. -->
+	<UpdateTable>
+		<value>Yes</value>
+	</UpdateTable>
 
 	<!-- Are we keeping the buffer GIS file? Yes/No -->
 	<KeepBufferArea>
@@ -158,7 +173,7 @@ used by the Add-in tool to select and export ArcMap data for each data search.
 
 	<!-- The name of the group layer that will be created in the ArcGIS table of contents -->
 	<GroupLayerName>
-		<value>%subref%_%sitename%</value>
+		<value>%subref%_%sitename%_%radius%</value>
 	</GroupLayerName>
 
 	<!-- The options for overwritting the map labels -->

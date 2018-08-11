@@ -40,6 +40,7 @@ namespace HLSearchesToolConfig
         string RefColumn;
         string SiteColumn;
         string OrgColumn;
+        string RadiusColumn;
         bool RequireSiteName;
         bool UpdateTable;
         string ReplaceChar;
@@ -122,6 +123,7 @@ namespace HLSearchesToolConfig
             string strXMLFile = anXMLProfile; // The user has specified this and we've checked it exists.
             BufferUnitOptionsDisplay = new List<string>();
             BufferUnitOptionsProcess = new List<string>();
+            BufferUnitOptionsShort = new List<string>();
             FoundXML = true; // In this version we have already checked that it exists.
             LoadedXML = true;
 
@@ -208,6 +210,17 @@ namespace HLSearchesToolConfig
                 catch
                 {
                     MessageBox.Show("Could not locate the item 'OrgColumn' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoadedXML = false;
+                    return;
+                }
+
+                try
+                {
+                    RadiusColumn = xmlDataSearch["RadiusColumn"].InnerText;
+                }
+                catch
+                {
+                    MessageBox.Show("Could not locate the item 'RadiusColumn' in the XML file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     LoadedXML = false;
                     return;
                 }
@@ -1226,6 +1239,11 @@ namespace HLSearchesToolConfig
         public string GetOrgColumn()
         {
             return OrgColumn;
+        }
+
+        public string GetRadiusColumn()
+        {
+            return RadiusColumn;
         }
 
         public bool GetRequireSiteName()

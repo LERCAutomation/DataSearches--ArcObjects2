@@ -226,7 +226,7 @@ namespace HLStringFunctions
                 return ""; // No group name.
         }
 
-        public string ReplaceSearchStrings(string RawName, string Reference, string SiteName, string ShortRef, string Subref)
+        public string ReplaceSearchStrings(string RawName, string Reference, string SiteName, string ShortRef, string Subref, string Radius)
         {
             string CleanName = RawName;
             // Allow strings to be empty
@@ -236,6 +236,7 @@ namespace HLStringFunctions
                 CleanName = CleanName.Replace("%shortref%", ShortRef);
                 CleanName = CleanName.Replace("%subref%", Subref);
                 CleanName = CleanName.Replace("%sitename%", SiteName);
+                CleanName = CleanName.Replace("%radius%", Radius);
                 // Take account of the occurrence of dangling underscores (if no site name was given).
                 if (CleanName.Substring(CleanName.Length - 1, 1) == "_")
                     CleanName = CleanName.Substring(0, CleanName.Length - 1);

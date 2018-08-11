@@ -248,6 +248,7 @@ namespace DataSearches
             this.txtOrganisation.Name = "txtOrganisation";
             this.txtOrganisation.Size = new System.Drawing.Size(104, 20);
             this.txtOrganisation.TabIndex = 21;
+            this.txtOrganisation.Visible = false;
             // 
             // frmDataSearches
             // 
@@ -279,7 +280,7 @@ namespace DataSearches
             this.MinimizeBox = false;
             this.Name = "frmDataSearches";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Data Searches 2.4.2";
+            this.Text = "Data Searches 11.0.0";
             this.ResumeLayout(false);
             this.PerformLayout();
 

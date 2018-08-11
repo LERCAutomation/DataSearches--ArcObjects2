@@ -1269,12 +1269,59 @@ namespace HLArcMapModule
             return true;
         }
 
-        public bool MoveToSubGroupLayer(string theGroupLayerName, string theSubGroupLayerName, ILayer aLayer, string aLogFile = "", bool Messages = false)
+        //public bool MoveToSubGroupLayer(string theGroupLayerName, string theSubGroupLayerName, ILayer aLayer, string aLogFile = "", bool Messages = false)
+        //{
+        //    bool blGroupLayerExists = false;
+        //    bool blSubGroupLayerExists = false;
+        //    IGroupLayer myGroupLayer = new GroupLayer();
+        //    IGroupLayer mySubGroupLayer = new GroupLayer();
+        //    // Does the group layer exist?
+        //    if (GroupLayerExists(theGroupLayerName))
+        //    {
+        //        myGroupLayer = (IGroupLayer)GetGroupLayer(theGroupLayerName, aLogFile, Messages);
+        //        blGroupLayerExists = true;
+        //    }
+        //    else
+        //    {
+        //        myGroupLayer.Name = theGroupLayerName;
+        //    }
+
+
+        //    if (GroupLayerExists(theSubGroupLayerName, aLogFile, Messages))
+        //    {
+        //        mySubGroupLayer = (IGroupLayer)GetGroupLayer(theSubGroupLayerName, aLogFile, Messages);
+        //        blSubGroupLayerExists = true;
+        //    }
+        //    else
+        //    {
+        //        mySubGroupLayer.Name = theSubGroupLayerName;
+        //    }
+
+        //    // Remove the original instance, then add it to the group.
+        //    string theOldName = aLayer.Name; 
+        //    RemoveLayer(aLayer, aLogFile, Messages);
+        //    mySubGroupLayer.Add(aLayer);
+
+        //    if (!blSubGroupLayerExists)
+        //    {
+        //        // Add the subgroup layer to the group layer.
+        //        myGroupLayer.Add(mySubGroupLayer);
+        //    }
+        //    if (!blGroupLayerExists)
+        //    {
+        //        // Add the layer to the map.
+        //        IMap pMap = GetMap();
+        //        pMap.AddLayer(myGroupLayer);
+        //    }
+        //    RefreshTOC();
+        //    return true;
+        //}
+
+        public bool MoveToSubGroupLayer(string theGroupLayerName, ILayer aLayer, string aLogFile = "", bool Messages = false)
         {
             bool blGroupLayerExists = false;
-            bool blSubGroupLayerExists = false;
             IGroupLayer myGroupLayer = new GroupLayer();
-            IGroupLayer mySubGroupLayer = new GroupLayer();
+
             // Does the group layer exist?
             if (GroupLayerExists(theGroupLayerName))
             {
@@ -1286,30 +1333,14 @@ namespace HLArcMapModule
                 myGroupLayer.Name = theGroupLayerName;
             }
 
-
-            if (GroupLayerExists(theSubGroupLayerName, aLogFile, Messages))
-            {
-                mySubGroupLayer = (IGroupLayer)GetGroupLayer(theSubGroupLayerName, aLogFile, Messages);
-                blSubGroupLayerExists = true;
-            }
-            else
-            {
-                mySubGroupLayer.Name = theSubGroupLayerName;
-            }
-
             // Remove the original instance, then add it to the group.
-            string theOldName = aLayer.Name; 
+            string theOldName = aLayer.Name;
             RemoveLayer(aLayer, aLogFile, Messages);
-            mySubGroupLayer.Add(aLayer);
+            myGroupLayer.Add(aLayer);
 
-            if (!blSubGroupLayerExists)
-            {
-                // Add the subgroup layer to the group layer.
-                myGroupLayer.Add(mySubGroupLayer);
-            }
             if (!blGroupLayerExists)
             {
-                // Add the layer to the map.
+                // Add the group layer to the map.
                 IMap pMap = GetMap();
                 pMap.AddLayer(myGroupLayer);
             }
