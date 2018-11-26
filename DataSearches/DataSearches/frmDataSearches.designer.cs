@@ -280,7 +280,8 @@ namespace DataSearches
             this.MinimizeBox = false;
             this.Name = "frmDataSearches";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Data Searches 11.0.0";
+            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            this.Text = "Data Searches " + string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
             this.ResumeLayout(false);
             this.PerformLayout();
 

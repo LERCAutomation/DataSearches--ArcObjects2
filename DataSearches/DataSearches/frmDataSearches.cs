@@ -858,15 +858,21 @@ namespace DataSearches
                 string strLabelColumn = strLabelColumns[intIndex];
                 string strLabelClause = strLabelClauses[intIndex];
                 string strMacroName = strMacroNames[intIndex];
+
                 string strCombinedSitesColumns = strCombinedSitesColumnList[intIndex];
                 string strCombinedSitesGroupColumns = strCombinedSitesGroupColumnList[intIndex];
                 string strCombinedSitesStatsColumns = strCombinedSitesStatsColumnList[intIndex];
                 string strCombinedSitesOrderColumns = strCombinedSitesOrderColumnList[intIndex];
+
                 //string strCombinedSitesCriteria = strCombinedSitesCriteriaList[intIndex];
 
                 // Deal with wildcards in the output names.
                 strGISOutName = myStringFuncs.ReplaceSearchStrings(strGISOutName, strRef, strSiteName, strShortRef, strSubref, strRadius);
                 strTableOutName = myStringFuncs.ReplaceSearchStrings(strTableOutName, strRef, strSiteName, strShortRef, strSubref, strRadius);
+
+                // Remove any illegal characters from the names.
+                strGISOutName = myStringFuncs.StripIllegals(strGISOutName, strReplaceChar);
+                strTableOutName = myStringFuncs.StripIllegals(strTableOutName, strReplaceChar);
 
                 strStatsColumns = myStringFuncs.AlignStatsColumns(strColumns, strStatsColumns, strGroupColumns);
                 //if (blIncludeDistance && !strColumns.Contains("Distance") && !strGroupColumns.Contains("Distance"))
@@ -1167,10 +1173,12 @@ namespace DataSearches
                     }
 
                     // Cleanup the temporary master layer.
+//                    myFileFuncs.WriteLine(strLogFile, "Cleaning up temporary master layer");
                     myArcMapFuncs.RemoveLayer(strTempMasterLayerName, strLogFile);
                     myArcMapFuncs.DeleteFeatureclass(strTempMasterOutput, strLogFile);
 
                     // Clear the selection in the input layer.
+ //                   myFileFuncs.WriteLine(strLogFile, "Clearing map selection");
                     myArcMapFuncs.ClearSelectedMapFeatures(strDisplayName, strLogFile);
                     myFileFuncs.WriteLine(strLogFile, "Analysis complete for " + aLayer);
                 }
@@ -1236,6 +1244,7 @@ namespace DataSearches
             }
 
             // All done, bring to front etc. 
+            myArcMapFuncs.UpdateTOC();
             myArcMapFuncs.ToggleTOC();
             myArcMapFuncs.ToggleDrawing(true);
             myArcMapFuncs.SetContentsView();

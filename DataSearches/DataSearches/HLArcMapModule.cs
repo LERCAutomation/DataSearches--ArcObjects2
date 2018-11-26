@@ -3247,6 +3247,7 @@ namespace HLArcMapModule
             // Include radius if requested
             if (aRadius != "none")
             {
+                myFileFuncs.WriteLine(aLogFile, "Including radius column");
                 AddField(pResultFC, "Radius", esriFieldType.esriFieldTypeString, 25, aLogFile, Messages);
                 CalculateField(anOutShapefile, "Radius", '"' + aRadius + '"', aLogFile, Messages);
             }
@@ -3289,6 +3290,19 @@ namespace HLArcMapModule
             string StatisticsColumns = "", string OrderColumns = "", bool IncludeArea = false, string AreaMeasurementUnit = "ha", bool IncludeDistance = false, string aRadius = "None",
             string aTargetLayer = null, string aLogFile = "", bool Overwrite = true, bool CheckForSelection = false, bool RenameColumns = false, bool Messages = false)
         {
+
+            //myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV : aLayerName " + aLayerName);
+            //myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV : anOutTable " + anOutTable);
+            //myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV : OutputColumns " + OutputColumns);
+            //myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV : TempFC " + TempFC);
+            //myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV : TempTable " + TempTable);
+            //myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV : GroupColumns " + GroupColumns);
+            //myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV : StatisticsColumns " + StatisticsColumns);
+            //myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV : OrderColumns " + OrderColumns);
+            //myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV : aRadius " + aRadius);
+            //myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV : aTargetLayer " + aTargetLayer);
+            //myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV : RenameColumns " + RenameColumns.ToString());
+
             int intResult = -1;
             // Some sanity tests.
             if (!LayerExists(aLayerName, aLogFile, Messages))
@@ -3460,8 +3474,10 @@ namespace HLArcMapModule
             // Include radius if requested
             if (aRadius != "none")
             {
+                myFileFuncs.WriteLine(aLogFile, "Including radius column");
                 AddField(pFC, "Radius", esriFieldType.esriFieldTypeString, 25, aLogFile, Messages);
                 CalculateField(aLayerName, "Radius", '"' + aRadius + '"', aLogFile, Messages);
+//                myFileFuncs.WriteLine(aLogFile, "Radius column added");
             }
 
             // Check all the requested group by and statistics fields exist.
@@ -3504,10 +3520,15 @@ namespace HLArcMapModule
                 blDummyAdded = true;
             }
 
+            //myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV : GroupColumns " + GroupColumns);
+            //myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV : StatisticsColumns " + StatisticsColumns);
+            //myFileFuncs.WriteLine(aLogFile, "Function ExportSelectionToCSV : OrderColumns " + OrderColumns);
+
             ///// Now do the summary statistics as required, or export the layer to table if not.
             if ((GroupColumns != null && GroupColumns != "") || StatisticsColumns != "")
             {
                 // Do summary statistics
+                myFileFuncs.WriteLine(aLogFile, "Calculating summary statistics");
                 IVariantArray StatsParams = new VarArrayClass();
                 StatsParams.Add(aLayerName);
                 StatsParams.Add(TempTable);
@@ -3528,10 +3549,12 @@ namespace HLArcMapModule
                     gp = null;
                     return -1;
                 }
+//                myFileFuncs.WriteLine(aLogFile, "Summary statistics calculated");
 
                 // Now rejig the statistics fields if required because they will look like FIRST_SAC which is no use.
-                if (StatisticsColumns != "" && RenameColumns && !blDummyAdded)
+                if (StatisticsColumns != "" && RenameColumns && aRadius != "none")
                 {
+//                    myFileFuncs.WriteLine(aLogFile, "Renaming statistics fields");
                     string strTempTable = myFileFuncs.ReturnWithoutExtension(myFileFuncs.GetFileName(TempTable)); // Temporary layer.
                     ITable tpOutTable = GetTable(strTempTable);
 
@@ -3540,35 +3563,61 @@ namespace HLArcMapModule
                     foreach (string strField in strFieldNames)
                     {
                         List<string> strFieldComponents = strField.Split(' ').ToList();
-                        // Let's find out what the new field is called - could be anything.
-                        int intNewIndex = 2; // FID = 1; Shape = 2.
-                        intNewIndex = intNewIndex + GroupColumns.Split(';').ToList().Count + intIndexCount; // Add the number of columns uses for grouping
-                        IField pNewField = tpOutTable.Fields.get_Field(intNewIndex);
-                        string strInputField = pNewField.Name;
-                        // Note index stays the same, since we're deleting the fields. 
-
                         string strNewField = strFieldComponents[0]; // The original name of the field.
-                        // Get the definition of the original field from the original feature class.
-                        int intIndex = pFC.Fields.FindField(strNewField);
-                        IField pField = pFC.Fields.get_Field(intIndex);
 
-                        // Add the field to the new FC.
-                        AddTableField(strTempTable, strNewField, pField.Type, pField.Length, aLogFile, Messages);
-                        // Calculate the new field.
-                        string strCalc = "[" + strInputField + "]";
-                        CalculateField(TempTable, strNewField, strCalc, aLogFile, Messages);
-                        DeleteField(tpOutTable, strInputField, aLogFile, Messages);
+                        // Only rename the radius column
+                        if (strNewField.ToLower() == "radius")
+                        {
+
+                            //try
+                            //{
+
+                            //    for (int i = 0; i < tpOutTable.Fields.FieldCount; i++)
+                            //    {
+                            //        IField pTmpField = tpOutTable.Fields.get_Field(i);
+                            //        string strTmpField = pTmpField.Name;
+                            //        myFileFuncs.WriteLine(aLogFile, "Field" + i + " : " + strTmpField);
+                            //    }
+                            //}
+                            //catch
+                            //{
+                            //}
+
+                            // Let's find out what the new field is called - could be anything.
+                            int intNewIndex = 2; // OBJECTID = 0; Frequency = 1.
+                            intNewIndex = intNewIndex + GroupColumns.Split(';').ToList().Count + intIndexCount; // Add the number of columns used for grouping
+                            IField pNewField = tpOutTable.Fields.get_Field(intNewIndex);
+                            string strInputField = pNewField.Name;
+                            // Note index stays the same, since we're deleting the fields. 
+
+                            // Get the definition of the original field from the original feature class.
+                            int intIndex = pFC.Fields.FindField(strNewField);
+                            IField pField = pFC.Fields.get_Field(intIndex);
+
+                            // Add the field to the new FC.
+                            AddTableField(strTempTable, strNewField, pField.Type, pField.Length, aLogFile, Messages);
+                            // Calculate the new field.
+                            string strCalc = "[" + strInputField + "]";
+                            CalculateField(TempTable, strNewField, strCalc, aLogFile, Messages);
+                            DeleteField(tpOutTable, strInputField, aLogFile, Messages);
+                        }
+
                     }
+//                    myFileFuncs.WriteLine(aLogFile, "Statistics fields renamed");
 
                 }
 
                 // Now export this output table to CSV and delete the temporary file.
+                myFileFuncs.WriteLine(aLogFile, "Exporting to CSV");
                 intResult = CopyToCSV(TempTable, anOutTable, OutputColumns, OrderColumns, false, !Overwrite, !IncludeHeaders, aLogFile);
+//                myFileFuncs.WriteLine(aLogFile, "Export to CSV complete");
             }
             else
             {
                 // Do straight copy to dbf.
+                myFileFuncs.WriteLine(aLogFile, "Exporting to CSV");
                 intResult = CopyToCSV(TempFC, anOutTable, OutputColumns, OrderColumns, true, !Overwrite, !IncludeHeaders, aLogFile);
+//                myFileFuncs.WriteLine(aLogFile, "Export to CSV complete");
             }
 
             // If the Area field was added, remove it again now from the original since we've saved our results.
@@ -3579,6 +3628,7 @@ namespace HLArcMapModule
             //}
 
             // Remove all temporary layers.
+//            myFileFuncs.WriteLine(aLogFile, "Removing all temporary layers");
             bool blFinished = false;
             while (!blFinished)
             {
@@ -3590,19 +3640,13 @@ namespace HLArcMapModule
 
             if (LayerExists(TempFC, aLogFile, Messages))
                 RemoveLayer(TempFC, aLogFile, Messages);
+//            myFileFuncs.WriteLine(aLogFile, "All temporary layers removed");
+//            myFileFuncs.WriteLine(aLogFile, "Deleting temporary feature class");
             DeleteFeatureclass(TempFC, aLogFile, Messages);
-
-            blFinished = false;
-            while (!blFinished)
-            {
-                if (LayerExists(strTempLayer, aLogFile, Messages))
-                    RemoveLayer(strTempLayer, aLogFile, Messages);
-                else
-                    blFinished = true;
-            }
 
             if (FeatureclassExists(TempFC))
             {
+                myFileFuncs.WriteLine(aLogFile, "Deleting temporary feature class");
                 IVariantArray DelParams1 = new VarArrayClass();
                 DelParams1.Add(TempFC);
                 try
@@ -3626,6 +3670,7 @@ namespace HLArcMapModule
 
             if (TableExists(TempTable))
             {
+                myFileFuncs.WriteLine(aLogFile, "Deleting temporary table");
                 IVariantArray DelParams2 = new VarArrayClass();
                 DelParams2.Add(TempTable);
                 try
@@ -3774,18 +3819,27 @@ namespace HLArcMapModule
             if (!FieldExists(aFeatureClass, aFieldName))
             {
                 if (Messages)
-                    MessageBox.Show("The field " + aFieldName + " does not exist in featureclass " + aFeatureClass);
+                    MessageBox.Show("The label field " + aFieldName + " does not exist in featureclass " + aFeatureClass);
                 if (aLogFile != "")
-                    myFileFuncs.WriteLine(aLogFile, "Function AddIncrementalNumbers returned the following error: The field " + aFieldName + " doesn't exist in feature class " + aFeatureClass);
+                    myFileFuncs.WriteLine(aLogFile, "Function AddIncrementalNumbers returned the following error: The label field " + aFieldName + " doesn't exist in feature class " + aFeatureClass);
                 return -1;
             }
 
             if (!FieldIsNumeric(aFeatureClass, aFieldName))
             {
                 if (Messages)
-                    MessageBox.Show("The field " + aFieldName + " is not numeric");
+                    MessageBox.Show("The label field " + aFieldName + " is not numeric");
                 if (aLogFile != "")
-                    myFileFuncs.WriteLine(aLogFile, "Function AddIncrementalNumbers returned the following error: The field " + aFieldName + " is not numeric");
+                    myFileFuncs.WriteLine(aLogFile, "Function AddIncrementalNumbers returned the following error: The label field " + aFieldName + " is not numeric");
+                return -1;
+            }
+
+            if (!FieldExists(aFeatureClass, aKeyField))
+            {
+                if (Messages)
+                    MessageBox.Show("The key field " + aKeyField + " does not exist in featureclass " + aFeatureClass);
+                if (aLogFile != "")
+                    myFileFuncs.WriteLine(aLogFile, "Function AddIncrementalNumbers returned the following error: The key field " + aKeyField + " doesn't exist in feature class " + aFeatureClass);
                 return -1;
             }
 
@@ -3795,21 +3849,25 @@ namespace HLArcMapModule
             IQueryFilter pQFilt = new QueryFilterClass();
             pQFilt.SubFields = aFieldName + "," + aKeyField;
             IFeatureClass pFC = GetFeatureClass(aFeatureClass);
-            IFeatureCursor pSearchCurs = pFC.Search(pQFilt, false);
+            IFeatureCursor pSearchCurs; // = pFC.Search(pQFilt, false);
 
             // Sort the cursor
+//            myFileFuncs.WriteLine(aLogFile, "Sorting ...");
             ITableSort pTableSort = new TableSortClass();
             pTableSort.Table = (ITable)pFC;
             pTableSort.Fields = aKeyField;
-            pTableSort.Cursor = (ICursor)pSearchCurs;
+            //pTableSort.Cursor = (ICursor)pSearchCurs;
+            pTableSort.set_Ascending(aKeyField, true);
+            pTableSort.set_CaseSensitive(aKeyField, false);
             pTableSort.Sort(null);
             pSearchCurs = (IFeatureCursor)pTableSort.Rows;
-            Marshal.ReleaseComObject(pTableSort); // release the sort object.
 
             // Extract the lists of values.
             IFields pFields = pFC.Fields;
             int intFieldIndex = pFields.FindField(aFieldName);
             int intKeyFieldIndex = pFields.FindField(aKeyField);
+//            myFileFuncs.WriteLine(aLogFile, "intFieldIndex = " + intFieldIndex);
+//            myFileFuncs.WriteLine(aLogFile, "intKeyFieldIndex = " + intKeyFieldIndex);
             List<string> KeyList = new List<string>();
             List<int> ValueList = new List<int>(); // These lists are in sync.
 
@@ -3817,27 +3875,48 @@ namespace HLArcMapModule
             int intMax = aStartNumber - 1;
             int intValue = intMax;
             string strKey = "";
-            while ((feature = pSearchCurs.NextFeature()) != null)
+//            myFileFuncs.WriteLine(aLogFile, "Searching ...");
+            try
             {
-                string strTest = feature.get_Value(intKeyFieldIndex).ToString();
-                if (strTest != strKey) // Different key value
+                while ((feature = pSearchCurs.NextFeature()) != null)
                 {
-                    // Do we know about it?
-                    if (KeyList.IndexOf(strTest) != -1)
+                    string strTest = feature.get_Value(intKeyFieldIndex).ToString();
+//                    myFileFuncs.WriteLine(aLogFile, "strTest = " + strTest);
+                    if (strTest != strKey) // Different key value
                     {
-                        intValue = ValueList[KeyList.IndexOf(strTest)];
-                        strKey = strTest;
-                    }
-                    else
-                    {
-                        intMax++;
-                        intValue = intMax;
-                        strKey = strTest;
-                        KeyList.Add(strKey);
-                        ValueList.Add(intValue);
+                        // Do we know about it?
+                        int intTemp = KeyList.IndexOf(strTest);
+//                        myFileFuncs.WriteLine(aLogFile, "KeyList.IndexOf(strTest) = " + intTemp);
+                        if (KeyList.IndexOf(strTest) != -1)
+                        {
+                            intValue = ValueList[KeyList.IndexOf(strTest)];
+//                            myFileFuncs.WriteLine(aLogFile, "intValue = " + intValue);
+                            strKey = strTest;
+                        }
+                        else
+                        {
+                            intMax++;
+                            intValue = intMax;
+                            strKey = strTest;
+                            KeyList.Add(strKey);
+                            ValueList.Add(intValue);
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                if (Messages)
+                    MessageBox.Show("Error: " + ex.Message, "Error");
+                if (aLogFile != "")
+                    myFileFuncs.WriteLine(aLogFile, "Function AddIncrementalNumbers returned the following error: " + ex.Message);
+                Marshal.ReleaseComObject(pTableSort); // release the sort object.
+                Marshal.ReleaseComObject(pSearchCurs);
+                pSearchCurs = null;
+                return -1;
+            }
+
+            Marshal.ReleaseComObject(pTableSort); // release the sort object.
             Marshal.ReleaseComObject(pSearchCurs);
             pSearchCurs = null;
 
@@ -3845,15 +3924,20 @@ namespace HLArcMapModule
             IFeatureCursor pUpdateCurs = pFC.Update(pQFilt, false);
             strKey = "";
             intValue = -1;
+//            myFileFuncs.WriteLine(aLogFile, "Updating ...");
             try
             {
             while ((feature = pUpdateCurs.NextFeature()) != null)
                 {
                     string strTest = feature.get_Value(intKeyFieldIndex).ToString();
+//                    myFileFuncs.WriteLine(aLogFile, "strTest = " + strTest);
                     if (strTest != strKey) // Different key value
                     {
                         // Find out all about it
+//                        int intTemp = KeyList.IndexOf(strTest);
+//                        myFileFuncs.WriteLine(aLogFile, "KeyList.IndexOf(strTest) = " + intTemp);
                         intValue = ValueList[KeyList.IndexOf(strTest)];
+//                        myFileFuncs.WriteLine(aLogFile, "intValue = " + intValue);
                         strKey = strTest;
                     }
                     feature.set_Value(intFieldIndex, intValue);

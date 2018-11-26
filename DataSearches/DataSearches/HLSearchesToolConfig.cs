@@ -1104,9 +1104,17 @@ namespace HLSearchesToolConfig
                     {
                         string strSitesColumns = aNode["CombinedSitesColumns"].InnerText;
                         if (strSitesColumns != "")
+                        {
                             blCombinedSites = true;
-
-                        MapCombinedSiteColumns.Add(strSitesColumns);
+                            MapCombinedSiteColumns.Add(strSitesColumns);
+                        }
+                        else
+                        {
+                            MapCombinedSiteColumns.Add("");
+                            MapCombinedSiteGroupColumns.Add("");
+                            MapCombinedSiteStatsColumns.Add("");
+                            MapCombinedSiteOrderColumns.Add("");
+                        }
                     }
                     catch
                     {

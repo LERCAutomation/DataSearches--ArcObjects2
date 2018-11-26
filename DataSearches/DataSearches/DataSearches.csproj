@@ -216,6 +216,9 @@
   <ItemGroup>
     <AddInContent Include="Images\btnDataSearches.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\%24this.Icon.ico" />
+  </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>
     <AddInTargetProduct>Desktop</AddInTargetProduct>
