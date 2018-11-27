@@ -35,5 +35,4 @@ D:\GitHub\DataSearches-ArcObjects\DataSearches\DataSearches\obj\Release\DataSear
 D:\GitHub\DataSearches-ArcObjects\DataSearches\DataSearches\obj\Release\DataSearches.csproj.GenerateResource.Cache
 D:\GitHub\DataSearches-ArcObjects\DataSearches\DataSearches\obj\Release\DataSearches.dll
 D:\GitHub\DataSearches-ArcObjects\DataSearches\DataSearches\obj\Release\DataSearches.pdb
-D:\GitHub\DataSearches-ArcObjects\DataSearches\DataSearches\obj\Release\DataSearches.csprojResolveAssemblyReference.cache
 D:\GitHub\DataSearches-ArcObjects\DataSearches\DataSearches\bin\Release\DataSearches.esriAddIn
