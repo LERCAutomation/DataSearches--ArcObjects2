@@ -3038,6 +3038,9 @@ namespace HLArcMapModule
                 // Does the area field already exist? If not, add it.
                 if (!FieldExists(pFC, "Area", aLogFile, Messages))
                 {
+                    if (aLogFile != "")
+                        myFileFuncs.WriteLine(aLogFile, "Adding area column ...");
+
                     AddField(pFC, "Area", esriFieldType.esriFieldTypeDouble, 20, aLogFile, Messages);
                     blAreaAdded = true;
                 }
@@ -3416,6 +3419,9 @@ namespace HLArcMapModule
                 // Does the area field already exist? If not, add it.
                 if (!FieldExists(pFC, "Area", aLogFile, Messages))
                 {
+                    if (aLogFile != "")
+                        myFileFuncs.WriteLine(aLogFile, "Adding area column ...");
+
                     AddField(pFC, "Area", esriFieldType.esriFieldTypeDouble, 20, aLogFile, Messages);
                     //blAreaAdded = true;
                 }

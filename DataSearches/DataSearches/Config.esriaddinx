@@ -1,19 +1,19 @@
 ﻿<ESRI.Configuration xmlns="http://schemas.esri.com/Desktop/AddIns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>Data Searches</Name>
   <AddInID>{87d1fee3-43bc-478c-95d2-75f114def3ef}</AddInID>
-  <Description>Select spatial data within a radius of a given feature.&#13;&#10;(c) 2016-2018 SxBRC, 2017-2018 TVERC.</Description>
-  <Version>2.4.7</Version>
+  <Description>Select spatial data within a radius of a given feature.&#13;&#10;(c) 2016-2019 SxBRC, 2017-2018 TVERC.</Description>
+  <Version>2.4.8</Version>
   <Image>Images\DataSearches.png</Image>
-  <Author>Hester Lyons</Author>
-  <Company>Hester Lyons Consulting</Company>
-  <Date>26/11/2018</Date>
+  <Author>Hester Lyons and Andy Foy</Author>
+  <Company>Hester Lyons Consulting and Andy Foy Consulting</Company>
+  <Date>17/11/2019</Date>
   <Targets>
     <Target name="Desktop" version="10.1" />
   </Targets>
   <AddIn language="CLR" library="DataSearches.dll" namespace="DataSearches">
     <ArcMap>
       <Commands>
-        <Button id="Hester_Lyons_Consulting_DataSearches" 
+        <Button id="DataSearches" 
                 class="DataSearches" 
                 message="Select spatial data within a radius of a given feature." 
                 caption="Data Searches" 

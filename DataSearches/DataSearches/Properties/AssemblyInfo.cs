@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("DataSearches")]
 [assembly: AssemblyDescription("DataSearches is an ArcGIS add-in used to extract spatial data within a radius of a given feature.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Hester Lyons Consulting")]
+[assembly: AssemblyCompany("Hester Lyons Consulting and Andy Foy Consulting")]
 [assembly: AssemblyProduct("DataSearches")]
-[assembly: AssemblyCopyright("Copyright © 2016-2018 SxBRC, 2017-2018 TVERC")]
+[assembly: AssemblyCopyright("Copyright © 2016-2019 SxBRC, 2017-2018 TVERC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.4.7")]
-[assembly: AssemblyFileVersion("2.4.7")]
+[assembly: AssemblyVersion("2.4.8")]
+[assembly: AssemblyFileVersion("2.4.8")]
