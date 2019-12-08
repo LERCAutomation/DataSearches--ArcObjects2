@@ -2094,9 +2094,11 @@ namespace HLArcMapModule
                         int i = fldsFields.FindField(aColNameTr);
                         if (i == -1) i = fldsFields.FindFieldByAliasName(aColNameTr);
                         var theValue = aRow.get_Value(i);
-                        // Wrap value if quotes if it is a string that contains a comma
-                        if ((theValue is string) &&
-                           (theValue.ToString().Contains(","))) theValue = "\"" + theValue.ToString() + "\"";
+                        //// Wrap value in quotes if it is a string that contains a comma
+                        //if ((theValue is string) &&(theValue.ToString().Contains(","))) 
+                        // Wrap value in quotes if it is a string
+                        if (theValue is string)
+                            theValue = "\"" + theValue.ToString() + "\"";
                         // Format distance to the nearest metre
                         if (theValue is double && aColNameTr == "Distance")
                         {
